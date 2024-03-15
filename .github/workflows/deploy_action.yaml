@@ -4,10 +4,11 @@ on:
   push:
     branches: [ main ]
 
-#jobs:
-#  create-deployment-artifacts:
-#    name: Create deployment artifacts
-#    runs-on: ubuntu-latest
+jobs:
+  create-deployment-artifacts:
+    name: Create deployment artifacts
+#    needs: tests
+    runs-on: ubuntu-latest
 #    outputs:
 #      DEPLOYMENT_MATRIX: ${{ steps.export-deployment-matrix.outputs.DEPLOYMENT_MATRIX }}
 #    steps:
