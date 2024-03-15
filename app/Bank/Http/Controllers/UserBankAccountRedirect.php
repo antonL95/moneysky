@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 
 class UserBankAccountRedirect extends Controller
 {
-
     public function __construct(
         protected readonly BankAccounts $connectBankAccounts,
     ) {
