@@ -13,8 +13,12 @@ use TallStackUi\Traits\Interactions;
 
 class ShowBankAccounts extends Component
 {
-    use WithPagination;
+    private const string SUCCESS_MESSAGE = 'Bank account deleted successfully';
+
+    private const string ERROR_MESSAGE = 'Something went wrong with deleting bank account';
+
     use Interactions;
+    use WithPagination;
 
     public int $bankBalanceTotal = 0;
 
@@ -43,7 +47,7 @@ class ShowBankAccounts extends Component
     {
         if (session()->has('bank-account-success')) {
             $this->toast()->success(
-                session('bank-account-success')
+                self::SUCCESS_MESSAGE
             );
 
             session()->forget('bank-account-success');
@@ -51,7 +55,7 @@ class ShowBankAccounts extends Component
 
         if (session()->has('bank-account-error')) {
             $this->toast()->error(
-                session('bank-account-error')
+                self::ERROR_MESSAGE
             );
 
             session()->forget('bank-account-error');
