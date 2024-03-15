@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Actions\Currency\ConvertCurrency;
+use App\Models\Scopes\UserScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Money\Currency;
+use Money\Money;
+
+#[ScopedBy(UserScope::class)]
+class UserManualEntry extends Model
+{
+    use HasTimestamps;
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'description',
+        'amount',
+        'currency',
+    ];
+
+    protected $casts = [
+        'amount' => 'integer',
+    ];
+
+    /**
+     * @return BelongsTo<User, self>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public static function getSumWithCurrency(
+        User $user,
+    ): int {
+        $userManualEntries = self::where('user_id', $user->id)->get();
+        $currencyConvertor = new ConvertCurrency;
+        $sumUsd = 0;
+        foreach ($userManualEntries as $manualEntry) {
+            $balance = (int) $currencyConvertor->convert(
+                new Money((int) $manualEntry->amount, new Currency($manualEntry->currency === '' ? 'USD' : $manualEntry->currency)),
+                new Currency('USD'),
+            )->getAmount();
+
+            $sumUsd += $balance;
+        }
+
+        return (int) $currencyConvertor->convert(
+            new Money($sumUsd, new Currency('USD')),
+            new Currency(UserSetting::getCurrencyWithDefault()),
+        )->getAmount();
+    }
+}
