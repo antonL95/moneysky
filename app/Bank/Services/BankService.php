@@ -38,7 +38,6 @@ class BankService
         }
 
         $this->client = new NordigenClient($secretId, $secretKey);
-        $this->client->createAccessToken();
     }
 
     /**
@@ -46,6 +45,7 @@ class BankService
      */
     public function getInstitutions(): Collection
     {
+        $this->client->createAccessToken();
         $institutions = $this->client->institution->getInstitutions();
 
         $temp = [];
@@ -59,6 +59,7 @@ class BankService
 
     public function connect(BankInstitution $bankInstitution, User $user): string
     {
+        $this->client->createAccessToken();
         $session = $this->getSessionData($bankInstitution);
 
         UserBankSession::create([
@@ -77,6 +78,7 @@ class BankService
      */
     public function create(User $user, string $ref): void
     {
+        $this->client->createAccessToken();
         $userBankSession = UserBankSession::with('bankInstitution')
             ->whereRequisitionId($ref)
             ->first();
@@ -122,6 +124,7 @@ class BankService
     public function getAccountBalance(
         UserBankAccount $userBankAccount,
     ): BankBalanceDto {
+        $this->client->createAccessToken();
         if ($userBankAccount->external_id === null) {
             throw InvalidApiException::invalidConfiguration();
         }
@@ -156,6 +159,7 @@ class BankService
         Carbon $from,
         Carbon $to,
     ): Collection {
+        $this->client->createAccessToken();
         if ($userBankAccount->external_id === null) {
             throw InvalidApiException::invalidConfiguration();
         }
@@ -183,6 +187,7 @@ class BankService
     private function getSessionData(
         BankInstitution $bankInstitution,
     ): SessionDto {
+        $this->client->createAccessToken();
         $sessionData = $this->client->initSession(
             $bankInstitution->external_id,
             route('app.bank-data-redirect'),
