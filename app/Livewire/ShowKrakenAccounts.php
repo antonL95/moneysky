@@ -11,14 +11,6 @@ use Livewire\Component;
 
 class ShowKrakenAccounts extends Component
 {
-    public string $userCurrency;
-
-    public function mount(): void
-    {
-        $userSetting = auth()->user()?->settings()?->whereKey('currency')->first();
-        $this->userCurrency = $userSetting?->value ?? 'USD';
-    }
-
     public function delete(UserKrakenAccount $krakenAccount): void
     {
         $krakenAccount->delete();
@@ -29,10 +21,11 @@ class ShowKrakenAccounts extends Component
     #[On('userKrakenAccountAdded')]
     #[On('userKrakenAccountUpdated')]
     #[On('userKrakenAccountDeleted')]
+    #[On('currency-updated')]
     public function render(): View
     {
         return view('livewire.show-kraken-accounts', [
-            'accounts' => UserKrakenAccount::paginate(10),
+            'krakenAccounts' => UserKrakenAccount::paginate(10),
         ]);
     }
 }

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Bank\Jobs;
 
-use App\Bank\Contracts\IBankClient;
 use App\Bank\Models\UserBankAccount;
 use App\Bank\Models\UserBankTransactionRaw;
+use App\Bank\Services\BankService;
+use App\Models\Scopes\UserScope;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,10 +24,10 @@ class ProcessBankAccounts implements ShouldQueue
 
     public Carbon $to;
 
-    protected IBankClient $bankClient;
+    protected BankService $bankService;
 
     public function __construct(
-        public UserBankAccount $bankAccount,
+        public User $user,
         ?Carbon $from,
         ?Carbon $to,
     ) {
@@ -45,37 +47,63 @@ class ProcessBankAccounts implements ShouldQueue
         }
     }
 
-    public function handle(IBankClient $bankClient): void
+    public function handle(BankService $bankService): void
     {
-        $this->bankClient = $bankClient;
+        $this->bankService = $bankService;
+        $bankAccounts = UserBankAccount::withoutGlobalScope(UserScope::class)
+            ->where('user_id', $this->user->id)->get();
 
-        $this->processBalance();
-        $this->processTransaction();
+        if ($bankAccounts->isEmpty()) {
+            return;
+        }
+
+        foreach ($bankAccounts as $account) {
+            $this->fetchBalance($account);
+            $this->fetchTransaction($account);
+        }
+
+        $diff = $this->from->diffInDays($this->to);
+        if ($diff > ProcessTransactionsJob::MAX_DAYS) {
+            $chunks = ceil($diff / ProcessTransactionsJob::MAX_DAYS);
+
+            for ($i = 0; $i < $chunks; ++$i) {
+                $from = $this->from->copy()->addDays($i * ProcessTransactionsJob::MAX_DAYS);
+                $to = $this->from->copy()->addDays(($i + 1) * ProcessTransactionsJob::MAX_DAYS);
+                ProcessTransactionsJob::dispatch($this->user, $from, $to);
+            }
+        } else {
+            ProcessTransactionsJob::dispatch($this->user, $this->from, $this->to);
+        }
     }
 
-    private function processBalance(): void
+    private function fetchBalance(UserBankAccount $account): void
     {
+        $balance = $this->bankService->getAccountBalance($account);
 
-        $balance = $this->bankClient->getBalance($this->bankAccount);
-
-        $this->bankAccount->balance_cents = $balance->balance;
-        $this->bankAccount->save();
+        $account->balance_cents = $balance->balance;
+        $account->save();
     }
 
-    private function processTransaction(): void
+    private function fetchTransaction(UserBankAccount $account): void
     {
-        $transactions = $this->bankClient->getTransactions($this->bankAccount, $this->from, $this->to);
+        $transactions = $this->bankService->getAccountTransactions($account, $this->from, $this->to);
 
         $temp = [];
+
+        if ($transactions->isEmpty()) {
+            return;
+        }
+
         foreach ($transactions as $transaction) {
             $temp[] = [
-                'user_bank_account_id' => $this->bankAccount->id,
+                'user_bank_account_id' => $account->id,
                 'external_id' => $transaction->externalId,
                 'balance_cents' => $transaction->balance,
                 'currency' => $transaction->currency,
                 'currency_exchange' => $transaction->currencyExchange,
                 'additional_information' => $transaction->additionalInformation,
                 'remittance_information' => $transaction->remittanceInformation,
+                'booked_at' => $transaction->bookingDateTime ?? $transaction->bookingDate ?? null,
             ];
         }
 

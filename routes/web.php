@@ -3,14 +3,22 @@
 declare(strict_types=1);
 
 use App\Bank\Http\Controllers\UserBankAccountRedirect;
-use App\Livewire\AddCryptoWallet;
+use App\Bank\Models\BankInstitution;
+use App\Http\Middleware\Subscribed;
+use App\Livewire\AddUserCryptoWallet;
 use App\Livewire\AddUserKrakenAccount;
-use App\Livewire\CryptoWallets;
+use App\Livewire\AddUserManualEntries;
+use App\Livewire\AddUserStockMarket;
 use App\Livewire\Dashboard;
-use App\Livewire\EditCryptoWallet;
 use App\Livewire\ShowBankAccounts;
+use App\Livewire\ShowCryptoWallets;
 use App\Livewire\ShowKrakenAccounts;
+use App\Livewire\ShowManualEntries;
+use App\Livewire\ShowStockMarket;
+use App\Livewire\UpdateUserCryptoWallet;
 use App\Livewire\UpdateUserKrakenAccount;
+use App\Livewire\UpdateUserManualEntries;
+use App\Livewire\UpdateUserStockMarket;
 use App\Livewire\Welcome;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -30,34 +38,106 @@ Route::middleware([
 ])->group(function () {
     Route::prefix('app')->group(function () {
         Route::get('/', Dashboard::class)->name('app.home');
+
+        // user profile and settings
         Route::get('/profile', static fn () => view('profile.show'))->name('profile.show');
-        Route::get('/bank-data-redirect', UserBankAccountRedirect::class)->name('app.bank-data-redirect');
-        Route::get('/crypto-wallets', CryptoWallets::class)->name('app.crypto-wallets');
-        Route::get('/add-crypto-wallets', AddCryptoWallet::class)->name('app.add-crypto-wallets');
-        Route::get('/edit-crypto-wallets/{wallet}', EditCryptoWallet::class)->name('app.edit-crypto-wallets');
-        Route::get('/bank-accounts', ShowBankAccounts::class)->name('app.bank-accounts');
+
+        // kraken accounts
         Route::get('/kraken-account', ShowKrakenAccounts::class)->name('app.kraken-accounts');
         Route::get('/add-kraken-account', AddUserKrakenAccount::class)->name('app.add-kraken-accounts');
         Route::get('/update-kraken-account/{account}', UpdateUserKrakenAccount::class)->name('app.update-kraken-accounts');
+
+        // manual entry
+        Route::get('/cash-wallets', ShowManualEntries::class)->name('app.manual-entries');
+        Route::get('/add-cash-wallet', AddUserManualEntries::class)->name('app.add-manual-entry');
+        Route::get('/update-cash-wallet/{wallet}', UpdateUserManualEntries::class)->name('app.update-manual-entry');
     });
 
-    Route::get('/subscription-checkout', static function (Request $request) {
+    Route::middleware(Subscribed::class)->group(function () {
+        // bank accounts
+        Route::get('/bank-data-redirect', UserBankAccountRedirect::class)
+            ->name('app.bank-data-redirect');
+        Route::get('/bank-accounts', ShowBankAccounts::class)->name('app.bank-accounts');
+        Route::get('/list-institutions', static function (Request $request) {
+            $search = $request->get('search');
+            if ($search === null) {
+                $institutions = BankInstitution::limit(10)->get();
+            } else {
+                $institutions = BankInstitution::where(
+                    'name',
+                    'like',
+                    '%'.$search.'%',
+                )->get();
+            }
+
+            return $institutions->map(
+                function (BankInstitution $institution) {
+                    return [
+                        'name' => $institution->name.'('.implode(',', $institution->countries).')',
+                        'id' => $institution->id,
+                        'image' => $institution->logo_url,
+                    ];
+                },
+            );
+        })->name('app.list-institutions');
+
+        // crypto wallets
+        Route::get('/crypto-wallets', ShowCryptoWallets::class)->name('app.crypto-wallets');
+        Route::get('/add-crypto-wallets', AddUserCryptoWallet::class)->name('app.add-crypto-wallets');
+        Route::get('/edit-crypto-wallets/{wallet}', UpdateUserCryptoWallet::class)->name('app.edit-crypto-wallets');
+
+        // stock market
+        Route::get('/stock-market', ShowStockMarket::class)->name('app.stock-market');
+        Route::get('/add-stock-market', AddUserStockMarket::class)->name('app.add-stock-market');
+        Route::get('/update-stock-market/{ticker}', UpdateUserStockMarket::class)->name('app.update-stock-market');
+    });
+
+    Route::get('/subscription-monthly/{plan}', static function (Request $request) {
+        if ($request->get('plan') === 'yearly') {
+            $priceId = config('services.stripe.yearly_plan');
+        } else {
+            $priceId = config('services.stripe.monthly_plan');
+        }
+
+        if (!\is_string($priceId)) {
+            abort(404);
+        }
+
         return $request->user()
-            ->newSubscription('default', 'price_1Os1caK5HYS5TbLBmsjD52yB')
+            ->newSubscription('default', $priceId)
+            ->trialDays(7)
             ->allowPromotionCodes()
             ->checkout([
-                'success_url' => route('your-success-route'),
-                'cancel_url' => route('your-cancel-route'),
+                'success_url' => route('stripe.subscription-success'),
+                'cancel_url' => route('stripe.subscription-canceled'),
             ]);
     })->name('subscription-checkout');
 
-    Route::get('/stripe/success', static fn () => redirect(route('app.home'))->with('message', 'Subscription successful!'))->name('your-success-route');
+    Route::get(
+        '/stripe/success',
+        static function () {
+            $user = auth()->user();
 
-    Route::get('/stripe/cancel', static fn () => redirect(route('app.home'))->with('message', 'Subscription canceled!'))->name('your-cancel-route');
+            $user->trial_ends_at = now()->addDays(7);
+            $user->save();
 
-    Route::get('/billing', static fn (Request $request) => $request->user()->redirectToBillingPortal())->name('billing');
+            return redirect(route('profile.show'));
+        },
+    )->name('stripe.subscription-success');
+
+    Route::get(
+        '/stripe/cancel',
+        static fn () => redirect(route('profile.show')),
+    )->name('stripe.subscription-canceled');
+
+    Route::get(
+        '/billing',
+        static fn (Request $request) => $request->user()->redirectToBillingPortal(),
+    )
+        ->name('billing');
 });
 
+// Email verification
 Route::get('/email/verify', static function () {
     if (auth()->user()?->hasVerifiedEmail()) {
         return redirect(route('app.home'));

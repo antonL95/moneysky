@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Bank\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BankInstitution extends Model
 {
+    use HasFactory;
     use HasTimestamps;
     use SoftDeletes;
 
@@ -28,18 +30,10 @@ class BankInstitution extends Model
     ];
 
     /**
-     * @return HasMany<UserBankAgreement>
+     * @return HasMany<UserBankSession>
      */
-    public function userBankAgreements(): HasMany
+    public function userBankSessions(): HasMany
     {
-        return $this->hasMany(UserBankAgreement::class);
-    }
-
-    /**
-     * @return HasMany<UserBankRequisition>
-     */
-    public function userBankRequisitions(): HasMany
-    {
-        return $this->hasMany(UserBankRequisition::class);
+        return $this->hasMany(UserBankSession::class);
     }
 }

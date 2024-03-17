@@ -2,28 +2,20 @@
     <main class="p-4 md:ml-64 h-auto pt-20">
         <section class="py-3 sm:py-5">
             <div class="px-4 mx-auto max-w-screen-2xl lg:px-12">
-                <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+                <div class="relative overflow-hidden bg-primary-50 shadow-md dark:bg-gray-800 sm:rounded-lg">
                     <div
                         class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
                         <div class="flex items-center flex-1 space-x-4">
                         </div>
                         <div
                             class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-                            @if(auth()->user()->subscribed())
-                                <x-button-link
-                                    href="{{route('app.add-kraken-accounts')}}"
-                                    class="inline-flex"
-                                    type="button">
-                                    <x-fas-plus class="w-[20px] h-[20px] pr-2"/>
-                                    {{ __('Add account') }}
-                                </x-button-link>
-                            @else
-                                <x-button-link href="{{route('subscription-checkout')}}"
-                                               type="button">
-                                    <x-fas-plus class="w-[20px] h-[20px] pr-2"/>
-                                    {{ __('Add account') }}
-                                </x-button-link>
-                            @endif
+                            <x-button-link
+                                href="{{route('app.add-kraken-accounts')}}"
+                                class="inline-flex"
+                                type="button">
+                                <x-fas-plus class="w-[20px] h-[20px] pr-2"/>
+                                {{ __('Add account') }}
+                            </x-button-link>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -40,12 +32,12 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($accounts as $account)
+                            @foreach($krakenAccounts as $account)
                                 <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
                                         <div class="flex items-center">
                                             <x-amount-format :amount="$account->balance_cents"
-                                                             :user-currency="$userCurrency" :amount-currency="'USD'"/>
+                                                             :amount-currency="'USD'"/>
                                         </div>
                                     </td>
                                     <td class="px-4 py-3 flex items-center justify-end">
@@ -60,13 +52,13 @@
                                             </svg>
                                         </button>
                                         <div id="{{$account->id}}-dropdown"
-                                             class="hidden z-1000 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                             class="hidden z-1000 w-44 bg-primary-50 rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                                             <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
                                                 aria-labelledby="{{$account->id}}-dropdown-button">
                                                 <li>
                                                     <a href="{{route('app.update-kraken-accounts', ['account' => $account->id])}}"
                                                        wire:navigate
-                                                       class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                       class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-primary-50">Edit</a>
                                                 </li>
                                             </ul>
                                             <div class="py-1">
@@ -74,7 +66,7 @@
                                                     type="button"
                                                     wire:click="delete({{$account->id}})"
                                                     wire:confirm="Are you sure you want to delete this post?"
-                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer">Delete</a>
+                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-primary-50 cursor-pointer">Delete</a>
                                             </div>
                                         </div>
                                     </td>
@@ -82,7 +74,7 @@
                             @endforeach
                             </tbody>
                         </table>
-                        {{ $accounts->links('components.table-pagination') }}
+                        {{ $krakenAccounts->links('components.table-pagination') }}
                     </div>
                 </div>
             </div>

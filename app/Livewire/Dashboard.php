@@ -6,8 +6,9 @@ namespace App\Livewire;
 
 use App\Actions\Currency\ConvertCurrency;
 use App\Bank\Models\UserBankAccount;
-use App\Bank\Models\UserBankTransactionRaw;
+use App\Bank\Models\UserTransaction;
 use App\Crypto\Models\UserCryptoWallets;
+use App\Crypto\Models\UserKrakenAccount;
 use App\MarketData\Models\UserStockMarket;
 use App\Models\UserManualEntry;
 use App\Models\UserSetting;
@@ -26,15 +27,7 @@ class Dashboard extends Component
 {
     use WithPagination;
 
-    /** @var non-empty-string */
-    public string $userCurrency = 'USD';
-
     public bool $dark = false;
-
-    public function mount(): void
-    {
-        $this->userCurrency = UserSetting::getCurrencyWithDefault();
-    }
 
     #[On('themeToggle')]
     public function themeToggle(bool $darkTheme): void
@@ -42,18 +35,21 @@ class Dashboard extends Component
         $this->dark = $darkTheme;
     }
 
+    #[On('currency-updated')]
     public function render(): View
     {
         return view('livewire.dashboard', [
-            'transactions' => UserBankTransactionRaw::join('user_bank_accounts', 'user_bank_accounts.id', '=', 'user_bank_transactions_raw.user_bank_account_id')
-                ->where('user_bank_accounts.user_id', auth()->id())
-                ->orderBy('booked_at', 'desc')
-                ->paginate(20, ['user_bank_transactions_raw.*', 'user_bank_accounts.name']),
+            'transactions' => UserTransaction::with('userBankAccount')
+                ->with('transactionTag')
+                ->with('userTransactionTag')
+                ->orderBy('booked_at', 'DESC')
+                ->paginate(20),
             'pieChartModel' => $this->getChart(),
         ]);
     }
 
-    private function getChart(): ?PieChartModel
+    #[On('currency-updated')]
+    public function getChart(): ?PieChartModel
     {
         $user = auth()->user();
 
@@ -67,6 +63,7 @@ class Dashboard extends Component
         $bankAccountsSum = UserBankAccount::getSumOfAllUserBankAccounts($user);
         $stockMarketSum = UserStockMarket::sum(new Expression('amount * price_cents'));
         $manualEntriesSum = UserManualEntry::getSumWithCurrency($user);
+        $krakenSum = UserKrakenAccount::sum('balance_cents');
 
         $currencyConvertor = new ConvertCurrency;
 
@@ -74,9 +71,13 @@ class Dashboard extends Component
             $cryptoWalletsSum = 0;
         }
 
+        if (!is_numeric($krakenSum)) {
+            $krakenSum = 0;
+        }
+
         $cryptoWalletsSum = $currencyConvertor->convert(
-            new Money((int) $cryptoWalletsSum, new Currency('USD')),
-            new Currency($this->userCurrency),
+            new Money((int) ($cryptoWalletsSum + $krakenSum), new Currency('USD')),
+            new Currency(UserSetting::getCurrencyWithDefault()),
         )->getAmount() / 100;
 
         if (!is_numeric($bankAccountsSum)) {
@@ -91,7 +92,7 @@ class Dashboard extends Component
 
         $stockMarketSum = $currencyConvertor->convert(
             new Money((int) $stockMarketSum, new Currency('USD')),
-            new Currency($this->userCurrency),
+            new Currency(UserSetting::getCurrencyWithDefault()),
         )->getAmount() / 100;
 
         if (!is_numeric($manualEntriesSum)) {
@@ -107,7 +108,7 @@ class Dashboard extends Component
             ->addSlice('Crypto', $cryptoWalletsSum, '#38c172')
             ->addSlice('Bank accounts', $bankAccountsSum, '#3490dc')
             ->addSlice('Stock market', $stockMarketSum, '#6574cd')
-            ->addSlice('Manual entry', $manualEntriesSum, '#9f7aea')
+            ->addSlice('Cash wallet', $manualEntriesSum, '#9f7aea')
             ->setJsonConfig([
                 'plotOptions.pie.donut.labels.show' => true,
                 'plotOptions.pie.donut.labels.total.showAlways' => true,

@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Actions\Currency\ConvertCurrency;
+use App\Bank\DataTransferObjects\BankBalanceDto;
+use App\Bank\Services\BankService;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Money\Currency;
+use Money\Money;
 use Tests\TestCase;
 
 /*
@@ -16,7 +21,24 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class, RefreshDatabase::class)->in('Feature');
+uses(TestCase::class, LazilyRefreshDatabase::class)->beforeEach(function () {
+    Illuminate\Support\Facades\Queue::fake();
+
+    $this->convertCurrency = $this->createMock(ConvertCurrency::class);
+    $this->convertCurrency->method('convert')->willReturn(
+        new Money(1_00, new Currency('EUR'))
+    );
+
+    $this->bankService = $this->createMock(BankService::class);
+    $this->bankService->method('getInstitutions')->willReturn(collect([]));
+    $this->bankService->method('connect')->willReturn('');
+    $this->bankService->method('create');
+    $this->bankService->method('getAccountBalance')->willReturn(new BankBalanceDto(100));
+    $this->bankService->method('getAccountTransactions')->willReturn(collect([]));
+
+    App::instance(ConvertCurrency::class, $this->convertCurrency);
+    App::instance(BankService::class, $this->bankService);
+})->in('Feature');
 
 /*
 |--------------------------------------------------------------------------

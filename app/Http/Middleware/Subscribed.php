@@ -13,7 +13,7 @@ class Subscribed
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user()?->subscribed()) {
-            return redirect('/billing');
+            return redirect(route('subscription-checkout', ['plan' => 'monthly']));
         }
 
         return $next($request);

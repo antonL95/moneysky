@@ -12,7 +12,7 @@
     x-init="() => {
         Livewire.dispatch('themeToggle', {darkTheme: localStorage.getItem('dark')});
     }"
-    x-bind:class="{ 'dark bg-gray-900': darkTheme, 'bg-white': !darkTheme }"
+    x-bind:class="{ 'dark bg-gray-900': darkTheme, 'bg-primary-50': !darkTheme }"
     x-cloak
 >
 <head>

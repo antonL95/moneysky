@@ -8,9 +8,12 @@ use App\Models\NewsletterSubscriber;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class NewsletterSubscribe extends Component
 {
+    use Interactions;
+
     #[Rule(['required', 'email'])]
     public string $email;
 
@@ -18,10 +21,18 @@ class NewsletterSubscribe extends Component
     {
         $this->validate();
 
-        NewsletterSubscriber::createOrRestore([
+        $subscriber = NewsletterSubscriber::createOrFirst([
             'email' => $this->email,
         ]);
 
+        if ($subscriber->wasRecentlyCreated) {
+            $this->toast()->success('You have been subscribed to our newsletter.')->send();
+            $this->email = '';
+
+            return;
+        }
+
+        $this->toast()->info('You are already subscribed to our newsletter.')->send();
         $this->email = '';
     }
 

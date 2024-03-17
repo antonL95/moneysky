@@ -6,15 +6,15 @@ namespace App\Livewire\Forms;
 
 use App\Crypto\Jobs\ProcessKrakenAccounts;
 use App\Crypto\Models\UserKrakenAccount;
-use Livewire\Attributes\Rule;
+use Livewire\Attributes\Validate;
 use Livewire\Form;
 
 class UserKrakenAccountForm extends Form
 {
-    #[Rule('required')]
+    #[Validate('required')]
     public ?string $apiKey = null;
 
-    #[Rule('required')]
+    #[Validate('required')]
     public ?string $privateKey = null;
 
     public function store(): void

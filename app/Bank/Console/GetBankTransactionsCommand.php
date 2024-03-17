@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Bank\Console;
 
-use App\Bank\Enums\Status;
 use App\Bank\Jobs\ProcessBankAccounts;
-use App\Bank\Models\UserBankAccount;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -36,13 +35,11 @@ class GetBankTransactionsCommand extends Command
                 ->setTime(0, 0);
         }
 
-        $accounts = UserBankAccount::whereStatus(Status::LINKED->value)
-            ->withoutGlobalScopes()
-            ->get();
+        $users = User::all();
 
         $i = 0;
-        foreach ($accounts as $account) {
-            ProcessBankAccounts::dispatch($account, $from, $to)
+        foreach ($users as $user) {
+            ProcessBankAccounts::dispatch($user, $from, $to)
                 ->delay(now()->addSeconds($i * 5));
             ++$i;
         }

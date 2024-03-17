@@ -2,9 +2,14 @@
 <div>
     <form class="max-w-sm mx-auto" wire:submit="connect">
         <x-ts-select.styled
-            :options="Cache::get('bank-institutions')->map(fn($institution) => ['label' => $institution->name . '('.implode(',', $institution->countries).')', 'value' => $institution->id])"
-            select="label:label|value:value"
+            :request="[
+                'url' => route('app.list-institutions'),
+                'method' => 'get',
+            ]"
+            select="label:name|value:id"
             searchable wire:model="institution" required/>
-        <x-button class="mt-2" type="submit">Connect</x-button>
+        <x-button class="mt-2" type="submit">
+            {{ __('Connect') }}
+        </x-button>
     </form>
 </div>

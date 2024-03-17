@@ -8,6 +8,7 @@ use App\Actions\Currency\ConvertCurrency;
 use App\Models\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Money\Currency;
@@ -16,18 +17,15 @@ use Money\Money;
 #[ScopedBy(UserScope::class)]
 class UserManualEntry extends Model
 {
+    use HasFactory;
     use HasTimestamps;
 
     protected $fillable = [
         'user_id',
         'name',
         'description',
-        'amount',
+        'amount_cents',
         'currency',
-    ];
-
-    protected $casts = [
-        'amount' => 'integer',
     ];
 
     /**
@@ -44,11 +42,13 @@ class UserManualEntry extends Model
         $userManualEntries = self::where('user_id', $user->id)->get();
         $currencyConvertor = new ConvertCurrency;
         $sumUsd = 0;
+
+        /** @var UserManualEntry $manualEntry */
         foreach ($userManualEntries as $manualEntry) {
             $balance = (int) $currencyConvertor->convert(
-                new Money((int) $manualEntry->amount, new Currency($manualEntry->currency === '' ? 'USD' : $manualEntry->currency)),
+                new Money((int) $manualEntry->amount_cents, new Currency($manualEntry->currency === '' ? 'USD' : $manualEntry->currency)),
                 new Currency('USD'),
-            )->getAmount();
+            )->getAmount() / 100;
 
             $sumUsd += $balance;
         }
@@ -57,5 +57,15 @@ class UserManualEntry extends Model
             new Money($sumUsd, new Currency('USD')),
             new Currency(UserSetting::getCurrencyWithDefault()),
         )->getAmount();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function casts(): array
+    {
+        return [
+            'amount_cents' => 'int',
+        ];
     }
 }
