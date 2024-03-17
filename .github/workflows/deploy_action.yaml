@@ -1,14 +1,43 @@
-name: Deploy Application
+name: Test and Deploy Application
 
 on:
-  push:
-    branches: [ main ]
   workflow_run:
-    workflows: [ "Tests" ]
+    workflows: ["Tests"]
     types:
       - completed
+  push:
+    branches: [ main ]
 
 jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          coverage: xdebug
+
+      - name: Install Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          npm install
+          npm run build
+
+      - name: Stan
+        run: |
+          composer run stan
+      - name: Tests
+        run: |
+          php artisan test
+      - name: Type check
+        run: |
+          ./vendor/bin/pest --type-coverage --min=100
+
   create-deployment-artifacts:
     name: Create deployment artifacts
     runs-on: ubuntu-latest
@@ -45,6 +74,7 @@ jobs:
           echo "DEPLOYMENT_MATRIX<<${delimiter}" >> "${GITHUB_OUTPUT}"
           echo "$JSON" >> "${GITHUB_OUTPUT}"
           echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+
   prepare-release-on-servers:
     name: "${{ matrix.server.name }}: Prepare release"
     runs-on: ubuntu-latest
@@ -83,6 +113,7 @@ jobs:
             mkdir -p ${{ matrix.server.path }}/storage/{app,public,framework,logs}
             mkdir -p ${{ matrix.server.path }}/storage/framework/{cache,sessions,testing,views}
             chmod -R 0777 ${{ matrix.server.path }}/storage
+
   run-before-hooks:
     name: "${{ matrix.server.name }}: Before hook"
     runs-on: ubuntu-latest
@@ -107,6 +138,7 @@ jobs:
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
           script: |
             ${{ matrix.server.beforeHooks }}
+
   activate-release:
     name: "${{ matrix.server.name }}: Activate release"
     runs-on: ubuntu-latest
