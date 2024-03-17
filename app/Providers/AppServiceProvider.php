@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Bank\Clients\GoCardlessClient;
-use App\Bank\Contracts\IBankClient;
+use App\Actions\Currency\ConvertCurrency;
 use App\Crypto\Clients\CovalenthqClient;
 use App\Crypto\Clients\KrakenClient;
 use App\Crypto\Contracts\ICryptoClient;
@@ -22,10 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            IBankClient::class,
-            GoCardlessClient::class,
-        );
-        $this->app->bind(
             IExchangeClient::class,
             KrakenClient::class,
         );
@@ -37,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
             IStockMarketClient::class,
             AlphaVantageClient::class,
         );
+
+        $this->app->singleton(ConvertCurrency::class, fn () => new ConvertCurrency);
     }
 
     /**

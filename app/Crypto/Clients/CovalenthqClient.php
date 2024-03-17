@@ -14,23 +14,20 @@ use Illuminate\Support\Facades\Http;
 
 class CovalenthqClient implements ICryptoClient
 {
-    protected string $apiUrl;
-
     protected string $apiKey;
 
     /**
      * @throws CovalenthqClientExceptions
      */
-    public function __construct()
-    {
-        $apiUrl = Config::get('services.covalenthq.url');
+    public function __construct(
+        protected readonly string $apiUrl = 'https://api.covalenthq.com',
+    ) {
         $apiKey = Config::get('services.covalenthq.apiKey');
 
-        if (!\is_string($apiUrl) || !\is_string($apiKey)) {
+        if (!\is_string($apiKey)) {
             throw CovalenthqClientExceptions::invalidApiConfig();
         }
 
-        $this->apiUrl = $apiUrl;
         $this->apiKey = $apiKey;
     }
 

@@ -33,26 +33,29 @@ return [
         ],
     ],
 
-    'kraken' => [
-        'url' => env('KRAKEN_API_URL'),
-    ],
-
     'aplhavantage' => [
-        'url' => env('APLHA_VANTAGE_API_URL'),
-        'apiKey' => env('APLHA_VANTAGE_API_KEY'),
+        'apiKey' => env('APLHA_VANTAGE_API_KEY', ''),
     ],
 
     'covalenthq' => [
-        'url' => env('COVALENTHQ_API_URL'),
-        'apiKey' => env('COVALENTHQ_API_KEY'),
+        'apiKey' => env('COVALENTHQ_API_KEY', ''),
     ],
+
     'openexchangerates' => [
-        'app_id' => env('OPENEXCHANGERATES_APP_ID'),
+        'app_id' => env('OPENEXCHANGERATES_APP_ID', ''),
     ],
 
     'bank_data_api' => [
-        'url' => env('BANK_DATA_API_URL', ''),
         'secret_key' => env('BANK_DATA_API_SECRET_KEY', ''),
         'secret_id' => env('BANK_DATA_API_SECRET_ID', ''),
+    ],
+
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY', ''),
+    ],
+
+    'stripe' => [
+        'monthly_plan' => env('STRIPE_MONTHLY_PLAN', ''),
+        'yearly_plan' => env('STRIPE_YEARLY_PLAN', ''),
     ],
 ];

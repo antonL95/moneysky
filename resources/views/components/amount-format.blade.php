@@ -1,11 +1,11 @@
-@php use App\Actions\Currency\ConvertCurrency;use Money\Currency;use Money\Money; @endphp
-@props(['amount', 'amountCurrency', 'userCurrency'])
+@php use App\Actions\Currency\ConvertCurrency;use App\Models\UserSetting;use Money\Currency;use Money\Money; @endphp
+@props(['amount', 'amountCurrency'])
 <span>
 {{Number::currency(
-    (float) (new ConvertCurrency())->convert(
+    (float) (app(ConvertCurrency::class))->convert(
         new Money((int) $amount, new Currency($amountCurrency)),
-        new Currency($userCurrency),
+        new Currency(UserSetting::getCurrencyWithDefault()),
     )->getAmount() / 100,
-    $userCurrency,
+    UserSetting::getCurrencyWithDefault(),
 )}}
 </span>

@@ -4,29 +4,27 @@ declare(strict_types=1);
 
 namespace App\Bank\Console;
 
-use App\Bank\Contracts\IBankClient;
 use App\Bank\Models\BankInstitution;
+use App\Bank\Services\BankService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 
 use function Safe\json_encode;
 
 class DownloadListOfInstitutionsCommand extends Command
 {
-    protected $signature = 'app:download-list-of-institutions';
+    protected $signature = 'app:download-institutions';
 
     protected $description = 'Download the list of institutions from the bank API and store it in the database.';
 
     public function __construct(
-        private readonly IBankClient $bankClient,
-
+        private readonly BankService $bankService,
     ) {
         parent::__construct();
     }
 
     public function handle(): void
     {
-        $institutions = $this->bankClient->getInstitutions();
+        $institutions = $this->bankService->getInstitutions();
 
         $temp = [];
 
@@ -42,7 +40,5 @@ class DownloadListOfInstitutionsCommand extends Command
         }
 
         BankInstitution::insertOrIgnore($temp);
-
-        Cache::remember('bank-institutions', 60 * 60 * 24, static fn () => BankInstitution::all());
     }
 }

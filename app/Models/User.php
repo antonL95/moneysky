@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Bank\Models\UserBankAccount;
-use App\Bank\Models\UserBankAgreement;
-use App\Bank\Models\UserBankRequisition;
+use App\Bank\Models\UserBankSession;
 use App\Bank\Models\UserBankTransactionRaw;
 use App\Crypto\Models\UserCryptoWallets;
 use App\Crypto\Models\UserKrakenAccount;
@@ -79,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /**
      * @return HasMany<UserBankAccount>
      */
-    public function bankAccounts(): HasMany
+    public function userBankAccount(): HasMany
     {
         return $this->hasMany(UserBankAccount::class, 'user_id', 'id');
     }
@@ -87,7 +86,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /**
      * @return HasMany<UserCryptoWallets>
      */
-    public function cryptoWallets(): HasMany
+    public function userCryptoWallet(): HasMany
     {
         return $this->hasMany(UserCryptoWallets::class, 'user_id', 'id');
     }
@@ -95,7 +94,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /**
      * @return HasMany<UserKrakenAccount>
      */
-    public function krakenAccounts(): HasMany
+    public function userKrakenAccount(): HasMany
     {
         return $this->hasMany(UserKrakenAccount::class, 'user_id', 'id');
     }
@@ -103,7 +102,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /**
      * @return HasMany<UserStockMarket>
      */
-    public function stockMarket(): HasMany
+    public function userStockMarket(): HasMany
     {
         return $this->hasMany(UserStockMarket::class, 'user_id', 'id');
     }
@@ -111,7 +110,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /**
      * @return HasManyThrough<UserBankTransactionRaw>
      */
-    public function bankTransactions(): HasManyThrough
+    public function userBankTransactions(): HasManyThrough
     {
         return $this->hasManyThrough(
             UserBankTransactionRaw::class,
@@ -124,25 +123,17 @@ class User extends Authenticatable implements MustVerifyEmailContract
     }
 
     /**
-     * @return HasMany<UserBankAgreement>
+     * @return HasMany<UserBankSession>
      */
-    public function bankDataAgreement(): HasMany
+    public function userBankSession(): HasMany
     {
-        return $this->hasMany(UserBankAgreement::class, 'user_id', 'id');
-    }
-
-    /**
-     * @return HasMany<UserBankRequisition>
-     */
-    public function bankDataRequisition(): HasMany
-    {
-        return $this->hasMany(UserBankRequisition::class, 'user_id', 'id');
+        return $this->hasMany(UserBankSession::class, 'user_id', 'id');
     }
 
     /**
      * @return HasMany<UserManualEntry>
      */
-    public function manualEntries(): HasMany
+    public function userManualEntry(): HasMany
     {
         return $this->hasMany(UserManualEntry::class, 'user_id', 'id');
     }
@@ -150,14 +141,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /**
      * @return HasMany<UserSetting>
      */
-    public function settings(): HasMany
+    public function userSetting(): HasMany
     {
         return $this->hasMany(UserSetting::class, 'user_id', 'id');
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->canAccessPulse();
     }
 
     public function canAccessPulse(): bool

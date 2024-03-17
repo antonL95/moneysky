@@ -130,4 +130,6 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Redis' => Illuminate\Support\Facades\Redis::class,
     ])->toArray(),
+
+    'default_currency' => env('APP_DEFAULT_CURRENCY', 'USD'),
 ];

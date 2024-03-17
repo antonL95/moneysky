@@ -64,7 +64,7 @@
                     <div class="space-y-6">
                         @foreach ($this->user->tokens->sortBy('name') as $token)
                             <div class="flex items-center justify-between">
-                                <div class="break-all dark:text-white">
+                                <div class="break-all dark:text-primary-50">
                                     {{ $token->name }}
                                 </div>
 

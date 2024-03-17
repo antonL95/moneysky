@@ -17,7 +17,7 @@ use Money\Exchange\SwapExchange;
 use Money\Money;
 use Swap\Swap;
 
-final readonly class ConvertCurrency
+class ConvertCurrency
 {
     private SwapExchange $czkExchange;
 
@@ -89,6 +89,14 @@ final readonly class ConvertCurrency
         Currency $from,
         Currency $to,
     ): CurrencyPair {
+        if ($from->getCode() === $to->getCode()) {
+            return new CurrencyPair(
+                $from,
+                $to,
+                '1',
+            );
+        }
+
         if ($to->getCode() === 'CZK') {
             return $this->czkExchange->quote($from, $to);
         }

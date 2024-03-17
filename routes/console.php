@@ -2,9 +2,30 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+// Bank
+Schedule::command(
+    'app:get-bank-transactions'
+)->hourly();
+Schedule::command(
+    'app:download-institutions'
+)->daily();
+
+// Crypto
+Schedule::command(
+    'app:kraken-account-balance'
+)->hourly();
+
+Schedule::command(
+    'app:kraken-assets'
+)->daily();
+
+Schedule::command(
+    'app:wallets-balance'
+)->hourly();
+
+// Market Data
+Schedule::command(
+    'app:stock-market-data'
+)->hourly();

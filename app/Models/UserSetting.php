@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CacheKeys;
+use App\Enums\UserSettingKeys;
 use App\Models\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 #[ScopedBy(UserScope::class)]
 class UserSetting extends Model
 {
-    private const string DEFAULT_CURRENCY = 'USD';
-
+    use HasFactory;
     use HasTimestamps;
 
     protected $fillable = [
@@ -36,10 +39,24 @@ class UserSetting extends Model
      */
     public static function getCurrencyWithDefault(): string
     {
-        $userSetting = self::whereKey('currency')->first();
+        if (Cache::missing(CacheKeys::USER_CURRENCY->value.'-'.auth()->id())) {
+            $userSetting = self::where('key', '=', UserSettingKeys::CURRENCY->value)->first();
+            if ($userSetting !== null) {
+                Cache::put(CacheKeys::USER_CURRENCY->value.'-'.auth()->id(), $userSetting->value);
+            }
+            $userCurrency = $userSetting?->value;
+        } else {
+            $userCurrency = Cache::get(CacheKeys::USER_CURRENCY->value.'-'.auth()->id());
+        }
 
-        return $userSetting?->value === null || $userSetting->value === ''
-            ? self::DEFAULT_CURRENCY
-            : $userSetting->value;
+        $defaultCurrency = config('app.default_currency');
+
+        if (!\is_string($defaultCurrency) || $defaultCurrency === '') {
+            throw new \RuntimeException('Default currency is not set in the config file');
+        }
+
+        return $userCurrency === '' || !\is_string($userCurrency)
+            ? $defaultCurrency
+            : $userCurrency;
     }
 }

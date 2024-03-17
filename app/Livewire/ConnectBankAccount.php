@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Bank\Models\BankInstitution;
-use App\Bank\Services\BankAccounts;
+use App\Bank\Services\BankService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class ConnectBankAccount extends Component
 {
+    use Interactions;
+
     #[Rule('required')]
     public ?int $institution = null;
 
-    protected BankAccounts $bankAccounts;
+    protected BankService $bankService;
 
-    public function boot(BankAccounts $bankAccounts): void
+    public function boot(BankService $bankService): void
     {
-        $this->bankAccounts = $bankAccounts;
+        $this->bankService = $bankService;
     }
 
     public function connect(): void
@@ -30,19 +33,33 @@ class ConnectBankAccount extends Component
             $this->redirect(route('billing'));
         }
 
-        $institution = BankInstitution::find($this->institution);
+        if ($this->institution === null || $user === null || !$user->subscribed()) {
+            $this->toast()->error('You need to select a bank institution to connect.');
 
-        if ($institution === null || $user === null || $user->subscribed()) {
+            back();
+
             return;
         }
 
-        $redirectLink = $this->bankAccounts->connect($institution, $user);
+        $institution = BankInstitution::find($this->institution);
+
+        if ($institution === null) {
+            $this->toast()->error('Invalid bank institution selected.');
+
+            back();
+
+            return;
+        }
+
+        $redirectLink = $this->bankService->connect($institution, $user);
 
         $this->redirect($redirectLink);
     }
 
     public function render(): View
     {
-        return view('livewire.connect-bank-account');
+        return view(
+            'livewire.connect-bank-account',
+        );
     }
 }

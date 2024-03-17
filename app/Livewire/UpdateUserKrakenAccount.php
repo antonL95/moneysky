@@ -8,9 +8,12 @@ use App\Crypto\Models\UserKrakenAccount;
 use App\Livewire\Forms\UserKrakenAccountForm;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class UpdateUserKrakenAccount extends Component
 {
+    use Interactions;
+
     public UserKrakenAccountForm $form;
 
     public UserKrakenAccount $account;
@@ -26,6 +29,8 @@ class UpdateUserKrakenAccount extends Component
         $this->form->update($account);
 
         $this->dispatch('userKrakenAccountUpdated');
+
+        $this->toast()->success('Kraken account updated!')->send();
 
         $this->redirect(route('app.kraken-accounts'), true);
     }

@@ -10,7 +10,6 @@ use App\Crypto\DataTransferObjects\KrakenTickerPairDto;
 use App\Crypto\Exceptions\KrakenClientExceptions;
 use App\Crypto\Models\KrakenTradingPairs;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -20,25 +19,11 @@ readonly class KrakenClient implements IExchangeClient
 {
     private const array ACCEPTED_FIAT = ['USD', 'EUR'];
 
-    protected string $apiUrl;
-
-    protected string $publicSuffix;
-
-    protected string $privateSuffix;
-
-    /**
-     * @throws KrakenClientExceptions
-     */
-    public function __construct()
-    {
-        $apiUrl = Config::get('services.kraken.url');
-        if (!\is_string($apiUrl)) {
-            throw KrakenClientExceptions::invalidApiUrl();
-        }
-
-        $this->apiUrl = $apiUrl;
-        $this->publicSuffix = '/0/public/';
-        $this->privateSuffix = '/0/private/';
+    public function __construct(
+        protected string $apiUrl = 'https://api.kraken.com',
+        protected string $publicSuffix = '/0/public/',
+        protected string $privateSuffix = '/0/private/',
+    ) {
     }
 
     /**

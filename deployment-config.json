@@ -6,6 +6,6 @@
         "port": "22",
         "beforeHooks": "",
         "afterHooks": "/usr/bin/php $RELEASE_PATH/artisan migrate --force",
-        "path": "/home/antonloginov/www/budget"
+        "path": "/home/moneysky/www"
     }
 ]

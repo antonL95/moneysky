@@ -19,6 +19,7 @@ class AlphaVantageClient implements IStockMarketClient
 {
     private const array EXCHANGE_CURRENCY_MAP = [
         'LON' => 'GBP',
+        'L' => 'GBP',
         'TRT' => 'CAD',
         'TRV' => 'CAD',
         'DEX' => 'EUR',
@@ -29,21 +30,18 @@ class AlphaVantageClient implements IStockMarketClient
 
     private string $apiKey;
 
-    private string $apiUrl;
-
     /**
      * @throws AlphaVantageClientException
      */
-    public function __construct()
-    {
-        $apiUrl = Config::get('services.aplhavantage.url');
+    public function __construct(
+        private readonly string $apiUrl = 'https://www.alphavantage.co/query',
+    ) {
         $apiKey = Config::get('services.aplhavantage.apiKey');
 
-        if (!\is_string($apiUrl) || !\is_string($apiKey)) {
+        if (!\is_string($apiKey)) {
             throw AlphaVantageClientException::invalidConfig();
         }
 
-        $this->apiUrl = $apiUrl;
         $this->apiKey = $apiKey;
     }
 
@@ -131,7 +129,7 @@ class AlphaVantageClient implements IStockMarketClient
         $usdCurrency = new Currency('USD');
         $convertor = new ConvertCurrency;
 
-        if ($exchange === 'LON') {
+        if ($exchange === 'LON' || $exchange === 'L') {
             return (int) $convertor->convert(
                 new Money((int) $price, $tickerCurrency),
                 $usdCurrency,

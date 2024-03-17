@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Bank\Http\Controllers;
 
-use App\Bank\Services\BankAccounts;
+use App\Bank\Services\BankService;
+use App\Enums\SessionMessage;
 use App\Exceptions\CustomAppException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +14,7 @@ use Illuminate\Http\Request;
 class UserBankAccountRedirect extends Controller
 {
     public function __construct(
-        protected readonly BankAccounts $connectBankAccounts,
+        protected readonly BankService $connectBankAccounts,
     ) {
     }
 
@@ -25,10 +26,17 @@ class UserBankAccountRedirect extends Controller
             return redirect()->route('login');
         }
 
+        if (!$user->subscribed()) {
+            return redirect()->route('billing');
+        }
+
         $ref = $request->get('ref');
 
         if (!\is_string($ref)) {
-            session()->put('bank-account-error', 'Something went wrong with connecting bank account!');
+            session()->put(
+                SessionMessage::ERROR->value,
+                'Something went wrong with connecting bank account!',
+            );
 
             return redirect()->route('app.bank-accounts');
         }
@@ -36,11 +44,17 @@ class UserBankAccountRedirect extends Controller
         try {
             $this->connectBankAccounts->create($user, $ref);
 
-            session()->put('bank-account-success', 'Bank account connected successfully!');
+            session()->put(
+                SessionMessage::SUCCESS->value,
+                'Bank account connected successfully!',
+            );
 
             return redirect()->route('app.bank-accounts');
         } catch (CustomAppException) {
-            session()->put('bank-account-error', 'Something went wrong with connecting bank account!');
+            session()->put(
+                SessionMessage::ERROR->value,
+                'Something went wrong with connecting bank account!',
+            );
 
             return redirect()->route('app.bank-accounts');
         }
