@@ -26,12 +26,10 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
-    <tallstackui:script />
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased">
-<x-ts-toast />
 <div class="min-h-screen">
     <header>
         <livewire:navigation.navigation-menu key="{{Str::random(32)}}">
