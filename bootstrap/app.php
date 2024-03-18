@@ -17,6 +17,7 @@ return Application::configure(basePath: \dirname(__DIR__))
     ->withCommands([
         __DIR__.'/../app/Crypto/Console',
         __DIR__.'/../app/Bank/Console',
+        __DIR__.'/../app/MarketData/Console',
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectUsersTo(
