@@ -50,7 +50,7 @@
                 <a href="{{route('app.stock-market')}}"
                         @if(auth()->user()->subscribed()) wire:navigate @endif
                         class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
-                    <x-fas-rocket class="h-6 w-6 text-primary-50"/>
+                    <x-fas-rocket class="w-[20px] h-[20px]"/>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">
                         {{__('Stock market')}}
                         <x-subscription-only-badge/>
@@ -61,7 +61,7 @@
                 <a href="{{route('app.manual-entries')}}"
                         wire:navigate
                         class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
-                    <x-fas-wallet class="h-6 w-6 text-primary-50"/>
+                    <x-fas-wallet class="w-[20px] h-[20px]"/>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">
                         {{__('Cash Wallet')}}
                     </span>
