@@ -108,7 +108,7 @@
                 </a>
             @endauth
             <!-- Dark Mode -->
-            <livewire:dark-mode-switcher/>
+            <livewire:dark-mode-switcher key="{{Str::random(32)}}"/>
         </div>
     </div>
 </nav>

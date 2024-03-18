@@ -162,14 +162,9 @@ jobs:
           script: |
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            ln -s -f ${BASE_PATH}/frankenphp $RELEASE_PATH
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
             supervisorctl reload
             ${{ matrix.server.afterHooks }}
-            /usr/bin/php $RELEASE_PATH/artisan cache:clear
-            /usr/bin/php $RELEASE_PATH/artisan config:cache
-            /usr/bin/php $RELEASE_PATH/artisan event:cache
-            /usr/bin/php $RELEASE_PATH/artisan route:cache
-            /usr/bin/php $RELEASE_PATH/artisan view:cache
-            /usr/bin/php $RELEASE_PATH/artisan queue:restart
+            /usr/bin/php $RELEASE_PATH/artisan optimize:clear
+            /usr/bin/php $RELEASE_PATH/artisan optimize

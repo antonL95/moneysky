@@ -177,5 +177,5 @@
         </div>
     </section>
 
-    <livewire:newsletter-subscribe/>
+    <livewire:newsletter-subscribe key="{{Str::random(32)}}"/>
 </div>
