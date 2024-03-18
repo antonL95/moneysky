@@ -27,23 +27,23 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <tallstackui:script />
+    <tallstackui:script key="{{Str::random(32)}}" />
 
     <!-- Styles -->
     @livewireStyles
 </head>
 <body class="font-sans antialiased">
-<x-ts-toast/>
+<x-ts-toast key="{{Str::random(32)}}" />
 <div class="min-h-screen">
     <header>
-        @livewire('navigation.navigation-menu')
+        <livewire:navigation.navigation-menu key="{{Str::random(32)}}">
         @if (isset($header))
             <div class="container text-center max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>
         @endif
         @if(Auth::user() !== null && Auth::user()->email_verified_at !== null)
-            @livewire('navigation.sidebar-menu')
+            <livewire:navigation.sidebar-menu key="{{Str::random(32)}}"/>
         @endif
     </header>
     <!-- Page Content -->

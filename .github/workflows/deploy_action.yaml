@@ -167,4 +167,7 @@ jobs:
             supervisorctl reload
             ${{ matrix.server.afterHooks }}
             /usr/bin/php $RELEASE_PATH/artisan optimize:clear
-            /usr/bin/php $RELEASE_PATH/artisan optimize
+            /usr/bin/php $RELEASE_PATH/artisan config:cache
+            /usr/bin/php $RELEASE_PATH/artisan event:cache
+            /usr/bin/php $RELEASE_PATH/artisan route:cache
+            /usr/bin/php $RELEASE_PATH/artisan view:cache
