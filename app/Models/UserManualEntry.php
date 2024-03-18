@@ -48,7 +48,7 @@ class UserManualEntry extends Model
             $balance = (int) $currencyConvertor->convert(
                 new Money((int) $manualEntry->amount_cents, new Currency($manualEntry->currency === '' ? 'USD' : $manualEntry->currency)),
                 new Currency('USD'),
-            )->getAmount() / 100;
+            )->getAmount();
 
             $sumUsd += $balance;
         }
