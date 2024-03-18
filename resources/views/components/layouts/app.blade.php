@@ -10,7 +10,7 @@
         },
     }"
     x-init="() => {
-        Livewire.dispatch('themeToggle', {darkTheme: localStorage.getItem('dark')});
+        Livewire.dispatch('themeToggle', {darkTheme: localStorage.getItem('dark') === undefined ? false : localStorage.getItem('dark')});
     }"
     x-bind:class="{ 'dark bg-gray-900': darkTheme, 'bg-primary-50': !darkTheme }"
     x-cloak
@@ -33,14 +33,14 @@
 <x-ts-toast />
     <div class="min-h-screen">
         <header>
-            <livewire:navigation.navigation-menu wire:key="{{Str::random(32)}}">
+            <livewire:navigation.navigation-menu wire:key="{{\Illuminate\Support\Str::random(32)}}">
             @if (isset($header))
                 <div class="container text-center max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
             @endif
             @if(Auth::user() !== null && Auth::user()->email_verified_at !== null)
-                <livewire:navigation.sidebar-menu wire:key="{{Str::random(32)}}"/>
+                <livewire:navigation.sidebar-menu wire:key="{{\Illuminate\Support\Str::random(32)}}"/>
             @endif
         </header>
 
