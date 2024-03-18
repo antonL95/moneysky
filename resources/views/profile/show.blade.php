@@ -8,32 +8,32 @@
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @if (Laravel\Fortify\Features::canUpdateProfileInformation())
-                <livewire:profile.update-profile-information-form key="{{Str::random(32)}}"/>
+                <livewire:profile.update-profile-information-form wire:key="{{Str::random(32)}}"/>
                 <x-section-border />
             @endif
 
             @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
                 <div class="mt-10 sm:mt-0">
-                    <livewire:profile.update-password-form key="{{Str::random(32)}}"/>
+                    <livewire:profile.update-password-form wire:key="{{Str::random(32)}}"/>
                 </div>
                 <x-section-border />
             @endif
 
             @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
                 <div class="mt-10 sm:mt-0">
-                    <livewire:profile.two-factor-authentication-form key="{{Str::random(32)}}"/>
+                    <livewire:profile.two-factor-authentication-form wire:key="{{Str::random(32)}}"/>
                 </div>
                 <x-section-border />
             @endif
 
             <div class="mt-10 sm:mt-0">
-                <livewire:profile.logout-other-browser-sessions-form key="{{Str::random(32)}}"/>
+                <livewire:profile.logout-other-browser-sessions-form wire:key="{{Str::random(32)}}"/>
             </div>
 
             @if (Laravel\Jetstream\Jetstream::hasAccountDeletionFeatures())
                 <x-section-border />
                 <div class="mt-10 sm:mt-0">
-                    <livewire:profile.delete-user-form key="{{Str::random(32)}}"/>
+                    <livewire:profile.delete-user-form wire:key="{{Str::random(32)}}"/>
                 </div>
             @endif
         </div>
