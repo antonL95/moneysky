@@ -9,7 +9,7 @@
                     <x-ts-input label="{{__('Ticker')}}" id="ticker" type="text" wire:model="form.ticker"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
-                    <x-ts-number label="{{__('Amount')}}" id="amount" wire:model="form.amount"/>
+                    <x-ts-number step="0.0001" label="{{__('Amount')}}" id="amount" wire:model="form.amount"/>
                 </div>
             </x-slot>
 
