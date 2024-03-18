@@ -45,12 +45,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         VerifyEmail::toMailUsing(static function ($notifiable, $url) {
-            return (new MailMessage)
-                ->mailer('resend')
-                ->subject(Lang::get('Verify Email Address'))
-                ->line(Lang::get('Please click the button below to verify your email address.'))
-                ->action(Lang::get('Verify Email Address'), $url)
-                ->line(Lang::get('If you did not create an account, no further action is required.'));
+            $subject = Lang::get('Verify Email Address');
+            $line1 = Lang::get('Please click the button below to verify your email address.');
+            $line2 = Lang::get('If you did not create an account, no further action is required.');
+            $action = Lang::get('Verify Email Address');
+
+            if (\is_string($subject) && \is_string($line1) && \is_string($line2) && \is_string($action)) {
+                return (new MailMessage)
+                    ->subject($subject)
+                    ->line($line1)
+                    ->action($action, $url)
+                    ->line($line2);
+            }
         });
     }
 }
