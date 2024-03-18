@@ -28,7 +28,7 @@ class ProcessStockMarket implements ShouldQueue
         IStockMarketClient $stockMarketClient,
     ): void {
         $price = $stockMarketClient->fetchPriceForTicker($this->userStockMarket->ticker);
-        $this->userStockMarket->price_cents = (int) ($price * $this->userStockMarket->amount);
+        $this->userStockMarket->price_cents = $price;
         $this->userStockMarket->save();
     }
 }
