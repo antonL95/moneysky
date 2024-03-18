@@ -16,11 +16,9 @@
                                     <x-fas-plus class="w-[20px] h-[20px] pr-2"/>
                                     {{ __('Connect bank') }}
                                 </x-button>
-                                @teleport('body')
-                                    <x-ts-modal title="{{__('Select your bank')}}" center id="bank-institution-modal">
-                                        <livewire:connect-bank-account />
-                                    </x-ts-modal>
-                                @endteleport
+                                <x-ts-modal title="{{__('Select your bank')}}" center id="bank-institution-modal">
+                                    <livewire:connect-bank-account />
+                                </x-ts-modal>
                             @else
                                 <x-button-link href="{{route('subscription-checkout', ['plan' => 'monthly'])}}"
                                                type="button">
