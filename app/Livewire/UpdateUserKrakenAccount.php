@@ -28,10 +28,6 @@ class UpdateUserKrakenAccount extends Component
     {
         $this->form->update($account);
 
-        $this->dispatch('userKrakenAccountUpdated');
-
-        $this->toast()->success('Kraken account updated!')->send();
-
         $this->redirect(route('app.kraken-accounts'), true);
     }
 
