@@ -3,7 +3,7 @@
         <div class="flex justify-center h-dvh sm:h-96">
             <div class="w-full p-4 md:p-6">
                 <livewire:livewire-pie-chart
-                    wire:key="{{Str::random(32)}}"
+
                     class="bg-primary-50 dark:bg-grey-800"
                     :pie-chart-model="$pieChartModel"/>
             </div>
