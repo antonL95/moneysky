@@ -30,9 +30,11 @@ class Dashboard extends Component
     public bool $dark = false;
 
     #[On('themeToggle')]
-    public function themeToggle(bool $darkTheme): void
+    public function themeToggle(?bool $darkTheme): void
     {
-        $this->dark = $darkTheme;
+        if ($darkTheme !== null) {
+            $this->dark = $darkTheme;
+        }
     }
 
     #[On('currency-updated')]
