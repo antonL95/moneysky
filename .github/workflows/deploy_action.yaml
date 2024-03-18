@@ -23,7 +23,6 @@ jobs:
           composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Install Dependencies
-        uses: 'node20'
         run: |
           npm install
           npm run build
@@ -55,7 +54,6 @@ jobs:
         run: |
           composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
       - name: Compile CSS and Javascript
-        uses: 'node20'
         run: |
           npm install
           npm run build
@@ -171,6 +169,8 @@ jobs:
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
             supervisorctl reload
             ${{ matrix.server.afterHooks }}
+            $RELEASE_PATH/../../bin/npm install
+            $RELEASE_PATH/../../bin/npm run build
             /usr/bin/php $RELEASE_PATH/artisan optimize:clear
             /usr/bin/php $RELEASE_PATH/artisan config:cache
             /usr/bin/php $RELEASE_PATH/artisan event:cache
