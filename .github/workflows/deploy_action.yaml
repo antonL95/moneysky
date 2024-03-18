@@ -20,7 +20,7 @@ jobs:
 
       - name: Composer install
         run: |
-          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+          composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Install Dependencies
         run: |
