@@ -27,13 +27,13 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <tallstackui:script key="{{Str::random(32)}}" />
+    <tallstackui:script/>
 
     <!-- Styles -->
     @livewireStyles
 </head>
 <body class="font-sans antialiased">
-<x-ts-toast key="{{Str::random(32)}}" />
+<x-ts-toast/>
 <div class="min-h-screen">
     <header>
         <livewire:navigation.navigation-menu key="{{Str::random(32)}}">
