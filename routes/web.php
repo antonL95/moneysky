@@ -40,7 +40,7 @@ Route::middleware([
         Route::get('/', Dashboard::class)->name('app.home');
 
         // user profile and settings
-        Route::get('/profile', static fn () => view('profile.show'))->name('profile.show');
+        Route::get('/user', static fn () => view('profile.show'))->name('profile.show');
 
         // kraken accounts
         Route::get('/kraken-account', ShowKrakenAccounts::class)->name('app.kraken-accounts');
