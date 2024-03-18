@@ -52,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
 
             if (\is_string($subject) && \is_string($line1) && \is_string($line2) && \is_string($action)) {
                 return (new MailMessage)
+                    ->mailer('resend')
                     ->subject($subject)
                     ->line($line1)
                     ->action($action, $url)
