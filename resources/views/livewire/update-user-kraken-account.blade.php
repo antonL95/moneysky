@@ -1,6 +1,6 @@
 <div>
     <main class="p-4 md:ml-64 h-auto pt-20">
-        <x-form-section submit="update({{$account}})">
+        <x-form-section submit="update({{$account->id}})">
             <x-slot name="title">Kraken account</x-slot>
             <x-slot name="description">Update your kraken account</x-slot>
 
