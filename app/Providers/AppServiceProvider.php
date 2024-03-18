@@ -11,6 +11,8 @@ use App\Crypto\Contracts\ICryptoClient;
 use App\Crypto\Contracts\IExchangeClient;
 use App\MarketData\Clients\AlphaVantageClient;
 use App\MarketData\Contracts\IStockMarketClient;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -41,5 +43,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::define('viewPulse', static fn (User $user) => $user->canAccessPulse());
     }
 }
