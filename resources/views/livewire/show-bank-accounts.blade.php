@@ -18,7 +18,7 @@
                                 </x-button>
                                 @teleport('body')
                                     <x-ts-modal title="{{__('Select your bank')}}" center id="bank-institution-modal">
-                                        <livewire:connect-bank-account wire:key="{{Str::random(32)}}"/>
+                                        <livewire:connect-bank-account />
                                     </x-ts-modal>
                                 @endteleport
                             @else

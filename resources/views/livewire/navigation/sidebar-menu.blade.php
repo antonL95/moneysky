@@ -70,6 +70,6 @@
         </ul>
     </div>
     <div class="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex z-20">
-        <livewire:change-user-currency wire:key="{{Str::random(32)}}"/>
+        <livewire:change-user-currency />
     </div>
 </aside>
