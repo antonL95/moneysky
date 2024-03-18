@@ -10,7 +10,7 @@
                     <x-ts-input label="{{__('Name')}}" wire:model="form.name"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
-                    <x-ts-number label="{{__('Amount')}}" wire:model="form.amount"/>
+                    <x-ts-number step="0.01" label="{{__('Amount')}}" wire:model="form.amount"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <x-ts-textarea label="{{__('Description')}}" wire:model="form.description"/>
