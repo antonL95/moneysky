@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -18,9 +18,13 @@ jobs:
           tools: composer:v2
           coverage: xdebug
 
-      - name: Install Dependencies
+      - name: Composer install
         run: |
-          composer install --no-interaction --prefer-dist --optimize-autoloader
+          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install Dependencies
+        uses: 'node20'
+        run: |
           npm install
           npm run build
 
@@ -51,6 +55,7 @@ jobs:
         run: |
           composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
       - name: Compile CSS and Javascript
+        uses: 'node20'
         run: |
           npm install
           npm run build
