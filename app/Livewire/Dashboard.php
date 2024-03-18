@@ -29,6 +29,13 @@ class Dashboard extends Component
 
     public bool $dark = false;
 
+    protected ConvertCurrency $convertCurrency;
+
+    public function boot(ConvertCurrency $convertCurrency): void
+    {
+        $this->convertCurrency = $convertCurrency;
+    }
+
     #[On('themeToggle')]
     public function themeToggle(?bool $darkTheme): void
     {
@@ -61,24 +68,17 @@ class Dashboard extends Component
             return null;
         }
 
-        $cryptoWalletsSum = UserCryptoWallets::sum('balance_cents');
+        $cryptoWalletsSum = UserCryptoWallets::sum('balance_cents') + UserKrakenAccount::sum('balance_cents');
         $bankAccountsSum = UserBankAccount::getSumOfAllUserBankAccounts($user);
-        $stockMarketSum = UserStockMarket::sum(new Expression('amount * price_cents'));
         $manualEntriesSum = UserManualEntry::getSumWithCurrency($user);
-        $krakenSum = UserKrakenAccount::sum('balance_cents');
-
-        $currencyConvertor = new ConvertCurrency;
+        $stockMarketSum = UserStockMarket::sum(new Expression('price_cents * amount'));
 
         if (!is_numeric($cryptoWalletsSum)) {
             $cryptoWalletsSum = 0;
         }
 
-        if (!is_numeric($krakenSum)) {
-            $krakenSum = 0;
-        }
-
-        $cryptoWalletsSum = $currencyConvertor->convert(
-            new Money((int) ($cryptoWalletsSum + $krakenSum), new Currency('USD')),
+        $cryptoWalletsSum = $this->convertCurrency->convert(
+            new Money((int) $cryptoWalletsSum, new Currency('USD')),
             new Currency(UserSetting::getCurrencyWithDefault()),
         )->getAmount() / 100;
 
@@ -92,10 +92,12 @@ class Dashboard extends Component
             $stockMarketSum = 0;
         }
 
-        $stockMarketSum = $currencyConvertor->convert(
+        $stockMarketSum = $this->convertCurrency->convert(
             new Money((int) $stockMarketSum, new Currency('USD')),
             new Currency(UserSetting::getCurrencyWithDefault()),
-        )->getAmount() / 100;
+        )->getAmount();
+
+        $stockMarketSum /= 100;
 
         if (!is_numeric($manualEntriesSum)) {
             $manualEntriesSum = 0;
