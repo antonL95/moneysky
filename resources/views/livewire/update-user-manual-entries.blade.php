@@ -1,7 +1,7 @@
 @php use Money\Currencies\ISOCurrencies; @endphp
 <div>
     <main class="p-4 md:ml-64 h-auto pt-20">
-        <x-form-section submit="update({{$wallet}})">
+        <x-form-section submit="update({{$wallet->id}})">
             <x-slot name="title">Cash wallet</x-slot>
             <x-slot name="description">Update cash wallet</x-slot>
 
