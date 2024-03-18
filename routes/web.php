@@ -39,9 +39,6 @@ Route::middleware([
     Route::prefix('app')->group(function () {
         Route::get('/', Dashboard::class)->name('app.home');
 
-        // user profile and settings
-        Route::get('/user', static fn () => view('profile.show'))->name('profile.show');
-
         // kraken accounts
         Route::get('/kraken-account', ShowKrakenAccounts::class)->name('app.kraken-accounts');
         Route::get('/add-kraken-account', AddUserKrakenAccount::class)->name('app.add-kraken-accounts');
@@ -92,7 +89,7 @@ Route::middleware([
         Route::get('/update-stock-market/{ticker}', UpdateUserStockMarket::class)->name('app.update-stock-market');
     });
 
-    Route::get('/subscription-monthly/{plan}', static function (Request $request) {
+    Route::get('/subscription-checkout/{plan}', static function (Request $request) {
         if ($request->get('plan') === 'yearly') {
             $priceId = config('services.stripe.yearly_plan');
         } else {
