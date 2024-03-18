@@ -1,6 +1,6 @@
 <div>
     <main class="p-4 md:ml-64 h-auto pt-20">
-        <x-form-section submit="update({{$ticker}})">
+        <x-form-section submit="update({{$ticker->id}})">
             <x-slot name="title">Stock ticker</x-slot>
             <x-slot name="description">Update ticker and/or it's amount</x-slot>
 
