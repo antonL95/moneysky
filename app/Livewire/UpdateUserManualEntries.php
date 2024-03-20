@@ -14,13 +14,15 @@ use Money\Currencies\ISOCurrencies;
 class UpdateUserManualEntries extends Component
 {
     use Toast;
+
     public UserManualEntryForm $form;
 
     public UserManualEntry $wallet;
 
-
+    /**
+     * @var array<int, array{id: string, name: string}>
+     */
     public array $currencies = [];
-
 
     public function mount(UserManualEntry $wallet): void
     {
@@ -30,7 +32,7 @@ class UpdateUserManualEntries extends Component
         $this->form->currency = $wallet->currency;
         $currencies = [];
 
-        foreach ((new ISOCurrencies())->getIterator() as $currency) {
+        foreach ((new ISOCurrencies)->getIterator() as $currency) {
             $currencies[] = [
                 'id' => $currency->getCode(),
                 'name' => $currency->getCode(),

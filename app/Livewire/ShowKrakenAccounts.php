@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Crypto\Models\UserCryptoWallets;
 use App\Crypto\Models\UserKrakenAccount;
 use Illuminate\Contracts\View\View;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,8 +17,10 @@ class ShowKrakenAccounts extends Component
     use Toast;
     use WithPagination;
 
+    /**
+     * @var string[]
+     */
     public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
-
 
     public function delete(UserKrakenAccount $krakenAccount): void
     {
@@ -28,7 +30,9 @@ class ShowKrakenAccounts extends Component
         $this->success('Kraken account deleted!');
     }
 
-
+    /**
+     * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserKrakenAccount>>
+     */
     public function with(): array
     {
         $headers = [
@@ -44,7 +48,6 @@ class ShowKrakenAccounts extends Component
             'rows' => $rows,
         ];
     }
-
 
     #[On('kraken-account-deleted')]
     public function render(): View

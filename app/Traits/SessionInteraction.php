@@ -8,11 +8,8 @@ use App\Enums\SessionMessage;
 use Exception;
 use TallStackUi\Actions\Toast;
 
-
 trait SessionInteraction
 {
-
-
     /**
      * @throws Exception
      */

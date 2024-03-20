@@ -9,7 +9,6 @@ use App\Bank\Services\BankService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -20,17 +19,19 @@ class ConnectBankAccount extends Component
 
     #[Validate('required')]
     public ?int $institution = null;
+
+    /**
+     * @var Collection<int, array{id: int, name: string, image: string, countries: string}>.>
+     */
     public Collection $institutionsSearchable;
 
     protected BankService $bankService;
-
 
     public function mount(BankService $bankService): void
     {
         $this->search();
         $this->bankService = $bankService;
     }
-
 
     public function connect(): void
     {
@@ -63,14 +64,12 @@ class ConnectBankAccount extends Component
         $this->redirect($redirectLink);
     }
 
-
     public function render(): View
     {
         return view(
             'livewire.user-bank-account.connect-bank-account',
         );
     }
-
 
     public function search(string $value = ''): void
     {
@@ -82,15 +81,17 @@ class ConnectBankAccount extends Component
             ->orderBy('name')
             ->get()
             ->merge($selectedOption)
-        ->map(
-            function (BankInstitution $institution) {
-                return [
-                    'id' => $institution->id,
-                    'name' => $institution->name,
-                    'image' => $institution->logo_url,
-                    'countries' => Arr::join($institution->countries, ','),
-                ];
-            },
-        );
+            ->map(
+                function (BankInstitution $institution) {
+                    return [
+                        'id' => $institution->id,
+                        'name' => $institution->name,
+                        'image' => $institution->logo_url,
+                        'countries' => $institution->countries === null
+                            ? ''
+                            : Arr::join($institution->countries, ','),
+                    ];
+                },
+            );
     }
 }

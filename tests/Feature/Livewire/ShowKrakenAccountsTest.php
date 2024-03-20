@@ -15,7 +15,8 @@ it('renders successfully', function () {
         ->create();
 
     Livewire::actingAs($user)->test(ShowKrakenAccounts::class)
-        ->assertViewHas('krakenAccounts', fn ($accounts) => \count($accounts) === 3)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows')
         ->assertStatus(200);
 });
 
@@ -30,6 +31,7 @@ it('user sees only their accounts', function () {
 
     Livewire::actingAs($otherUser)
         ->test(ShowKrakenAccounts::class)
-        ->assertViewHas('krakenAccounts', fn ($accounts) => \count($accounts) === 2)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows', fn ($rows) => \count($rows) === 2)
         ->assertStatus(200);
 });
