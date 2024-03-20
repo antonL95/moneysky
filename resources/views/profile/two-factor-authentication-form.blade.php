@@ -92,7 +92,7 @@
                     </x-confirms-password>
                 @elseif ($showingConfirmation)
                     <x-confirms-password wire:then="confirmTwoFactorAuthentication">
-                        <x-mary-button class="me-3" wire:loading.attr="disabled">
+                        <x-mary-button class="me-3" wire:loading.attr="disabled" type="submit">
                             {{ __('Confirm') }}
                         </x-mary-button>
                     </x-confirms-password>
@@ -106,13 +106,13 @@
 
                 @if ($showingConfirmation)
                     <x-confirms-password wire:then="disableTwoFactorAuthentication">
-                        <x-mary-button wire:loading.attr="disabled">
+                        <x-mary-button wire:loading.attr="disabled" type="submit">
                             {{ __('Cancel') }}
                         </x-mary-button>
                     </x-confirms-password>
                 @else
                     <x-confirms-password wire:then="disableTwoFactorAuthentication">
-                        <x-mary-button color="red" wire:loading.attr="disabled">
+                        <x-mary-button color="red" wire:loading.attr="disabled" type="submit">
                             {{ __('Disable') }}
                         </x-mary-button>
                     </x-confirms-password>

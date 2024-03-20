@@ -4,8 +4,6 @@
             <x-authentication-card-logo/>
         </x-slot>
 
-        <x-validation-errors class="mb-4"/>
-
         @if (session('status'))
             <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
                 {{ session('status') }}
@@ -17,24 +15,13 @@
 
         <form method="POST" action="{{ route('login') }}" class="space-y-4 md:space-y-6">
             @csrf
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" type="email" name="email" :value="old('email')" required autocomplete="email" />
-            </div>
-
-            <div>
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" type="password" name="password" required />
-            </div>
+            <x-mary-input id="email" type="email" name="email" :value="old('email')" required autocomplete="email"
+                          placeholder="{{__('Email')}}"/>
+            <x-mary-input id="password" type="password" name="password" required placeholder="{{__('Password')}}"/>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                        <x-checkbox name="remember" id="remember" aria-describedby="remember"/>
-                    </div>
-                    <div class="ml-3 text-sm">
-                        <x-label for="remember" value="{{__('Remember me')}}"></x-label>
-                    </div>
+                    <x-mary-checkbox name="remember" label="{{ __('Remember me') }}" id="remember" :checked="old('remember')"/>
                 </div>
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}"

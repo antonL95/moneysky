@@ -1,4 +1,4 @@
-@props(['submit', 'autocomplete'=>'on'])
+@props(['submit'])
 
 <div {{ $attributes->merge(['class' => 'md:grid md:grid-cols-3 md:gap-6']) }}>
     <x-section-title>
@@ -7,7 +7,7 @@
     </x-section-title>
 
     <div class="mt-5 md:mt-0 md:col-span-2">
-        <x-mary-form wire:submit="{{ $submit }}" autocomplete="{{$autocomplete}}">
+        <x-mary-form wire:submit="{{ $submit }}">
             {{ $form }}
 
             @if (isset($actions))
