@@ -19,14 +19,13 @@ use App\Livewire\UpdateUserCryptoWallet;
 use App\Livewire\UpdateUserKrakenAccount;
 use App\Livewire\UpdateUserManualEntries;
 use App\Livewire\UpdateUserStockMarket;
-use App\Livewire\Welcome;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', Welcome::class)
+Route::get('/', static fn () => view('welcome'))
     ->middleware(RedirectIfAuthenticated::class)
     ->name('home');
 
@@ -36,19 +35,17 @@ Route::middleware([
     AuthenticateSession::class,
     'verified',
 ])->group(function () {
-    Route::prefix('app')->group(function () {
-        Route::get('/', Dashboard::class)->name('app.home');
+    Route::get('/dashboard', Dashboard::class)->name('app.home');
 
-        // kraken accounts
-        Route::get('/kraken-account', ShowKrakenAccounts::class)->name('app.kraken-accounts');
-        Route::get('/add-kraken-account', AddUserKrakenAccount::class)->name('app.add-kraken-accounts');
-        Route::get('/update-kraken-account/{account}', UpdateUserKrakenAccount::class)->name('app.update-kraken-accounts');
+    // kraken accounts
+    Route::get('/kraken-account', ShowKrakenAccounts::class)->name('app.kraken-accounts');
+    Route::get('/add-kraken-account', AddUserKrakenAccount::class)->name('app.add-kraken-accounts');
+    Route::get('/update-kraken-account/{account}', UpdateUserKrakenAccount::class)->name('app.update-kraken-accounts');
 
-        // manual entry
-        Route::get('/cash-wallets', ShowManualEntries::class)->name('app.manual-entries');
-        Route::get('/add-cash-wallet', AddUserManualEntries::class)->name('app.add-manual-entry');
-        Route::get('/update-cash-wallet/{wallet}', UpdateUserManualEntries::class)->name('app.update-manual-entry');
-    });
+    // manual entry
+    Route::get('/cash-wallets', ShowManualEntries::class)->name('app.manual-entries');
+    Route::get('/add-cash-wallet', AddUserManualEntries::class)->name('app.add-manual-entry');
+    Route::get('/update-cash-wallet/{wallet}', UpdateUserManualEntries::class)->name('app.update-manual-entry');
 
     Route::middleware(Subscribed::class)->group(function () {
         // bank accounts

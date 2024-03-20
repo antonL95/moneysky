@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Sentry\Laravel\Integration;
+use Spatie\CookieConsent\CookieConsentMiddleware;
 
 return Application::configure(basePath: \dirname(__DIR__))
     ->withRouting(
@@ -22,13 +23,18 @@ return Application::configure(basePath: \dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectUsersTo(
             fn ($request) => $request->user()->hasVerifiedEmail()
-                ? '/app'
+                ? route('app.home')
                 : route('verification.notice')
         );
         $middleware->validateCsrfTokens(except: [
             'stripe/*',
         ]);
+        $middleware->append(
+            CookieConsentMiddleware::class,
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        Integration::handles($exceptions);
+        if (app()->environment('production')) {
+            Integration::handles($exceptions);
+        }
     })->create();

@@ -32,8 +32,8 @@
             {{ __('Saved.') }}
         </x-action-message>
 
-        <x-button>
+        <x-mary-button>
             {{ __('Save') }}
-        </x-button>
+        </x-mary-button>
     </x-slot>
 </x-form-section>

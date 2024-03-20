@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    x-data="{
-        darkTheme: localStorage.getItem('dark') === 'true',
-        toggleTheme() {
-            this.darkTheme = !this.darkTheme;
-            localStorage.setItem('dark', this.darkTheme);
-            Livewire.dispatch('themeToggle', {darkTheme: this.darkTheme});
-        },
-    }"
-    x-init="() => {
-        Livewire.dispatch('themeToggle', {darkTheme: localStorage.getItem('dark') === undefined ? false : localStorage.getItem('dark')});
-    }"
-    x-bind:class="{ 'dark bg-gray-900': darkTheme, 'bg-primary-50': !darkTheme }"
-    x-cloak
+    class="bg-white dark:bg-dark-900 text-dark-900 dark:text-white"
 >
 <head>
     <meta charset="utf-8">
@@ -25,42 +13,65 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
-    <tallstackui:script />
+    {{-- Chart.js  --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+    {{--  Currency  --}}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
+
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased">
-<x-ts-toast />
-    <div class="min-h-screen">
-        <header>
-            <livewire:navigation.navigation-menu>
-            @if (isset($header))
-                <div class="container text-center max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            @endif
-            @if(Auth::user() !== null && Auth::user()->email_verified_at !== null)
-                <livewire:navigation.sidebar-menu/>
-            @endif
-        </header>
 
-        <main class="max-w-8xl mx-auto px-4 min-h-dvh">
-            {{ $slot }}
-        </main>
+{{-- The navbar with `sticky` and `full-width` --}}
+<x-navigation.navigation-menu />
 
+{{-- The main content with `full-width` --}}
+<x-mary-main full-width>
+    @if($user = auth()->user())
+        {{-- This is a sidebar that works also as a drawer on small screens --}}
+        {{-- Notice the `main-drawer` reference here --}}
+        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit md:pt-20 pb-0">
+            {{-- Activates the menu item when a route matches the `link` property --}}
+            <x-mary-menu activate-by-route>
+                @if($user->subscribed())
+                    <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
+                    <x-mary-menu-item title="{{ __('Bank accounts') }}" icon="c-building-library"
+                                      link="{{route('app.bank-accounts')}}"/>
+                    <x-mary-menu-item title="{{ __('Crypto wallets') }}" icon="fab.bitcoin"
+                                      link="{{route('app.crypto-wallets')}}"/>
+                    <x-mary-menu-item title="{{ __('Kraken account') }}" link="{{route('app.kraken-accounts')}}"/>
+                    <x-mary-menu-item title="{{ __('Stock market') }}" icon="fas.rocket"
+                                      link="{{route('app.stock-market')}}"/>
+                    <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
+                                      link="{{route('app.manual-entries')}}"/>
+                @else
+                    <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
+                    <x-mary-menu-item title="{{ __('Bank accounts') }}" badge="{{__('All access')}}"
+                                      badge-classes="!badge-warning" icon="c-building-library"
+                                      link="{{route('app.bank-accounts')}}"/>
+                    <x-mary-menu-item title="{{ __('Crypto wallets') }}" badge="{{__('All access')}}"
+                                      badge-classes="!badge-warning" icon="fab.bitcoin"
+                                      link="{{route('app.crypto-wallets')}}"/>
+                    <x-mary-menu-item title="{{ __('Kraken account') }}" link="{{route('app.kraken-accounts')}}"/>
+                    <x-mary-menu-item title="{{ __('Stock market') }}" badge="{{__('All access')}}"
+                                      badge-classes="!badge-warning" icon="fas.rocket"
+                                      link="{{route('app.stock-market')}}"/>
+                    <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
+                                      link="{{route('app.manual-entries')}}"/>
+                @endif
+            </x-mary-menu>
+        </x-slot:sidebar>
+    @endif
 
-        <footer class="text-center p-4">
-            @if (isset($footer))
-                {{ $footer }}
-            @endif
-            <p class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-                © {{now()->format('Y')}} {{ config('app.name') }}. All rights reserved.</p>
-        </footer>
-    </div>
+    {{-- The `$slot` goes here --}}
+    <x-slot:content class="pt-20 lg:pt-20">
+        {{ $slot }}
+    </x-slot:content>
+</x-mary-main>
 
-    @stack('modals')
-
-    @livewireScripts
-    @livewireChartsScripts
+{{--  TOAST area --}}
+<x-mary-toast/>
+@livewireScripts
 </body>
 </html>

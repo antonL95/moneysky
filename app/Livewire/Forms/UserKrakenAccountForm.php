@@ -12,10 +12,10 @@ use Livewire\Form;
 class UserKrakenAccountForm extends Form
 {
     #[Validate('required')]
-    public ?string $apiKey = null;
+    public ?string $api_key = null;
 
     #[Validate('required')]
-    public ?string $privateKey = null;
+    public ?string $private_key = null;
 
     public function store(): void
     {
@@ -23,8 +23,8 @@ class UserKrakenAccountForm extends Form
 
         $krakenAccount = UserKrakenAccount::create([
             'user_id' => auth()->id(),
-            'api_key' => $this->apiKey,
-            'private_key' => $this->privateKey,
+            'api_key' => $this->api_key,
+            'private_key' => $this->private_key,
         ]);
 
         ProcessKrakenAccounts::dispatch($krakenAccount);
@@ -37,8 +37,8 @@ class UserKrakenAccountForm extends Form
         $this->validate();
 
         $krakenAccount->update([
-            'api_key' => $this->apiKey,
-            'private_key' => $this->privateKey,
+            'api_key' => $this->api_key,
+            'private_key' => $this->private_key,
         ]);
 
         ProcessKrakenAccounts::dispatch($krakenAccount);

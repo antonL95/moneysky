@@ -10,11 +10,11 @@ use App\Models\UserSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
-use TallStackUi\Traits\Interactions;
+
 
 class ChangeUserCurrency extends Component
 {
-    use Interactions;
+
 
     public string $currency;
 

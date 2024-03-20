@@ -7,7 +7,6 @@ use App\Crypto\Models\UserCryptoWallets;
 use App\Livewire\AddUserCryptoWallet;
 use App\Models\User;
 use Livewire\Livewire;
-
 use function Pest\Laravel\actingAs;
 
 it('happy path', function () {
