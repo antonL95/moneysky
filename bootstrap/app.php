@@ -29,9 +29,6 @@ return Application::configure(basePath: \dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'stripe/*',
         ]);
-        $middleware->append(
-            CookieConsentMiddleware::class,
-        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         if (app()->environment('production')) {
