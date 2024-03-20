@@ -17,7 +17,7 @@ readonly class BankTransactionsDto
      */
     public static function fromArray(array $data): self
     {
-        $externalId = $data['externalId'] ?? Uuid::uuid4()->toString();
+        $externalId = $data['entryReference'] ?? $data['internalTransactionId'];
         $balanceAmount = $data['transactionAmount'];
 
         if (!\is_array($balanceAmount) && !isset($balanceAmount['amount'], $balanceAmount['currency'])) {
@@ -54,6 +54,10 @@ readonly class BankTransactionsDto
             $bookingDateTime = new Carbon($data['bookingDateTime']);
         }
 
+        if (isset($data['merchantCategoryCode']) && \is_string($data['merchantCategoryCode'])) {
+            $merchantCategoryCode = $data['merchantCategoryCode'];
+        }
+
         return new self(
             $externalId,
             (int) floor($balance * 100),
@@ -63,6 +67,7 @@ readonly class BankTransactionsDto
             $remittanceInformation,
             $bookingDate ?? null,
             $bookingDateTime ?? null,
+            $merchantCategoryCode ?? null,
         );
     }
 
@@ -78,6 +83,7 @@ readonly class BankTransactionsDto
         public ?string $remittanceInformation,
         public ?Carbon $bookingDate,
         public ?Carbon $bookingDateTime,
+        public ?string $merchantCategoryCode = null,
     ) {
     }
 }

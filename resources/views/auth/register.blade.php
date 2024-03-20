@@ -6,7 +6,7 @@
 
         <x-validation-errors class="mb-4" />
 
-        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-primary-50">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             {{__('Sign up')}}
         </h1>
 
@@ -56,9 +56,9 @@
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-button class="ms-4">
+                <x-mary-button class="ms-4 btn-primary" type="submit">
                     {{ __('Register') }}
-                </x-button>
+                </x-mary-button>
             </div>
         </form>
     </x-authentication-card>

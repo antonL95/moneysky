@@ -7,7 +7,7 @@
             <li>
                 <a href="{{route('app.home')}}"
                    wire:navigate
-                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-primary-50 hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <x-fas-chart-pie class="w-[20px] h-[20px]"/>
                     <span class="ml-3">
                         {{__('Overview')}}
@@ -17,7 +17,7 @@
             <li>
                 <a href="{{route('app.crypto-wallets')}}"
                         @if(auth()->user()->subscribed()) wire:navigate @endif
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                     <x-fab-bitcoin class="w-[20px] h-[20px]"/>
                     <span class="ml-3">
                         {{__('Crypto wallets')}}
@@ -28,7 +28,7 @@
             <li>
                 <a href="{{route('app.bank-accounts')}}"
                         @if(auth()->user()->subscribed()) wire:navigate @endif
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                     <x-fas-building-columns class="w-[20px] h-[20px]"/>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">
                         {{__('Bank accounts')}}
@@ -39,7 +39,7 @@
             <li>
                 <a href="{{route('app.kraken-accounts')}}"
                         wire:navigate
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                     <x-kraken-logo/>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">
                         {{__('Kraken accounts')}}
@@ -49,7 +49,7 @@
             <li>
                 <a href="{{route('app.stock-market')}}"
                         @if(auth()->user()->subscribed()) wire:navigate @endif
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                     <x-fas-rocket class="w-[20px] h-[20px]"/>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">
                         {{__('Stock market')}}
@@ -60,7 +60,7 @@
             <li>
                 <a href="{{route('app.manual-entries')}}"
                         wire:navigate
-                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-primary-50 dark:hover:bg-gray-700">
+                        class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                     <x-fas-wallet class="w-[20px] h-[20px]"/>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">
                         {{__('Cash Wallet')}}

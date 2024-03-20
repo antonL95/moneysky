@@ -9,6 +9,7 @@ use App\Bank\Models\TransactionTag;
 use App\Bank\Models\UserBankTransactionRaw;
 use App\OpenAi\Exceptions\OpenAiExceptions;
 use OpenAI\Contracts\ClientContract;
+use OpenAI\Laravel\Facades\OpenAI;
 use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
@@ -17,21 +18,6 @@ use function Safe\json_encode;
 class OpenAiService
 {
     protected const string MODEL = 'gpt-3.5-turbo';
-
-    protected ClientContract $openAiClient;
-
-    /**
-     * @throws OpenAiExceptions
-     */
-    public function __construct()
-    {
-        $apiKey = config('services.openai.api_key');
-        if (!\is_string($apiKey)) {
-            throw OpenAiExceptions::invalidConfiguration();
-        }
-
-        $this->openAiClient = \OpenAI::client($apiKey);
-    }
 
     /**
      * @return array<int, TaggedTransactionDto>
@@ -59,7 +45,7 @@ class OpenAiService
 
         $userPrompt = json_encode($transactionInput);
 
-        $response = $this->openAiClient->chat()->create([
+        $response = OpenAI::chat()->create([
             'model' => self::MODEL,
             'messages' => [
                 [

@@ -184,6 +184,16 @@ class BankService
         return collect($temp);
     }
 
+    public function deleteUserRequisitions(User $user): void
+    {
+        $sessions = UserBankSession::whereUserId($user->id)->get();
+
+        foreach ($sessions as $session) {
+            $this->client->requisition->deleteRequisition($session->requisition_id);
+            $session->delete();
+        }
+    }
+
     private function getSessionData(
         BankInstitution $bankInstitution,
     ): SessionDto {

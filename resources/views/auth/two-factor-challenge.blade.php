@@ -48,9 +48,9 @@
                         {{ __('Use an authentication code') }}
                     </button>
 
-                    <x-button class="ms-4">
+                    <x-mary-button class="ms-4">
                         {{ __('Log in') }}
-                    </x-button>
+                    </x-mary-button>
                 </div>
             </form>
         </div>

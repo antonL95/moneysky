@@ -10,26 +10,46 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Mary\Traits\Toast;
 
 class ShowStockMarket extends Component
 {
-    use SessionInteraction;
+    use Toast;
     use WithPagination;
+
+    public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
+
 
     public function delete(UserStockMarket $stockMarket): void
     {
         $stockMarket->delete();
 
-        $this->dispatch('userStockMarketDeleted');
-        $this->toast()->success('Stock Market deleted successfully')->send();
+        $this->dispatch('user-stock-market-deleted');
+        $this->success('Stock Market deleted successfully');
     }
 
-    #[On('userStockMarketDeleted')]
-    #[On('currency-updated')]
+
+    public function with(): array
+    {
+        $headers = [
+            ['key' => 'id', 'label' => '#'],
+            ['key' => 'ticker', 'label' => 'Stock Name'],
+            ['key' => 'price_cents', 'label' => 'Stock Price'],
+            ['key' => 'amount', 'label' => 'Stock Quantity'],
+        ];
+
+        $rows = UserStockMarket::orderBy(...array_values($this->sortBy))->paginate(10);
+
+        return [
+            'headers' => $headers,
+            'rows' => $rows,
+        ];
+    }
+
+
+    #[On('user-stock-market-deleted')]
     public function render(): View
     {
-        return view('livewire.show-stock-market', [
-            'tickers' => UserStockMarket::paginate(10),
-        ]);
+        return view('livewire.user-stock-market.show-stock-market', $this->with());
     }
 }
