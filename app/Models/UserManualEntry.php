@@ -54,7 +54,7 @@ class UserManualEntry extends Model
         }
 
         return (int) $currencyConvertor->convert(
-            new Money($sumUsd, new Currency('USD')),
+            new Money((int) $sumUsd, new Currency('USD')),
             new Currency(UserSetting::getCurrencyWithDefault()),
         )->getAmount();
     }
