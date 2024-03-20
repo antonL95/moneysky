@@ -57,7 +57,7 @@
                     </x-slot:trigger>
 
                     <x-mary-menu-item title="{{__('My profile')}}" link="{{route('profile.show')}}"/>
-                    <x-mary-menu-item title="{{__('Billing')}}" link="{{route('billing')}}"/>
+                    <x-mary-menu-item title="{{__('Billing')}}" link="{{route('billing')}}" no-wire-navigate />
 
                     <x-mary-menu-separator/>
 
