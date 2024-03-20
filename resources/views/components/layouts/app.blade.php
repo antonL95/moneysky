@@ -16,7 +16,8 @@
     {{-- Chart.js  --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
     {{--  Currency  --}}
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -24,7 +25,7 @@
 <body class="font-sans antialiased">
 
 {{-- The navbar with `sticky` and `full-width` --}}
-<x-navigation.navigation-menu />
+<x-navigation.navigation-menu/>
 
 {{-- The main content with `full-width` --}}
 <x-mary-main full-width>
@@ -40,7 +41,8 @@
                                       link="{{route('app.bank-accounts')}}"/>
                     <x-mary-menu-item title="{{ __('Crypto wallets') }}" icon="fab.bitcoin"
                                       link="{{route('app.crypto-wallets')}}"/>
-                    <x-mary-menu-item title="{{ __('Kraken account') }}" link="{{route('app.kraken-accounts')}}"/>
+                    <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
+                                      link="{{route('app.kraken-accounts')}}"/>
                     <x-mary-menu-item title="{{ __('Stock market') }}" icon="fas.rocket"
                                       link="{{route('app.stock-market')}}"/>
                     <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
@@ -53,7 +55,8 @@
                     <x-mary-menu-item title="{{ __('Crypto wallets') }}" badge="{{__('All access')}}"
                                       badge-classes="!badge-warning" icon="fab.bitcoin"
                                       link="{{route('app.crypto-wallets')}}"/>
-                    <x-mary-menu-item title="{{ __('Kraken account') }}" link="{{route('app.kraken-accounts')}}"/>
+                    <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
+                                      link="{{route('app.kraken-accounts')}}"/>
                     <x-mary-menu-item title="{{ __('Stock market') }}" badge="{{__('All access')}}"
                                       badge-classes="!badge-warning" icon="fas.rocket"
                                       link="{{route('app.stock-market')}}"/>
