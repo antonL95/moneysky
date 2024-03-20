@@ -9,7 +9,7 @@
         option-sub-label="countries"
         searchable/>
     <x-slot:actions>
-        <x-mary-button type="submit">
+        <x-mary-button type="submit" class="btn-primary">
             {{ __('Connect') }}
         </x-mary-button>
     </x-slot:actions>

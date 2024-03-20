@@ -95,18 +95,18 @@
                     </ul>
                 </div>
             @else
-                <x-mary-button link="{{route('login')}}" wire:navigate
+                <x-mary-button class="btn-primary" link="{{route('login')}}" wire:navigate
                    class="mx-2">
                     {{__('Log in')}}
                 </x-mary-button>
-                <x-mary-button link="{{route('register')}}"
+                <x-mary-button class="btn-primary" link="{{route('register')}}"
                    class="btn-primary">
                     {{__('Start')}}
                 </x-mary-button>
             @endauth
             <!-- Dark Mode -->
 {{--            <livewire:dark-mode-switcher />--}}
-                <x-mary-theme-toggle class="md:ml-4" />
+                <x-mary-theme-toggle class="ml-4" />
         </div>
     </div>
 </nav>

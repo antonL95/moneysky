@@ -167,7 +167,7 @@
                                     <span class="text-5xl font-bold tracking-tight text-dark-900 dark:text-white">$9,99</span>
                                     <span class="text-sm font-semibold leading-6 tracking-wide text-dark-900 dark:text-white">USD</span>
                                 </p>
-                                <x-mary-button link="{{route('register')}}" class="mt-10 btn-primary w-full" no-wire-navigate>Get access</x-mary-button>
+                                <x-mary-button class="btn-primary" link="{{route('register')}}" class="mt-10 btn-primary w-full" no-wire-navigate>Get access</x-mary-button>
                                 <p class="mt-6 text-xs leading-5 text-dark-900 dark:text-white">Invoices and receipts available for easy company reimbursement</p>
                             </div>
                         </div>
