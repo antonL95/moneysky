@@ -48,7 +48,7 @@
                         {{ __('Use an authentication code') }}
                     </button>
 
-                    <x-mary-button class="ms-4">
+                    <x-mary-button type="submit" class="btn-primary ms-4">
                         {{ __('Log in') }}
                     </x-mary-button>
                 </div>
