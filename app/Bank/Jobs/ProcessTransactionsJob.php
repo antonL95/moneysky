@@ -23,6 +23,21 @@ class ProcessTransactionsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private const array STREAMING_SERVICES_IDENTIFIERS = [
+        'Netflix',
+        'Hulu',
+        'Disney',
+        'Amazon',
+        'HBO',
+        'AppleTV', // Or "Apple" depending on how transactions list it
+        'Peacock',
+        'Spotify',
+        'AppleMusic', // Or "Apple" if you're not differentiating between services
+        'YouTube', // This might also catch other YouTube services
+        'Tidal',
+        'Paramount',
+    ];
+
     protected OpenAiService $openAiService;
 
     public const int MAX_DAYS = 2;
@@ -65,6 +80,15 @@ class ProcessTransactionsJob implements ShouldQueue
                 $taggedTransactions = $this->openAiService->classifyTransactions($transaction);
                 if ($taggedTransactions !== []) {
                     $this->tagTransaction($taggedTransactions, $account);
+                } else {
+                    UserTransaction::create([
+                        'user_id' => $this->user->id,
+                        'user_bank_account_id' => $account->id,
+                        'balance_cents' => $transaction->balance_cents,
+                        'currency' => $transaction->currency,
+                        'description' => $transaction->remittance_information ?? $transaction->additional_information,
+                        'booked_at' => $transaction->booked_at ?? Carbon::now(),
+                    ]);
                 }
             }
         }
@@ -85,6 +109,63 @@ class ProcessTransactionsJob implements ShouldQueue
 
         if ($transaction->remittance_information === null && $transaction->additional_information === null) {
             return false;
+        }
+
+        // find streaming services
+        if ($transaction->remittance_information !== null) {
+            foreach (self::STREAMING_SERVICES_IDENTIFIERS as $service) {
+                if (str_contains($transaction->remittance_information, $service)) {
+                    $tag = TransactionTag::where('tag', '=', 'Streaming Services')->first();
+
+                    if ($tag === null) {
+                        $tag = TransactionTag::create([
+                            'tag' => 'Streaming Services',
+                            'color' => '#DC143C',
+                        ]);
+                    }
+
+                    UserTransaction::create([
+                        'user_id' => $this->user->id,
+                        'user_bank_account_id' => $transaction->user_bank_account_id,
+                        'transaction_tag_id' => $tag->id,
+                        'user_transaction_tag_id' => null,
+                        'balance_cents' => $transaction->balance_cents,
+                        'currency' => $transaction->currency,
+                        'description' => $transaction->remittance_information,
+                        'booked_at' => $transaction->booked_at,
+                    ]);
+
+                    return false;
+                }
+            }
+        }
+
+        if ($transaction->additional_information !== null) {
+            foreach (self::STREAMING_SERVICES_IDENTIFIERS as $service) {
+                if (str_contains($transaction->additional_information, $service)) {
+                    $tag = TransactionTag::where('tag', '=', 'Streaming Services')->first();
+
+                    if ($tag === null) {
+                        $tag = TransactionTag::create([
+                            'tag' => 'Streaming Services',
+                            'color' => '#DC143C',
+                        ]);
+                    }
+
+                    UserTransaction::create([
+                        'user_id' => $this->user->id,
+                        'user_bank_account_id' => $transaction->user_bank_account_id,
+                        'transaction_tag_id' => $tag->id,
+                        'user_transaction_tag_id' => null,
+                        'balance_cents' => $transaction->balance_cents,
+                        'currency' => $transaction->currency,
+                        'description' => $transaction->remittance_information,
+                        'booked_at' => $transaction->booked_at,
+                    ]);
+
+                    return false;
+                }
+            }
         }
 
         // Find similar already tagged transactions
@@ -108,6 +189,10 @@ class ProcessTransactionsJob implements ShouldQueue
                 'booked_at' => $transaction->booked_at,
             ]);
 
+            return false;
+        }
+
+        if ($transaction->balance_cents > 0) {
             return false;
         }
 

@@ -5,7 +5,7 @@ import typography from '@tailwindcss/typography'
 export default {
     darkMode: 'class',
     presets: [
-        require('./vendor/tallstackui/tallstackui/tailwind.config.js')
+         "./vendor/robsontenorio/mary/src/View/Components/**/*.php"
     ],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
@@ -52,18 +52,12 @@ export default {
                     'Segoe UI Symbol',
                     'Noto Color Emoji'
                 ]
-            },
-            colors: {
-                primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}
             }
         },
     },
     plugins: [
         forms,
         typography,
-        require('flowbite'),
-        require('flowbite/plugin')({
-            charts: true,
-        }),
+        require("daisyui")
     ]
 };

@@ -7,12 +7,9 @@ namespace App\Traits;
 use App\Enums\SessionMessage;
 use Exception;
 use TallStackUi\Actions\Toast;
-use TallStackUi\Traits\Interactions;
 
 trait SessionInteraction
 {
-    use Interactions;
-
     /**
      * @throws Exception
      */

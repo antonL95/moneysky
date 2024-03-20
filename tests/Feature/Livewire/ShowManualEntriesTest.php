@@ -16,6 +16,7 @@ it('renders successfully', function () {
 
     Livewire::actingAs($user)
         ->test(ShowManualEntries::class)
-        ->assertViewHas('wallets', fn ($wallets) => \count($wallets) === 3)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows')
         ->assertStatus(200);
 });

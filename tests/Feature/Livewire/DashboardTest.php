@@ -10,5 +10,7 @@ it('renders successfully', function () {
     Livewire::actingAs(
         User::factory()->create()
     )->test(Dashboard::class)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows')
         ->assertStatus(200);
 });

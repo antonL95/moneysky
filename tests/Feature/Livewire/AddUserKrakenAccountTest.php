@@ -15,8 +15,8 @@ it('renders successfully', function () {
 
     Livewire::actingAs($user)
         ->test(AddUserKrakenAccount::class)
-        ->set('form.apiKey', '123')
-        ->set('form.privateKey', 'secret')
+        ->set('form.api_key', '123')
+        ->set('form.private_key', 'secret')
         ->call('create')
         ->assertStatus(200);
 

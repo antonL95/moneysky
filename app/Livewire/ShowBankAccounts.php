@@ -6,6 +6,7 @@ namespace App\Livewire;
 
 use App\Bank\Models\UserBankAccount;
 use Illuminate\Contracts\View\View;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,6 +14,15 @@ use Livewire\WithPagination;
 class ShowBankAccounts extends Component
 {
     use WithPagination;
+
+    public ?int $quantity = 10;
+
+    public bool $bankInstitutionModal = false;
+
+    /**
+     * @var string[]
+     */
+    public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
 
     public function mount(): void
     {
@@ -29,12 +39,25 @@ class ShowBankAccounts extends Component
         $this->dispatch('bankAccountDeleted');
     }
 
+    /**
+     * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserBankAccount>>
+     */
+    public function with(): array
+    {
+        return [
+            'headers' => [
+                ['key' => 'id', 'label' => 'ID'],
+                ['key' => 'name', 'label' => 'Name'],
+                ['key' => 'balance_cents', 'label' => 'Balance'],
+            ],
+            'rows' => UserBankAccount::orderBy(...array_values($this->sortBy))->paginate($this->quantity),
+        ];
+    }
+
     #[On('bankAccountDeleted')]
     #[On('currency-updated')]
     public function render(): View
     {
-        return view('livewire.show-bank-accounts', [
-            'bankAccounts' => UserBankAccount::paginate(10),
-        ]);
+        return view('livewire.user-bank-account.show-bank-accounts', $this->with());
     }
 }

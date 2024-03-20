@@ -8,11 +8,11 @@ use App\Crypto\Models\UserKrakenAccount;
 use App\Livewire\Forms\UserKrakenAccountForm;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use TallStackUi\Traits\Interactions;
+use Mary\Traits\Toast;
 
 class UpdateUserKrakenAccount extends Component
 {
-    use Interactions;
+    use Toast;
 
     public UserKrakenAccountForm $form;
 
@@ -20,19 +20,19 @@ class UpdateUserKrakenAccount extends Component
 
     public function mount(UserKrakenAccount $account): void
     {
-        $this->form->apiKey = $account->api_key;
-        $this->form->privateKey = $account->private_key;
+        $this->form->api_key = $account->api_key;
+        $this->form->private_key = $account->private_key;
     }
 
     public function update(UserKrakenAccount $account): void
     {
         $this->form->update($account);
 
-        $this->redirect(route('app.kraken-accounts'), true);
+        $this->success('Kraken account updated!', redirectTo: route('app.kraken-accounts'));
     }
 
     public function render(): View
     {
-        return view('livewire.update-user-kraken-account');
+        return view('livewire.user-kraken-account.update-user-kraken-account');
     }
 }

@@ -104,6 +104,7 @@ class ProcessBankAccounts implements ShouldQueue
                 'additional_information' => $transaction->additionalInformation,
                 'remittance_information' => $transaction->remittanceInformation,
                 'booked_at' => $transaction->bookingDateTime ?? $transaction->bookingDate ?? null,
+                'merchant_category_code' => $transaction->merchantCategoryCode ?? null,
             ];
         }
 

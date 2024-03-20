@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <x-authentication-card-logo />
+            <x-authentication-card-logo/>
         </x-slot>
 
-        <x-validation-errors class="mb-4" />
+        <x-validation-errors class="mb-4"/>
 
-        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-primary-50">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             {{__('Sign up')}}
         </h1>
 
@@ -14,31 +14,22 @@
         <form method="POST" action="{{ route('register') }}" class="space-y-4 md:space-y-6">
             @csrf
 
-            <div>
-                <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="email" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-            </div>
+            <x-mary-input placeholder="{{__('Name')}}" id="name" type="text" name="name" :value="old('name')" required
+                          autocomplete="name"
+                          label="{{__('Name')}}"/>
+            <x-mary-input placeholder="{{__('Email')}}" id="email" type="email" name="email" :value="old('email')"
+                          required autocomplete="email" label="{{__('Email')}}"/>
+            <x-mary-input placeholder="{{__('Password')}}" id="password" type="password" name="password" required
+                          label="{{__('Password')}}" autocomplete="new-password"/>
+            <x-mary-input placeholder="{{__('Confirm Password')}}" id="password_confirmation" type="password"
+                          name="password_confirmation" required label="{{__('Confirm Password')}}"
+                          autocomplete="new-password"/>
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
                         <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" required />
+                            <x-checkbox name="terms" id="terms" required/>
 
                             <div class="ms-2">
                                 {!! __('I agree to the :terms_of_service and :privacy_policy', [
@@ -52,13 +43,14 @@
             @endif
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
+                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                   href="{{ route('login') }}">
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-button class="ms-4">
+                <x-mary-button class="ms-4 btn-primary" type="submit">
                     {{ __('Register') }}
-                </x-button>
+                </x-mary-button>
             </div>
         </form>
     </x-authentication-card>

@@ -1,4 +1,4 @@
-<div>
+<x-layouts.guest>
     <x-slot name="header">
         <section>
             <div class="relative isolate px-6 pt-14 lg:px-8">
@@ -10,17 +10,17 @@
                 </div>
                 <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
                     <div class="text-center">
-                        <h1 class="text-4xl font-bold tracking-tight text-dark-900 dark:text-primary-50 sm:text-6xl">
+                        <h1 class="text-4xl font-bold tracking-tight text-dark-900 dark:text-white sm:text-6xl">
                             Get a hold of your finances
                         </h1>
-                        <p class="mt-6 text-lg leading-8 text-dark-900 dark:text-primary-50">
+                        <p class="mt-6 text-lg leading-8 text-dark-900 dark:text-white">
                             Track your spending, save money, and get personalized insights you can use to improve your
                             financial health.
                         </p>
                         <div class="mt-10 flex items-center justify-center gap-x-6">
-                            <x-button-link href="">
+                            <x-mary-button class="btn-primary" href="{{route('register')}}" wire:navigate>
                                 Get started
-                            </x-button-link>
+                            </x-mary-button>
                         </div>
                     </div>
                 </div>
@@ -41,8 +41,8 @@
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="mx-auto max-w-2xl lg:text-center">
                     <h2 class="text-base font-semibold leading-7 text-indigo-600">Master Your Money</h2>
-                    <p class="mt-2 text-3xl font-bold tracking-tight text-dark-900 dark:text-primary-50 sm:text-4xl">Take Control of Your Financial Future</p>
-                    <p class="mt-6 text-lg leading-8 text-dark-900 dark:text-primary-50">
+                    <p class="mt-2 text-3xl font-bold tracking-tight text-dark-900 dark:text-white sm:text-4xl">Take Control of Your Financial Future</p>
+                    <p class="mt-6 text-lg leading-8 text-dark-900 dark:text-white">
                         Elevate your finance management with us, your all-in-one app for tracking savings, investments, and spending. Enjoy real-time updates and insights to stay informed. Join a community that's already optimizing their financial journey.
                     </p>
 
@@ -50,10 +50,10 @@
                 <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
                     <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
                         <div class="relative pl-16">
-                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-primary-50">
+                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-white">
                                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
                                     <!-- Icon placeholder -->
-                                    <x-fas-building-columns class="h-6 w-6 text-primary-50"/>
+                                    <x-mary-icon name="fas.building-columns" class="h-6 w-6 text-white"/>
                                 </div>
                                 Transaction and Balance Checking
                             </dt>
@@ -62,10 +62,10 @@
 
                         <!-- Feature 2: Crypto Wallet Balances -->
                         <div class="relative pl-16">
-                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-primary-50">
+                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-white">
                                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
                                     <!-- Icon placeholder -->
-                                    <x-fab-bitcoin class="h-6 w-6 text-primary-50"/>
+                                    <x-mary-icon name="fab.bitcoin" class="h-6 w-6 text-white"/>
                                 </div>
                                 Crypto Wallet Balances
                             </dt>
@@ -74,7 +74,7 @@
 
                         <!-- Feature 3: Kraken Exchange Balances -->
                         <div class="relative pl-16">
-                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-primary-50">
+                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-white">
                                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg border border-indigo-600">
                                     <!-- Icon placeholder -->
                                     <x-kraken-logo/>
@@ -86,10 +86,10 @@
 
                         <!-- Feature 4: Stock Market Tickers -->
                         <div class="relative pl-16">
-                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-primary-50">
+                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-white">
                                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
                                     <!-- Icon placeholder -->
-                                    <x-fas-rocket class="h-6 w-6 text-primary-50"/>
+                                    <x-mary-icon name="fas.rocket" class="h-6 w-6 text-white"/>
                                 </div>
                                 Stock Market Tickers
                             </dt>
@@ -98,10 +98,10 @@
 
                         <!-- Feature 5: Manual Cash Accounts -->
                         <div class="relative pl-16">
-                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-primary-50">
+                            <dt class="text-base font-semibold leading-7 text-dark-900 dark:text-white">
                                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
                                     <!-- Icon placeholder -->
-                                    <x-fas-wallet class="h-6 w-6 text-primary-50"/>
+                                    <x-mary-icon name="fas.wallet" class="h-6 w-6 text-white"/>
                                 </div>
                                 Manual Cash Accounts
                             </dt>
@@ -109,7 +109,7 @@
                         </div>
                     </dl>
                     <div class="flex justify-center mt-4">
-                        <div class="px-2 py-2 text-sm text-primary-50 bg-dark-900 rounded-full dark:bg-primary-950 dark:text-primary-50">
+                        <div class="px-2 py-2 text-sm text-white bg-dark-900 rounded-full dark:bg-primary-950 dark:text-white">
                             <span class="text-sm font-medium px-2">
                                 More features coming soon
                             </span>
@@ -124,37 +124,37 @@
         <div class="py-24 sm:py-32">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="mx-auto max-w-2xl sm:text-center">
-                    <h2 class="text-3xl font-bold tracking-tight text-dark-900 dark:text-primary-50 sm:text-4xl">Simple no-tricks pricing</h2>
+                    <h2 class="text-3xl font-bold tracking-tight text-dark-900 dark:text-white sm:text-4xl">Simple no-tricks pricing</h2>
                 </div>
                 <div class="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-20 lg:mx-0 lg:flex lg:max-w-none">
                     <div class="p-8 sm:p-10 lg:flex-auto">
-                        <h3 class="text-2xl font-bold tracking-tight text-dark-900 dark:text-primary-50">Subscription</h3>
-                        <p class="mt-6 text-base leading-7 text-dark-900 dark:text-primary-50">
+                        <h3 class="text-2xl font-bold tracking-tight text-dark-900 dark:text-white">Subscription</h3>
+                        <p class="mt-6 text-base leading-7 text-dark-900 dark:text-white">
                             All features are included with no limits. No hidden fees. Cancel anytime.
                         </p>
                         <div class="mt-10 flex items-center gap-x-4">
                             <h4 class="flex-none text-sm font-semibold leading-6 text-indigo-600">What’s included</h4>
                             <div class="h-px flex-auto bg-gray-100"></div>
                         </div>
-                        <ul role="list" class="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-dark-900 dark:text-primary-50 sm:grid-cols-2 sm:gap-6">
+                        <ul role="list" class="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-dark-900 dark:text-white sm:grid-cols-2 sm:gap-6">
                             <li class="flex gap-x-3">
-                                <x-fas-check class="h-6 w-5 flex-none text-indigo-600"/>
+                                <x-mary-icon name="fas.check" class="h-6 w-5 flex-none text-indigo-600"/>
                                 Unlimited bank accounts
                             </li>
                             <li class="flex gap-x-3">
-                                <x-fas-check class="h-6 w-5 flex-none text-indigo-600"/>
+                                <x-mary-icon name="fas.check" class="h-6 w-5 flex-none text-indigo-600"/>
                                 Unlimited crypto wallets
                             </li>
                             <li class="flex gap-x-3">
-                                <x-fas-check class="h-6 w-5 flex-none text-indigo-600"/>
+                                <x-mary-icon name="fas.check" class="h-6 w-5 flex-none text-indigo-600"/>
                                 Unlimited Kraken exchange accounts
                             </li>
                             <li class="flex gap-x-3">
-                                <x-fas-check class="h-6 w-5 flex-none text-indigo-600"/>
+                                <x-mary-icon name="fas.check" class="h-6 w-5 flex-none text-indigo-600"/>
                                 Unlimited stock market tickers
                             </li>
                             <li class="flex gap-x-3">
-                                <x-fas-check class="h-6 w-5 flex-none text-indigo-600"/>
+                                <x-mary-icon name="fas.check" class="h-6 w-5 flex-none text-indigo-600"/>
                                 Unlimited manual cash accounts
                             </li>
                         </ul>
@@ -162,13 +162,13 @@
                     <div class="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
                         <div class="rounded-2xl py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
                             <div class="mx-auto max-w-xs px-8">
-                                <p class="text-base font-semibold text-dark-900 dark:text-primary-50">Monthly</p>
+                                <p class="text-base font-semibold text-dark-900 dark:text-white">Monthly</p>
                                 <p class="mt-6 flex items-baseline justify-center gap-x-2">
-                                    <span class="text-5xl font-bold tracking-tight text-dark-900 dark:text-primary-50">$9,99</span>
-                                    <span class="text-sm font-semibold leading-6 tracking-wide text-dark-900 dark:text-primary-50">USD</span>
+                                    <span class="text-5xl font-bold tracking-tight text-dark-900 dark:text-white">$9,99</span>
+                                    <span class="text-sm font-semibold leading-6 tracking-wide text-dark-900 dark:text-white">USD</span>
                                 </p>
-                                <x-button-link href="{{route('register')}}" class="mt-10 block w-full text-center justify-center">Get access</x-button-link>
-                                <p class="mt-6 text-xs leading-5 text-dark-900 dark:text-primary-50">Invoices and receipts available for easy company reimbursement</p>
+                                <x-mary-button class="btn-primary" link="{{route('register')}}" class="mt-10 btn-primary w-full" no-wire-navigate>Get access</x-mary-button>
+                                <p class="mt-6 text-xs leading-5 text-dark-900 dark:text-white">Invoices and receipts available for easy company reimbursement</p>
                             </div>
                         </div>
                     </div>
@@ -178,4 +178,4 @@
     </section>
 
     <livewire:newsletter-subscribe />
-</div>
+</x-layouts.guest>

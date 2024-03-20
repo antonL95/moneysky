@@ -30,32 +30,32 @@
         @foreach($transactions as $transaction)
             <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <th scope="row"
-                    class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
+                    class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{ $transaction->userBankAccount->name }}
                 </th>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
+                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <div class="flex items-center">
                         <x-amount-format :amount="$transaction->balance_cents"
                                          :amount-currency="$transaction->currency"/>
                     </div>
                 </td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
+                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <span
                         class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
                         {{ $transaction->currency }}
                     </span>
                 </td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
+                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <span
                         class="text-white text-xs font-medium px-2 py-0.5 rounded"
                         style="background-color: {{$transaction->userTransactionTag->color ?? $transaction->transactionTag->color}}">
                         {{ $transaction->userTransactionTag->tag ?? $transaction->transactionTag->tag ?? __('Unknown') }}
                     </span>
                 </td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
+                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{ $transaction->description }}
                 </td>
-                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-primary-50">
+                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <span
                         class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
                         {{ $transaction->booked_at?->diffForHumans() }}

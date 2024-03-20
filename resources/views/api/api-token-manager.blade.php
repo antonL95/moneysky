@@ -39,9 +39,9 @@
                 {{ __('Created.') }}
             </x-action-message>
 
-            <x-button>
+            <x-mary-button>
                 {{ __('Create') }}
-            </x-button>
+            </x-mary-button>
         </x-slot>
     </x-form-section>
 
@@ -64,7 +64,7 @@
                     <div class="space-y-6">
                         @foreach ($this->user->tokens->sortBy('name') as $token)
                             <div class="flex items-center justify-between">
-                                <div class="break-all dark:text-primary-50">
+                                <div class="break-all dark:text-white">
                                     {{ $token->name }}
                                 </div>
 
@@ -140,9 +140,9 @@
                 {{ __('Cancel') }}
             </x-secondary-button>
 
-            <x-button class="ms-3" wire:click="updateApiToken" wire:loading.attr="disabled">
+            <x-mary-button class="ms-3" wire:click="updateApiToken" wire:loading.attr="disabled">
                 {{ __('Save') }}
-            </x-button>
+            </x-mary-button>
         </x-slot>
     </x-dialog-modal>
 
