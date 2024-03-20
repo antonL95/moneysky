@@ -6,7 +6,6 @@ namespace App\Bank\DataTransferObjects;
 
 use App\Bank\Exceptions\InvalidApiException;
 use Illuminate\Support\Carbon;
-use Ramsey\Uuid\Uuid;
 
 readonly class BankTransactionsDto
 {

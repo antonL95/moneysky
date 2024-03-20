@@ -16,6 +16,7 @@ it('renders successfully', function () {
 
     Livewire::actingAs($user)
         ->test(ShowCryptoWallets::class)
-        ->assertViewHas('cryptoWallets')
+        ->assertViewHas('headers')
+        ->assertViewHas('rows')
         ->assertStatus(200);
 });

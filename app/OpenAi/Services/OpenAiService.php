@@ -8,7 +8,6 @@ use App\Bank\DataTransferObjects\TaggedTransactionDto;
 use App\Bank\Models\TransactionTag;
 use App\Bank\Models\UserBankTransactionRaw;
 use App\OpenAi\Exceptions\OpenAiExceptions;
-use OpenAI\Contracts\ClientContract;
 use OpenAI\Laravel\Facades\OpenAI;
 use Safe\Exceptions\JsonException;
 

@@ -35,9 +35,8 @@ class ProcessTransactionsJob implements ShouldQueue
         'AppleMusic', // Or "Apple" if you're not differentiating between services
         'YouTube', // This might also catch other YouTube services
         'Tidal',
-        'Paramount'
+        'Paramount',
     ];
-
 
     protected OpenAiService $openAiService;
 
@@ -117,6 +116,14 @@ class ProcessTransactionsJob implements ShouldQueue
             foreach (self::STREAMING_SERVICES_IDENTIFIERS as $service) {
                 if (str_contains($transaction->remittance_information, $service)) {
                     $tag = TransactionTag::where('tag', '=', 'Streaming Services')->first();
+
+                    if ($tag === null) {
+                        $tag = TransactionTag::create([
+                            'tag' => 'Streaming Services',
+                            'color' => '#DC143C',
+                        ]);
+                    }
+
                     UserTransaction::create([
                         'user_id' => $this->user->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -137,6 +144,14 @@ class ProcessTransactionsJob implements ShouldQueue
             foreach (self::STREAMING_SERVICES_IDENTIFIERS as $service) {
                 if (str_contains($transaction->additional_information, $service)) {
                     $tag = TransactionTag::where('tag', '=', 'Streaming Services')->first();
+
+                    if ($tag === null) {
+                        $tag = TransactionTag::create([
+                            'tag' => 'Streaming Services',
+                            'color' => '#DC143C',
+                        ]);
+                    }
+
                     UserTransaction::create([
                         'user_id' => $this->user->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,

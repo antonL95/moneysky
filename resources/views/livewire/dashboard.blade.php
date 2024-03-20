@@ -1,8 +1,8 @@
 <div>
 
-    <div class="flex justify-center mb-10 md:grid md:grid-cols-2">
+    <div class="flex justify-center mb-10 md:grid md:grid-cols-2 max-h-[400px]">
         <div>
-            <x-mary-chart wire:model="netWorthChart" />
+            <x-mary-chart wire:model="netWorthChart" class="h-[400px]" />
         </div>
         <div>
         {{--reapeateble expeneses chart for the month--}}
@@ -20,7 +20,10 @@
             <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency" />
         @endscope
         @scope('cell_bank_account', $row)
-        <x-amount-format :amount="$row->userBankAccount->name" :amount-currency="$row->currency" />
+            {{$row->userBankAccount->name}}
+        @endscope
+        @scope('cell_booked_at', $row)
+            {{$row->booked_at->diffForHumans()}}
         @endscope
     </x-mary-table>
 </div>

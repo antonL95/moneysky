@@ -16,13 +16,16 @@ class AddUserManualEntries extends Component
 
     public UserManualEntryForm $form;
 
+    /**
+     * @var string[][]
+     */
     public array $currencies = [];
 
     public function mount(): void
     {
         $currencies = [];
 
-        foreach ((new ISOCurrencies())->getIterator() as $currency) {
+        foreach ((new ISOCurrencies)->getIterator() as $currency) {
             $currencies[] = [
                 'id' => $currency->getCode(),
                 'name' => $currency->getCode(),
@@ -38,7 +41,6 @@ class AddUserManualEntries extends Component
 
         $this->success('User manual entry added successfully', redirectTo: route('app.manual-entries'));
     }
-
 
     public function render(): View
     {

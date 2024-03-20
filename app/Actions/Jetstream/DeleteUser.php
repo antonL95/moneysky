@@ -12,10 +12,8 @@ class DeleteUser implements DeletesUsers
 {
     public function __construct(
         protected readonly BankService $bankService,
-    )
-    {
+    ) {
     }
-
 
     public function delete(User $user): void
     {

@@ -6,6 +6,7 @@ namespace App\Livewire;
 
 use App\Bank\Models\UserBankAccount;
 use Illuminate\Contracts\View\View;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,8 +14,14 @@ use Livewire\WithPagination;
 class ShowBankAccounts extends Component
 {
     use WithPagination;
+
     public ?int $quantity = 10;
+
     public bool $bankInstitutionModal = false;
+
+    /**
+     * @var string[]
+     */
     public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
 
     public function mount(): void
@@ -32,6 +39,9 @@ class ShowBankAccounts extends Component
         $this->dispatch('bankAccountDeleted');
     }
 
+    /**
+     * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserBankAccount>>
+     */
     public function with(): array
     {
         return [

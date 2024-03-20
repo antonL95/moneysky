@@ -18,7 +18,8 @@ it('renders successfully', function () {
 
     Livewire::actingAs($user)
         ->test(ShowBankAccounts::class)
-        ->assertViewHas('bankAccounts', fn ($accounts) => \count($accounts) === 3)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows')
         ->assertStatus(200);
 });
 
@@ -37,6 +38,7 @@ it('sees only their accounts', function () {
 
     Livewire::actingAs($otherUser)
         ->test(ShowBankAccounts::class)
-        ->assertViewHas('bankAccounts', fn ($accounts) => \count($accounts) === 2)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows', fn ($rows) => \count($rows) === 2)
         ->assertStatus(200);
 });

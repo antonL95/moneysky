@@ -18,7 +18,7 @@ it('renders successfully', function () {
         ->test(UpdateUserKrakenAccount::class, [
             'account' => $userKrakenAccount,
         ])
-        ->set('form.apiKey', 'new-api-key')
+        ->set('form.api_key', 'new-api-key')
         ->call('update', $userKrakenAccount)
         ->assertStatus(200);
 

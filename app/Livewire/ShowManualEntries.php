@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Crypto\Models\UserCryptoWallets;
 use App\Models\UserManualEntry;
 use Illuminate\Contracts\View\View;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,8 +17,10 @@ class ShowManualEntries extends Component
     use Toast;
     use WithPagination;
 
+    /**
+     * @var string[]
+     */
     public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
-
 
     public function delete(UserManualEntry $wallet): void
     {
@@ -28,7 +30,9 @@ class ShowManualEntries extends Component
         $this->success('Cash wallet deleted successfully');
     }
 
-
+    /**
+     * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserManualEntry>>
+     */
     public function with(): array
     {
         $headers = [
@@ -45,7 +49,6 @@ class ShowManualEntries extends Component
             'rows' => $rows,
         ];
     }
-
 
     #[On('user-manual-entry-deleted')]
     #[On('currency-updated')]

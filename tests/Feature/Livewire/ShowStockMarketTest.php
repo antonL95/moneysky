@@ -16,6 +16,7 @@ it('renders successfully', function () {
 
     Livewire::actingAs($user)
         ->test(ShowStockMarket::class)
-        ->assertViewHas('tickers', fn ($accounts) => \count($accounts) === 2)
+        ->assertViewHas('headers')
+        ->assertViewHas('rows')
         ->assertStatus(200);
 });

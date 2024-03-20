@@ -15,17 +15,14 @@ class AddUserCryptoWallet extends Component
     use Toast;
 
     public UserCryptoWalletForm $form;
-    public array $chainTypes;
 
+    /**
+     * @var string[][]
+     */
+    public array $chainTypes;
 
     public function mount(): void
     {
-        $user = auth()->user();
-
-        if (!$user?->subscribed()) {
-            $this->redirect(route('billing'));
-        }
-
         $chainTypes = [];
 
         foreach (ChainType::cases() as $chainType) {
@@ -38,14 +35,12 @@ class AddUserCryptoWallet extends Component
         $this->chainTypes = $chainTypes;
     }
 
-
     public function create(): void
     {
         $this->form->store();
 
         $this->success('Crypto wallet added successfully.', redirectTo: route('app.crypto-wallets'));
     }
-
 
     public function render(): View
     {

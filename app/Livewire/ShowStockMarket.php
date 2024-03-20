@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\MarketData\Models\UserStockMarket;
-use App\Traits\SessionInteraction;
 use Illuminate\Contracts\View\View;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,8 +17,10 @@ class ShowStockMarket extends Component
     use Toast;
     use WithPagination;
 
+    /**
+     * @var string[]
+     */
     public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
-
 
     public function delete(UserStockMarket $stockMarket): void
     {
@@ -28,7 +30,9 @@ class ShowStockMarket extends Component
         $this->success('Stock Market deleted successfully');
     }
 
-
+    /**
+     * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserStockMarket>>
+     */
     public function with(): array
     {
         $headers = [
@@ -45,7 +49,6 @@ class ShowStockMarket extends Component
             'rows' => $rows,
         ];
     }
-
 
     #[On('user-stock-market-deleted')]
     public function render(): View
