@@ -12,6 +12,10 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
+    safelist: [
+        'grid',
+        'grid-cols-'
+    ],
 
     theme: {
         extend: {
