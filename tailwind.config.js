@@ -13,7 +13,7 @@ export default {
         './resources/views/**/*.blade.php',
     ],
     safelist: [
-        {pattern: /(bg|text|border|grid|table)-./},
+        {pattern: /(bg|text|border|grid|table|h|w|p|py|px|pb|pt|pl|pr|m|mb|mt|mx|my|ml|mr|justify|shadow|ring|rounded|absolute|top|left|right|bottom)-./},
         {pattern: /(grid|flex|hidden)./}
     ],
 
