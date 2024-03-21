@@ -6,7 +6,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Sentry\Laravel\Integration;
-use Spatie\CookieConsent\CookieConsentMiddleware;
 
 return Application::configure(basePath: \dirname(__DIR__))
     ->withRouting(
@@ -31,7 +30,5 @@ return Application::configure(basePath: \dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        if (app()->environment('production')) {
-            Integration::handles($exceptions);
-        }
+        Integration::handles($exceptions);
     })->create();

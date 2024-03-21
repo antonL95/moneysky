@@ -5,7 +5,7 @@
         "username": "moneysky",
         "port": "22",
         "beforeHooks": "",
-        "afterHooks": "/usr/bin/php $RELEASE_PATH/artisan migrate --force",
+        "afterHooks": "",
         "path": "/home/moneysky/www"
     }
 ]
