@@ -70,7 +70,7 @@ class OpenAiService
 
         $temp = [];
         foreach ($taggedTransactions as $taggedTransaction) {
-            if (!is_array($taggedTransaction)) {
+            if (!\is_array($taggedTransaction)) {
                 continue;
             }
 
