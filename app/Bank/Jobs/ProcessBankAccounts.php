@@ -16,6 +16,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+use function Safe\json_encode;
+
 class ProcessBankAccounts implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -100,7 +102,7 @@ class ProcessBankAccounts implements ShouldQueue
                 'external_id' => $transaction->externalId,
                 'balance_cents' => $transaction->balance,
                 'currency' => $transaction->currency,
-                'currency_exchange' => $transaction->currencyExchange,
+                'currency_exchange' => json_encode($transaction->currencyExchange),
                 'additional_information' => $transaction->additionalInformation,
                 'remittance_information' => $transaction->remittanceInformation,
                 'booked_at' => $transaction->bookingDateTime ?? $transaction->bookingDate ?? null,
