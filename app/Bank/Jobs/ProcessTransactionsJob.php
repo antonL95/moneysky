@@ -44,12 +44,15 @@ class ProcessTransactionsJob implements ShouldQueue
 
     public int $timeout = 900;
 
+
     public function __construct(
         public User $user,
         public Carbon $from,
         public Carbon $to,
-    ) {
+    )
+    {
     }
+
 
     public function handle(OpenAiService $openAiService): void
     {
@@ -65,6 +68,7 @@ class ProcessTransactionsJob implements ShouldQueue
             $this->processTransactions($account);
         }
     }
+
 
     private function processTransactions(UserBankAccount $account): void
     {
@@ -84,6 +88,7 @@ class ProcessTransactionsJob implements ShouldQueue
                     UserTransaction::create([
                         'user_id' => $this->user->id,
                         'user_bank_account_id' => $account->id,
+                        'user_bank_transaction_raw_id' => $transaction->id,
                         'balance_cents' => $transaction->balance_cents,
                         'currency' => $transaction->currency,
                         'description' => $transaction->remittance_information ?? $transaction->additional_information,
@@ -93,6 +98,7 @@ class ProcessTransactionsJob implements ShouldQueue
             }
         }
     }
+
 
     private function processTransaction(UserBankTransactionRaw $transaction): bool
     {
@@ -126,6 +132,7 @@ class ProcessTransactionsJob implements ShouldQueue
 
                     UserTransaction::create([
                         'user_id' => $this->user->id,
+                        'user_bank_transaction_raw_id' => $transaction->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
                         'transaction_tag_id' => $tag->id,
                         'user_transaction_tag_id' => null,
@@ -154,6 +161,7 @@ class ProcessTransactionsJob implements ShouldQueue
 
                     UserTransaction::create([
                         'user_id' => $this->user->id,
+                        'user_bank_transaction_raw_id' => $transaction->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
                         'transaction_tag_id' => $tag->id,
                         'user_transaction_tag_id' => null,
@@ -174,12 +182,13 @@ class ProcessTransactionsJob implements ShouldQueue
             ->where('user_id', $this->user->id)
             ->whereBetween('balance_cents', [$transaction->balance_cents - $tenPercent, $transaction->balance_cents + $tenPercent])
             ->where('currency', '=', $transaction->currency)
-            ->where('description', 'like', '%'.$transaction->remittance_information.'%')
+            ->where('description', 'like', '%' . $transaction->remittance_information . '%')
             ->first();
 
         if ($similarTransaction !== null) {
             UserTransaction::create([
                 'user_id' => $this->user->id,
+                'user_bank_transaction_raw_id' => $transaction->id,
                 'user_bank_account_id' => $transaction->user_bank_account_id,
                 'transaction_tag_id' => $similarTransaction->transaction_tag_id,
                 'user_transaction_tag_id' => $similarTransaction->user_transaction_tag_id,
@@ -199,13 +208,15 @@ class ProcessTransactionsJob implements ShouldQueue
         return true;
     }
 
+
     /**
      * @param TaggedTransactionDto[] $taggedTransactions
      */
     private function tagTransaction(
         array $taggedTransactions,
         UserBankAccount $account,
-    ): void {
+    ): void
+    {
         foreach ($taggedTransactions as $taggedTransaction) {
             $tag = TransactionTag::whereTag($taggedTransaction->tag)->first();
 

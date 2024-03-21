@@ -13,8 +13,7 @@ export default {
         './resources/views/**/*.blade.php',
     ],
     safelist: [
-        'grid',
-        'grid-cols-'
+        {pattern: /(bg|text|border|grid|flex)-./}
     ],
 
     theme: {
