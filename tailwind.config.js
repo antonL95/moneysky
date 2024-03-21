@@ -13,7 +13,7 @@ export default {
         './resources/views/**/*.blade.php',
     ],
     safelist: [
-        {pattern: /(bg|text|border|grid|flex)-./}
+        {pattern: /([a-zA-Z]+)-./}
     ],
 
     theme: {
