@@ -14,7 +14,7 @@
         @scope('actions', $row)
         <div class="flex items-center justify-end">
             <x-mary-button icon="fas.pencil" href="{{route('app.update-stock-market', ['ticker' => $row->id])}}" wire:navigate class="btn-sm bg-yellow-300 text-white" />
-            <x-mary-button icon="o-trash" wire:click="delete({{ $row->id }})" spinner class="btn-sm bg-red-500 text-white" />
+            <x-mary-button icon="o-trash" wire:click="delete({{ $row->id }})" class="btn-sm bg-red-500 text-white" />
         </div>
         @endscope
     </x-mary-table>
