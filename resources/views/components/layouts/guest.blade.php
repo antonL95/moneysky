@@ -21,9 +21,11 @@
 <div class="min-h-screen">
     <header>
         <x-navigation.guest-navigation-menu />
-        <div class="container text-center max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            {{ $header }}
-        </div>
+        @if (isset($header))
+            <div class="container text-center max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                {{ $header }}
+            </div>
+        @endif
     </header>
 
     <main class="max-w-8xl mx-auto px-4 min-h-dvh">
