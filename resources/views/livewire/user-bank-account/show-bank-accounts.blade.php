@@ -5,7 +5,7 @@
             <livewire:connect-bank-account/>
         </x-mary-modal>
         @endteleport
-        <x-mary-button class="btn-primary" @click="$wire.bankInstitutionModal = true">
+        <x-mary-button class="btn btn-primary" @click="$wire.bankInstitutionModal = true">
             <x-mary-icon name="fas.plus" class="w-[20px] h-[20px] pr-2"/>
             {{ __('Connect bank') }}
         </x-mary-button>

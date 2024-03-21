@@ -21,7 +21,7 @@
 
     <x-slot:actions>
         <div>
-            <x-mary-button wire:loading.attr="disabled" wire:target="photo" class="btn-primary" type="submit">
+            <x-mary-button wire:loading.attr="disabled" wire:target="photo" class="btn btn-primary" type="submit">
                 {{ __('Save') }}
             </x-mary-button>
         </div>

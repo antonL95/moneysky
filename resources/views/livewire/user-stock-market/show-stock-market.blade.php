@@ -1,6 +1,6 @@
 <div>
     <div class="flex justify-end">
-        <x-mary-button class="btn-primary" link="{{route('app.add-stock-market')}}" wire:navigate>
+        <x-mary-button class="btn btn-primary" link="{{route('app.add-stock-market')}}" wire:navigate>
             <x-mary-icon name="fas.plus" class="w-[20px] h-[20px] pr-2"/>
             {{ __('Add stock ticker') }}
         </x-mary-button>

@@ -10,7 +10,7 @@
                 <x-mary-input placeholder="{{__('Email')}}" wire:model="email">
                     <x-slot:append>
                         <x-mary-button label="{{__('Subscribe')}}" type="submit" icon="o-check"
-                                  class="btn-primary rounded-l-none"/>
+                                  class="btn btn-primary rounded-l-none"/>
                     </x-slot:append>
                 </x-mary-input>
                 <div

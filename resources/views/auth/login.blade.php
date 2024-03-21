@@ -30,7 +30,7 @@
                     </a>
                 @endif
             </div>
-            <x-mary-button class="w-full btn-primary" type="submit">
+            <x-mary-button class="w-full btn btn-primary" type="submit">
                 {{ __('Log in') }}
             </x-mary-button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">

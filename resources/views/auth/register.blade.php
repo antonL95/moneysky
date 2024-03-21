@@ -48,7 +48,7 @@
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-mary-button class="ms-4 btn-primary" type="submit">
+                <x-mary-button class="ms-4 btn btn-primary" type="submit">
                     {{ __('Register') }}
                 </x-mary-button>
             </div>

@@ -13,12 +13,12 @@
             </a>
         </div>
         <div class="flex items-center lg:order-2">
-                <x-mary-button class="btn-primary" link="{{route('login')}}" wire:navigate
+                <x-mary-button class="btn btn-primary" link="{{route('login')}}" wire:navigate
                                class="mx-2">
                     {{__('Log in')}}
                 </x-mary-button>
-                <x-mary-button class="btn-primary" link="{{route('register')}}"
-                               class="btn-primary">
+                <x-mary-button class="btn btn-primary" link="{{route('register')}}"
+                               class="btn btn-primary">
                     {{__('Start')}}
                 </x-mary-button>
             <x-mary-theme-toggle class="ml-4"/>
