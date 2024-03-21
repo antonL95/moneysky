@@ -22,7 +22,7 @@ readonly class BankAccountDto
             throw InvalidApiException::invalidDataEntry();
         }
 
-        $name = $data['name'];
+        $name = $data['name'] ?? null;
 
         if ($name === null) {
             $name = null;
@@ -30,7 +30,7 @@ readonly class BankAccountDto
             throw InvalidApiException::invalidDataEntry();
         }
 
-        $iban = $data['iban'];
+        $iban = $data['iban'] ?? null;
 
         if ($iban === null) {
             $iban = null;
@@ -38,7 +38,7 @@ readonly class BankAccountDto
             throw InvalidApiException::invalidDataEntry();
         }
 
-        $resourceId = $data['resourceId'];
+        $resourceId = $data['resourceId'] ?? null;
 
         if ($resourceId === null) {
             $resourceId = null;
