@@ -85,7 +85,7 @@ class ProcessTransactionsJob implements ShouldQueue
                 if ($taggedTransactions !== []) {
                     $this->tagTransaction($taggedTransactions, $account);
                 } else {
-                    UserTransaction::create([
+                    UserTransaction::createOrFirst([
                         'user_id' => $this->user->id,
                         'user_bank_account_id' => $account->id,
                         'user_bank_transaction_raw_id' => $transaction->id,
@@ -130,7 +130,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    UserTransaction::create([
+                    UserTransaction::createOrFirst([
                         'user_id' => $this->user->id,
                         'user_bank_transaction_raw_id' => $transaction->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -159,7 +159,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    UserTransaction::create([
+                    UserTransaction::createOrFirst([
                         'user_id' => $this->user->id,
                         'user_bank_transaction_raw_id' => $transaction->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -186,7 +186,7 @@ class ProcessTransactionsJob implements ShouldQueue
             ->first();
 
         if ($similarTransaction !== null) {
-            UserTransaction::create([
+            UserTransaction::createOrFirst([
                 'user_id' => $this->user->id,
                 'user_bank_transaction_raw_id' => $transaction->id,
                 'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -230,7 +230,7 @@ class ProcessTransactionsJob implements ShouldQueue
                 continue;
             }
 
-            UserTransaction::create([
+            UserTransaction::createOrFirst([
                 'user_id' => $this->user->id,
                 'user_bank_account_id' => $account->id,
                 'transaction_tag_id' => $tag->id,
