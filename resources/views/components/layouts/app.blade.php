@@ -50,15 +50,15 @@
                 <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
                 <x-mary-menu-item title="{{ __('Bank accounts') }}" badge="{{__('All access')}}"
                                   badge-classes="!badge-warning" icon="c-building-library"
-                                  link="{{route('app.bank-accounts')}}"/>
+                                  link="{{route('subscription-checkout', ['plan' => 'monthly'])}}" no-wire-navigate/>
                 <x-mary-menu-item title="{{ __('Crypto wallets') }}" badge="{{__('All access')}}"
                                   badge-classes="!badge-warning" icon="fab.bitcoin"
-                                  link="{{route('app.crypto-wallets')}}"/>
+                                  link="{{route('subscription-checkout', ['plan' => 'monthly'])}}" no-wire-navigate/>
                 <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
                                   link="{{route('app.kraken-accounts')}}"/>
                 <x-mary-menu-item title="{{ __('Stock market') }}" badge="{{__('All access')}}"
                                   badge-classes="!badge-warning" icon="fas.rocket"
-                                  link="{{route('app.stock-market')}}"/>
+                                  link="{{route('subscription-checkout', ['plan' => 'monthly'])}}" no-wire-navigate/>
                 <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
                                   link="{{route('app.manual-entries')}}"/>
             @endif

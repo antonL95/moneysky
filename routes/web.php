@@ -126,7 +126,9 @@ Route::middleware([
 
     Route::get(
         '/billing',
-        static fn (Request $request) => $request->user()->redirectToBillingPortal(),
+        static fn (Request $request) => !$request->user()->subscribed()
+            ? redirect(route('subscription-checkout', 'monthly'))
+            : $request->user()->redirectToBillingPortal(),
     )
         ->name('billing');
 });
