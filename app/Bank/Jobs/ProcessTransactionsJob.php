@@ -201,7 +201,7 @@ class ProcessTransactionsJob implements ShouldQueue
         ?TransactionTag $tag = null,
         ?UserTransactionTag $userTransactionTag = null,
     ): void {
-        UserTransaction::withoutGlobalScope(UserScope::class)->updateOrCreate([
+        UserTransaction::withoutGlobalScope(UserScope::class)->insertOrIgnore([
             'user_id' => $this->user->id,
             'user_bank_account_id' => $accountId,
             'transaction_tag_id' => $tag?->id,
@@ -211,12 +211,6 @@ class ProcessTransactionsJob implements ShouldQueue
             'currency' => $transaction->currency,
             'description' => $transaction->remittance_information ?? $transaction->additional_information,
             'booked_at' => $transaction->booked_at ?? Carbon::now(),
-        ], [
-            'balance_cents' => $transaction->balance_cents,
-            'currency' => $transaction->currency,
-            'booked_at' => $transaction->booked_at ?? Carbon::now(),
-            'transaction_tag_id' => $tag?->id,
-            'user_transaction_tag_id' => $userTransactionTag?->id,
         ]);
     }
 }
