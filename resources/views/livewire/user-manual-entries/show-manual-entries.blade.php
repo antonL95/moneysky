@@ -8,7 +8,7 @@
 
     <x-mary-table :headers="$headers" :rows="$rows" with-pagination class="" :sort-by="$sortBy" >
         @scope('cell_amount_cents', $row)
-        <x-amount-format :amount="$row->amount_cents" :amount-currency="'USD'" />
+        <x-amount-format :amount="$row->amount_cents" :amount-currency="$row->currency" />
         @endscope
         {{-- Special `actions` slot --}}
         @scope('actions', $row)
