@@ -12,9 +12,9 @@
     <x-mary-table :headers="$headers" :rows="$rows" with-pagination class="bg-base-100" :sort-by="$sortBy" >
         @scope('cell_tag', $row)
             <x-mary-badge
-                :value="$row->userTransactionTag->tag ?? $row->transactionTag->tag ?? __('unknown')"
+                :value="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
                 class="text-white border-none text-sm h-fit text-center"
-                style="background-color: {{$row->userTransactionTag->color ?? $row->transactionTag->color}}" />
+                style="background-color: {{$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'}}" />
         @endscope
         @scope('cell_balance_cents', $row)
             <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency" />
