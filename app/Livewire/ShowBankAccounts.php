@@ -50,7 +50,9 @@ class ShowBankAccounts extends Component
                 ['key' => 'name', 'label' => 'Name'],
                 ['key' => 'balance_cents', 'label' => 'Balance'],
             ],
-            'rows' => UserBankAccount::orderBy(...array_values($this->sortBy))->paginate($this->quantity),
+            'rows' => UserBankAccount::with('institution')
+                ->orderBy(...array_values($this->sortBy))
+                ->paginate($this->quantity),
         ];
     }
 

@@ -15,5 +15,8 @@
         @scope('cell_balance_cents', $row)
         <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency" />
         @endscope
+        @scope('cell_name', $row)
+        {{ $row->name ?? $row->institution->name . ' ('.$row->currency.')' }}
+        @endscope
     </x-mary-table>
 </div>

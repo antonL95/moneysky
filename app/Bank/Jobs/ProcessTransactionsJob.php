@@ -9,6 +9,7 @@ use App\Bank\Models\TransactionTag;
 use App\Bank\Models\UserBankAccount;
 use App\Bank\Models\UserBankTransactionRaw;
 use App\Bank\Models\UserTransaction;
+use App\Bank\Models\UserTransactionTag;
 use App\Models\Scopes\UserScope;
 use App\Models\User;
 use App\OpenAi\Services\OpenAiService;
@@ -81,15 +82,7 @@ class ProcessTransactionsJob implements ShouldQueue
                 if ($taggedTransactions !== []) {
                     $this->tagTransaction($taggedTransactions, $account);
                 } else {
-                    UserTransaction::insertOrIgnore([
-                        'user_id' => $this->user->id,
-                        'user_bank_account_id' => $account->id,
-                        'user_bank_transaction_raw_id' => $transaction->id,
-                        'balance_cents' => $transaction->balance_cents,
-                        'currency' => $transaction->currency,
-                        'description' => $transaction->remittance_information ?? $transaction->additional_information,
-                        'booked_at' => $transaction->booked_at ?? Carbon::now(),
-                    ]);
+                    $this->saveUserTransaction($transaction, $account->id);
                 }
             }
         }
@@ -125,17 +118,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    UserTransaction::insertOrIgnore([
-                        'user_id' => $this->user->id,
-                        'user_bank_transaction_raw_id' => $transaction->id,
-                        'user_bank_account_id' => $transaction->user_bank_account_id,
-                        'transaction_tag_id' => $tag->id,
-                        'user_transaction_tag_id' => null,
-                        'balance_cents' => $transaction->balance_cents,
-                        'currency' => $transaction->currency,
-                        'description' => $transaction->remittance_information,
-                        'booked_at' => $transaction->booked_at,
-                    ]);
+                    $this->saveUserTransaction($transaction, $transaction->user_bank_account_id, $tag);
 
                     return false;
                 }
@@ -154,17 +137,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    UserTransaction::insertOrIgnore([
-                        'user_id' => $this->user->id,
-                        'user_bank_transaction_raw_id' => $transaction->id,
-                        'user_bank_account_id' => $transaction->user_bank_account_id,
-                        'transaction_tag_id' => $tag->id,
-                        'user_transaction_tag_id' => null,
-                        'balance_cents' => $transaction->balance_cents,
-                        'currency' => $transaction->currency,
-                        'description' => $transaction->remittance_information,
-                        'booked_at' => $transaction->booked_at,
-                    ]);
+                    $this->saveUserTransaction($transaction, $transaction->user_bank_account_id, $tag);
 
                     return false;
                 }
@@ -181,17 +154,12 @@ class ProcessTransactionsJob implements ShouldQueue
             ->first();
 
         if ($similarTransaction !== null) {
-            UserTransaction::insertOrIgnore([
-                'user_id' => $this->user->id,
-                'user_bank_transaction_raw_id' => $transaction->id,
-                'user_bank_account_id' => $transaction->user_bank_account_id,
-                'transaction_tag_id' => $similarTransaction->transaction_tag_id,
-                'user_transaction_tag_id' => $similarTransaction->user_transaction_tag_id,
-                'balance_cents' => $transaction->balance_cents,
-                'currency' => $transaction->currency,
-                'description' => $transaction->remittance_information,
-                'booked_at' => $transaction->booked_at,
-            ]);
+            $this->saveUserTransaction(
+                $transaction,
+                $transaction->user_bank_account_id,
+                $similarTransaction->transactionTag,
+                $similarTransaction->userTransactionTag,
+            );
 
             return false;
         }
@@ -223,16 +191,32 @@ class ProcessTransactionsJob implements ShouldQueue
                 continue;
             }
 
-            UserTransaction::insertOrIgnore([
-                'user_id' => $this->user->id,
-                'user_bank_account_id' => $account->id,
-                'transaction_tag_id' => $tag->id,
-                'user_bank_transaction_raw_id' => $rawTransaction->id,
-                'balance_cents' => $rawTransaction->balance_cents,
-                'currency' => $rawTransaction->currency,
-                'description' => $rawTransaction->remittance_information ?? $rawTransaction->additional_information,
-                'booked_at' => $rawTransaction->booked_at ?? Carbon::now(),
-            ]);
+            $this->saveUserTransaction($rawTransaction, $account->id, $tag);
         }
+    }
+
+    private function saveUserTransaction(
+        UserBankTransactionRaw $transaction,
+        int $accountId,
+        ?TransactionTag $tag = null,
+        ?UserTransactionTag $userTransactionTag = null,
+    ): void {
+        UserTransaction::withoutGlobalScope(UserScope::class)->updateOrCreate([
+            'user_id' => $this->user->id,
+            'user_bank_account_id' => $accountId,
+            'transaction_tag_id' => $tag?->id,
+            'user_transaction_tag_id' => $userTransactionTag?->id,
+            'user_bank_transaction_raw_id' => $transaction->id,
+            'balance_cents' => $transaction->balance_cents,
+            'currency' => $transaction->currency,
+            'description' => $transaction->remittance_information ?? $transaction->additional_information,
+            'booked_at' => $transaction->booked_at ?? Carbon::now(),
+        ], [
+            'balance_cents' => $transaction->balance_cents,
+            'currency' => $transaction->currency,
+            'booked_at' => $transaction->booked_at ?? Carbon::now(),
+            'transaction_tag_id' => $tag?->id,
+            'user_transaction_tag_id' => $userTransactionTag?->id,
+        ]);
     }
 }

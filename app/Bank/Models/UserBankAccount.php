@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Money\Currency;
 use Money\Money;
@@ -69,6 +70,21 @@ class UserBankAccount extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(UserTransaction::class, 'user_bank_account_id', 'id');
+    }
+
+    /**
+     * @return HasOneThrough<BankInstitution>
+     */
+    public function institution(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            BankInstitution::class,
+            UserBankSession::class,
+            'id',
+            'id',
+            'user_bank_session_id',
+            'bank_institution_id',
+        );
     }
 
     public static function getSumOfAllUserBankAccounts(
