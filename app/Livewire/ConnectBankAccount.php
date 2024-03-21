@@ -27,10 +27,14 @@ class ConnectBankAccount extends Component
 
     protected BankService $bankService;
 
-    public function mount(BankService $bankService): void
+    public function boot(BankService $bankService): void
+    {
+        $this->bankService = $bankService;
+    }
+
+    public function mount(): void
     {
         $this->search();
-        $this->bankService = $bankService;
     }
 
     public function connect(): void
