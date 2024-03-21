@@ -19,7 +19,6 @@
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.3/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -19,23 +19,9 @@
         </div>
         <div class="flex items-center lg:order-2">
             @auth
-
                 <x-mary-dropdown>
                     <x-slot:trigger>
-                        <button type="button"
-                                class="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                        >
-                            <span class="sr-only">Open user menu</span>
-                            @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                                <img class="w-8 h-8 rounded-full"
-                                     src="{{ Auth::user()->profile_photo_url }}"
-                                     alt="{{ Auth::user()->name }}">
-                            @else
-                                <span class="inline-flex rounded-md">
-                            <x-mary-avatar/>
-                        </span>
-                            @endif
-                        </button>
+                        <x-mary-avatar :image="auth()->user()->profile_photo_url" />
                     </x-slot:trigger>
 
                     <x-mary-menu-item title="{{__('My profile')}}" link="{{route('profile.show')}}"/>
@@ -47,6 +33,7 @@
                         @csrf
                         <x-mary-menu-item title="{{ __('Sign out') }}"
                                           link="{{ route('logout') }}"
+                                          no-wire-navigate
                                           @click.prevent="$root.submit();">
                         </x-mary-menu-item>
                     </form>
