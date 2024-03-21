@@ -172,6 +172,7 @@ jobs:
             nvm use 20
             cd $RELEASE_PATH && npm install
             cd $RELEASE_PATH && npm run build
+            /usr/bin/php $RELEASE_PATH/artisan optimize:clear
             /usr/bin/php $RELEASE_PATH/artisan route:cache
             /usr/bin/php $RELEASE_PATH/artisan event:cache
             /usr/bin/php $RELEASE_PATH/artisan view:cache
