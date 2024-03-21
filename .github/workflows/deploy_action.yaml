@@ -166,13 +166,14 @@ jobs:
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
+            /usr/bin/php $RELEASE_PATH/artisan migrate --force
+            /usr/bin/php $RELEASE_PATH/artisan optimize:clear
             source ~/.nvm/nvm.sh
             nvm use 20
             cd $RELEASE_PATH && npm install
             cd $RELEASE_PATH && npm run build
-            /usr/bin/php $RELEASE_PATH/artisan migrate --force
-            /usr/bin/php $RELEASE_PATH/artisan optimize:clear
             /usr/bin/php $RELEASE_PATH/artisan route:cache
             /usr/bin/php $RELEASE_PATH/artisan event:cache
+            /usr/bin/php $RELEASE_PATH/artisan view:cache
             sudo systemctl restart php8.3-fpm
             supervisorctl reload

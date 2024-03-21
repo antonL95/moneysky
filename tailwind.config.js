@@ -14,6 +14,7 @@ export default {
     ],
     safelist: [
         {pattern: /(bg|text|border|grid|table)-./},
+        {pattern: /(grid|flex|hidden)./},
         {pattern: /(grid|flex|hidden)./}
     ],
 

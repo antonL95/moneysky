@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "daisyui": "latest",
-        "tailwindcss": "latest"
+        "tailwindcss": "latest",
+        "@tailwindcss/typography": "latest"
     }
 }
