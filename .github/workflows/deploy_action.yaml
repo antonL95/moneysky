@@ -161,12 +161,10 @@ jobs:
           port: ${{ matrix.server.port }}
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,ENV_SECRET
           script: |
+            echo "$USER"
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
-            ${BASE_PATH}/../.nvm/nvm.sh use 20
-            npm install
-            npm run build
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
             /usr/bin/php $RELEASE_PATH/artisan migrate --force
             /usr/bin/php $RELEASE_PATH/artisan optimize:clear
