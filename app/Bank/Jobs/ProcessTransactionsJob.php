@@ -85,7 +85,7 @@ class ProcessTransactionsJob implements ShouldQueue
                 if ($taggedTransactions !== []) {
                     $this->tagTransaction($taggedTransactions, $account);
                 } else {
-                    UserTransaction::withoutGlobalScope(UserScope::class)->createOrFirst([
+                    UserTransaction::insertOrIgnore([
                         'user_id' => $this->user->id,
                         'user_bank_account_id' => $account->id,
                         'user_bank_transaction_raw_id' => $transaction->id,
@@ -130,7 +130,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    UserTransaction::withoutGlobalScope(UserScope::class)->createOrFirst([
+                    UserTransaction::insertOrIgnore([
                         'user_id' => $this->user->id,
                         'user_bank_transaction_raw_id' => $transaction->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -159,7 +159,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    UserTransaction::withoutGlobalScope(UserScope::class)->createOrFirst([
+                    UserTransaction::insertOrIgnore([
                         'user_id' => $this->user->id,
                         'user_bank_transaction_raw_id' => $transaction->id,
                         'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -177,7 +177,7 @@ class ProcessTransactionsJob implements ShouldQueue
         }
 
         // Find similar already tagged transactions
-        $tenPercent = $transaction->balance_cents * 0.1;
+        $tenPercent = $transaction->balance_cents * 0.02;
         $similarTransaction = UserTransaction::withoutGlobalScope(UserScope::class)
             ->where('user_id', $this->user->id)
             ->whereBetween('balance_cents', [$transaction->balance_cents - $tenPercent, $transaction->balance_cents + $tenPercent])
@@ -186,7 +186,7 @@ class ProcessTransactionsJob implements ShouldQueue
             ->first();
 
         if ($similarTransaction !== null) {
-            UserTransaction::withoutGlobalScope(UserScope::class)->createOrFirst([
+            UserTransaction::insertOrIgnore([
                 'user_id' => $this->user->id,
                 'user_bank_transaction_raw_id' => $transaction->id,
                 'user_bank_account_id' => $transaction->user_bank_account_id,
@@ -230,7 +230,7 @@ class ProcessTransactionsJob implements ShouldQueue
                 continue;
             }
 
-            UserTransaction::withoutGlobalScope(UserScope::class)->createOrFirst([
+            UserTransaction::insertOrIgnore([
                 'user_id' => $this->user->id,
                 'user_bank_account_id' => $account->id,
                 'transaction_tag_id' => $tag->id,

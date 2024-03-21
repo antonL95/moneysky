@@ -70,6 +70,10 @@ class OpenAiService
 
         $temp = [];
         foreach ($taggedTransactions as $taggedTransaction) {
+            if (!is_array($taggedTransaction)) {
+                continue;
+            }
+
             try {
                 /** @var array<int, string> $taggedTransaction */
                 $temp[] = TaggedTransactionDto::fromArray($taggedTransaction);
