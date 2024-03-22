@@ -1,19 +1,28 @@
-# Privacy Policy
+# Privacy Policy for moneysky.app
 
-At MoneySky, accessible from [https://moneysky.app], one of our main priorities is the privacy of our users. This Privacy Policy document contains types of information that is collected and recorded by MoneySky and how we use it.
+Last updated: 22.03.2024
 
-## General Information
+At MoneySky, accessible from https://moneysky.app, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by MoneySky and how we use it.
 
-We collect personal information from users in a variety of ways, including, but not limited to, when users visit our app, register on the app, and in connection with other activities, services, features, or resources we make available on our app. Users may be asked for, as appropriate, name, email address, mailing address, phone number, and financial information.
+## Information We Collect
 
-## Information Use
+The personal information that you are asked to provide, and the reasons why you are asked to provide it, will be made clear to you at the point we ask you to provide your personal information.
 
-The information we collect may be used in the following ways:
-- To personalize user experience
-- To improve our app
-- To process transactions
-- To send periodic emails
+If you contact us directly, we may receive additional information about you such as your name, email address, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.
 
-# Contact Us
+When you register for an Account, we may ask for your contact information, including items such as name, email address.
 
-privacy@moneysky.app
+## How We Use Your Information
+
+We use the information we collect in various ways, including to:
+
+- Provide, operate, and maintain our website
+- Improve, personalize, and expand our website
+- Understand and analyze how you use our website
+- Develop new products, services, features, and functionality
+- Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes
+- Send you emails
+
+## Log Files
+
+MoneySky follows a standard procedure of using log files.
