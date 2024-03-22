@@ -13,3 +13,7 @@ The information we collect may be used in the following ways:
 - To improve our app
 - To process transactions
 - To send periodic emails
+
+# Contact Us
+
+privacy@moneysky.app
