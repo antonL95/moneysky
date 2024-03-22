@@ -149,6 +149,7 @@ jobs:
             /usr/bin/php $RELEASE_PATH/artisan route:clear
             /usr/bin/php $RELEASE_PATH/artisan event:clear
             /usr/bin/php $RELEASE_PATH/artisan view:clear
+            /usr/bin/php $RELEASE_PATH/artisan app:clear-system-cache
             /usr/bin/php $RELEASE_PATH/artisan route:cache
             /usr/bin/php $RELEASE_PATH/artisan event:cache
             supervisorctl reload

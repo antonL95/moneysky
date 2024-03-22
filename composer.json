@@ -31,7 +31,8 @@
         "robsontenorio/mary": "^1.25",
         "sentry/sentry-laravel": "^4.3",
         "spatie/laravel-cookie-consent": "^3.3",
-        "thecodingmachine/safe": "*"
+        "thecodingmachine/safe": "*",
+        "ext-zend-opcache": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
