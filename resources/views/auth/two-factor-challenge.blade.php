@@ -17,7 +17,7 @@
                 @csrf
 
                 <div class="mt-4" x-show="! recovery">
-                    <x-mary-input id="recovery_code" label="{{ __('Code') }}" class="block mt-1 w-full" type="text" name="code" x-ref="code" autocomplete="one-time-code" />
+                    <x-mary-input id="recovery_code" label="{{ __('Code') }}" class="block mt-1 w-full" autofocus type="text" name="code" x-ref="code" autocomplete="one-time-code" />
                 </div>
 
                 <div class="mt-4" x-cloak x-show="recovery">
