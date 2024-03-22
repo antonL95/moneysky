@@ -143,10 +143,6 @@ jobs:
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
             /usr/bin/php $RELEASE_PATH/artisan migrate --force
-            source ~/.nvm/nvm.sh
-            nvm use 20
-            cd $RELEASE_PATH && npm install
-            cd $RELEASE_PATH && npm run build
             /usr/bin/php $RELEASE_PATH/artisan route:clear
             /usr/bin/php $RELEASE_PATH/artisan event:clear
             /usr/bin/php $RELEASE_PATH/artisan view:clear
