@@ -1,4 +1,3 @@
-@php use Money\Currencies\ISOCurrencies; @endphp
 <div>
     <main class="p-4 md:ml-64 h-auto pt-20">
         <x-form-section submit="create">
@@ -11,7 +10,7 @@
                 <x-mary-textarea label="{{__('Description')}}" wire:model="form.description"/>
                 <x-mary-choices-offline label="{{__('Currency')}}" wire:model="form.currency"
                                 single
-                                searchable  :options="$currencies"/>
+                                searchable :options="$currencies"/>
             </x-slot>
 
             <x-slot name="actions">

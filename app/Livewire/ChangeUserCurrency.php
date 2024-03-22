@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use Money\Currencies\ISOCurrencies;
 
 class ChangeUserCurrency extends Component
 {
@@ -18,9 +19,17 @@ class ChangeUserCurrency extends Component
 
     public string $currency;
 
+    public array $currencies = [];
+
     public function mount(): void
     {
         $this->currency = UserSetting::getCurrencyWithDefault();
+        foreach ((new ISOCurrencies)->getIterator() as $currency) {
+            $this->currencies[] = [
+                'id' => $currency->getCode(),
+                'name' => $currency->getCode(),
+            ];
+        }
     }
 
     public function updatedCurrency(): void

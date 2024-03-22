@@ -10,6 +10,7 @@ use App\Bank\Models\UserTransaction;
 use App\Crypto\Models\UserCryptoWallets;
 use App\Crypto\Models\UserKrakenAccount;
 use App\MarketData\Models\UserStockMarket;
+use App\Models\User;
 use App\Models\UserManualEntry;
 use App\Models\UserSetting;
 use Illuminate\Contracts\View\View;
@@ -28,92 +29,34 @@ class Dashboard extends Component
 
     protected ConvertCurrency $convertCurrency;
 
+    protected ?User $user;
+
+    public ?float $bankAccountsSum = null;
+    public ?float $cryptoSum = null;
+    public ?float $cashWalletsSum = null;
+    public ?float $stocksSum = null;
+
     /**
      * @var string[]
      */
     public array $sortBy = ['column' => 'booked_at', 'direction' => 'desc'];
 
-    /**
-     * @var array<string, array<string, array<int, array<string, array<int,int|string>>|string>>|string>
-     */
-    public array $netWorthChart = [
-        'type' => 'doughnut',
-        'data' => [
-            'labels' => ['Bank', 'Crypto', 'Cash wallets', 'Stocks'],
-            'datasets' => [
-                [
-                    'data' => [300, 50, 100],
-                    'backgroundColor' => ['#FF6384', '#36A2EB', '#FFCE56', '#4BCA81'],
-                    'hoverBackgroundColor' => ['#FF6384', '#36A2EB', '#FFCE56', '#4BCA81'],
-                ],
-            ],
-        ],
-    ];
 
     public function mount(ConvertCurrency $convertCurrency): void
     {
         $this->convertCurrency = $convertCurrency;
 
-        $user = auth()->user();
+        $this->user = auth()->user();
 
-        if ($user === null) {
+        if ($this->user === null) {
             $this->redirect(route('login'));
-
-            return;
         }
-
-        $backAccountsSum = UserBankAccount::getSumOfAllUserBankAccounts($user);
-
-        if (!is_numeric($backAccountsSum)) {
-            $backAccountsSum = 0;
-        }
-
-        $backAccountsSum /= 100;
-
-        $cryptoSum = UserCryptoWallets::sum('balance_cents') + UserKrakenAccount::sum('balance_cents');
-
-        if (!is_numeric($cryptoSum)) {
-            $cryptoSum = 0;
-        }
-
-        $cryptoSum = $this->convertCurrency->convert(
-            new Money((int) $cryptoSum, new Currency('USD')),
-            new Currency(UserSetting::getCurrencyWithDefault()),
-        )->getAmount();
-
-        if (!is_numeric($cryptoSum)) {
-            $cryptoSum = 0;
-        }
-
-        $cryptoSum /= 100;
-
-        $cashWalletsSum = UserManualEntry::getSumWithCurrency($user);
-
-        if (!is_numeric($cashWalletsSum)) {
-            $cashWalletsSum = 0;
-        }
-
-        $cashWalletsSum /= 100;
-
-        $stocksSum = UserStockMarket::sum(new Expression('amount * price_cents'));
-
-        if (!is_numeric($stocksSum)) {
-            $stocksSum = 0;
-        }
-
-        $stocksSum = $this->convertCurrency->convert(
-            new Money((int) $stocksSum, new Currency('USD')),
-            new Currency(UserSetting::getCurrencyWithDefault()),
-        )->getAmount();
-
-        if (!is_numeric($stocksSum)) {
-            $stocksSum = 0;
-        }
-
-        $stocksSum /= 100;
-
-        Arr::set($this->netWorthChart, 'data.datasets.0.data', [$backAccountsSum, $cryptoSum, $cashWalletsSum, $stocksSum]);
+        $this->bankAccountSum();
+        $this->cryptoSum();
+        $this->stockMarketSum();
+        $this->cashWalletsSum();
     }
+
 
     /**
      * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserTransaction>>
@@ -141,9 +84,70 @@ class Dashboard extends Component
         ];
     }
 
+
     #[On('currency-updated')]
     public function render(): View
     {
         return view('livewire.dashboard', $this->with());
+    }
+
+
+    public function bankAccountSum(): void
+    {
+        $sum = UserBankAccount::getSumOfAllUserBankAccounts($this->user);
+
+        if ($sum === 0) {
+            return;
+        }
+
+        $this->bankAccountsSum = $sum;
+    }
+
+
+    public function cryptoSum(): void
+    {
+        $cryptoSum = UserCryptoWallets::sum('balance_cents') + UserKrakenAccount::sum('balance_cents');
+
+        if (!is_numeric($cryptoSum)) {
+            $cryptoSum = 0;
+        }
+
+        if ($cryptoSum === 0) {
+            return;
+        }
+
+        $this->cryptoSum = (float) $this->convertCurrency->convert(
+            new Money((int) $cryptoSum, new Currency('USD')),
+            new Currency(UserSetting::getCurrencyWithDefault()),
+        )->getAmount();
+    }
+
+
+    public function stockMarketSum(): void
+    {
+        $stocksSum = UserStockMarket::sum(new Expression('amount * price_cents'));
+
+        if (!is_numeric($stocksSum)) {
+            $stocksSum = 0;
+        }
+
+        if ($stocksSum === 0) {
+            return;
+        }
+
+        $this->stocksSum = (float) $this->convertCurrency->convert(
+            new Money((int) $stocksSum, new Currency('USD')),
+            new Currency(UserSetting::getCurrencyWithDefault()),
+        )->getAmount();
+    }
+
+
+    public function cashWalletsSum(): void
+    {
+        $sum = UserManualEntry::getSumWithCurrency($this->user);
+        if ($sum === 0) {
+            return;
+        }
+        $this->cashWalletsSum = $sum;
     }
 }
