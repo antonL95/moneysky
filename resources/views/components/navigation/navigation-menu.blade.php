@@ -2,15 +2,13 @@
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex justify-start items-center">
             <label for="main-drawer" class="lg:hidden mr-5">
-                <x-mary-icon name="fas.bars-staggered" class="w-6 h-6 text-gray-600 dark:text-gray-400"/>
+                <x-mary-icon name="fas.bars-staggered" class="w-6 h-6"/>
             </label>
             <a href="{{Auth::user() ? route('app.home') : route('home')}}"
                wire:navigate
                class="flex items-center justify-between mr-4">
-                <x-application-logo
-                    class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
-                <span
-                    class="hidden sm:inline-flex self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                <x-application-logo class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
+                <span class="hidden sm:inline-flex self-center text-2xl font-semibold whitespace-nowrap ">
                     {{ config('app.name') }}
                 </span>
             </a>

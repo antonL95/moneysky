@@ -8,12 +8,12 @@
     </x-slot>
 
     <x-slot name="content">
-        <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
+        <div class="max-w-xl text-sm">
             {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
         </div>
 
         <div class="mt-5">
-            <x-mary-button class="text-white bg-red-600" wire:click="confirmUserDeletion" wire:loading.attr="disabled">
+            <x-mary-button class=" btn bg-red-600 hover:bg-red-500" wire:click="confirmUserDeletion" wire:loading.attr="disabled">
                 {{ __('Delete Account') }}
             </x-mary-button>
         </div>
@@ -35,11 +35,11 @@
             </div>
 
             <x-slot:actions>
-                <x-secondary-button wire:click="$toggle('confirmingUserDeletion')" wire:loading.attr="disabled">
+                <x-mary-button class="btn" wire:click="$toggle('confirmingUserDeletion')" wire:loading.attr="disabled">
                     {{ __('Cancel') }}
-                </x-secondary-button>
+                </x-mary-button>
 
-                <x-mary-button type="submit" class="ms-3 text-white bg-red-600" wire:click="deleteUser" wire:loading.attr="disabled">
+                <x-mary-button type="submit" class="ms-3  bg-red-600 hover:bg-red-500" wire:click="deleteUser" wire:loading.attr="disabled">
                     {{ __('Delete Account') }}
                 </x-mary-button>
             </x-slot:actions>

@@ -7,8 +7,6 @@ namespace App\Bank\Jobs;
 use App\Bank\Models\UserBankAccount;
 use App\Bank\Models\UserBankTransactionRaw;
 use App\Bank\Services\BankService;
-use App\Models\Scopes\UserScope;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,7 +27,7 @@ class ProcessBankAccounts implements ShouldQueue
     protected BankService $bankService;
 
     public function __construct(
-        public User $user,
+        public UserBankAccount $userBankAccount,
         ?Carbon $from,
         ?Carbon $to,
     ) {
@@ -52,43 +50,22 @@ class ProcessBankAccounts implements ShouldQueue
     public function handle(BankService $bankService): void
     {
         $this->bankService = $bankService;
-        $bankAccounts = UserBankAccount::withoutGlobalScope(UserScope::class)
-            ->where('user_id', $this->user->id)->get();
 
-        if ($bankAccounts->isEmpty()) {
-            return;
-        }
-
-        foreach ($bankAccounts as $account) {
-            $this->fetchBalance($account);
-            $this->fetchTransaction($account);
-        }
-
-        $diff = $this->from->diffInDays($this->to);
-        if ($diff > ProcessTransactionsJob::MAX_DAYS) {
-            $chunks = ceil($diff / ProcessTransactionsJob::MAX_DAYS);
-
-            for ($i = 0; $i < $chunks; ++$i) {
-                $from = $this->from->copy()->addDays($i * ProcessTransactionsJob::MAX_DAYS);
-                $to = $this->from->copy()->addDays(($i + 1) * ProcessTransactionsJob::MAX_DAYS);
-                ProcessTransactionsJob::dispatch($this->user, $from, $to);
-            }
-        } else {
-            ProcessTransactionsJob::dispatch($this->user, $this->from, $this->to);
-        }
+        $this->fetchBalance();
+        $this->fetchTransaction();
     }
 
-    private function fetchBalance(UserBankAccount $account): void
+    private function fetchBalance(): void
     {
-        $balance = $this->bankService->getAccountBalance($account);
+        $balance = $this->bankService->getAccountBalance($this->userBankAccount);
 
-        $account->balance_cents = $balance->balance;
-        $account->save();
+        $this->userBankAccount->balance_cents = $balance->balance;
+        $this->userBankAccount->save();
     }
 
-    private function fetchTransaction(UserBankAccount $account): void
+    private function fetchTransaction(): void
     {
-        $transactions = $this->bankService->getAccountTransactions($account, $this->from, $this->to);
+        $transactions = $this->bankService->getAccountTransactions($this->userBankAccount, $this->from, $this->to);
 
         $temp = [];
 
@@ -98,7 +75,7 @@ class ProcessBankAccounts implements ShouldQueue
 
         foreach ($transactions as $transaction) {
             $temp[] = [
-                'user_bank_account_id' => $account->id,
+                'user_bank_account_id' => $this->userBankAccount->id,
                 'external_id' => $transaction->externalId,
                 'balance_cents' => $transaction->balance,
                 'currency' => $transaction->currency,

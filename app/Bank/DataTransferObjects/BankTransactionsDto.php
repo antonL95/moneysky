@@ -7,6 +7,8 @@ namespace App\Bank\DataTransferObjects;
 use App\Bank\Exceptions\InvalidApiException;
 use Illuminate\Support\Carbon;
 
+use function Safe\json_encode;
+
 readonly class BankTransactionsDto
 {
     /**
@@ -27,7 +29,15 @@ readonly class BankTransactionsDto
         $currency = $balanceAmount['currency'];
         $currencyExchange = $data['currencyExchange'] ?? null;
         $additionalInformation = $data['additionalInformation'] ?? null;
-        $remittanceInformation = $data['remittanceInformationUnstructured'] ?? null;
+        $unstructuredArray = $data['remittanceInformationUnstructuredArray'] ?? null;
+
+        $unstructuredInformation = null;
+
+        if ($unstructuredArray !== null) {
+            $unstructuredInformation = json_encode($unstructuredArray);
+        }
+
+        $remittanceInformation = $data['remittanceInformationUnstructured'] ?? $unstructuredInformation;
 
         if (!\is_string($externalId) || !is_numeric($balance) || !\is_string($currency)) {
             throw InvalidApiException::invalidDataEntry();

@@ -6,15 +6,15 @@
         </x-mary-button>
     </div>
 
-    <x-mary-table :headers="$headers" :rows="$rows" with-pagination class="" :sort-by="$sortBy" >
+    <x-mary-table :headers="$headers" :rows="$rows" with-pagination x-mary-checkbox:sort-by="$sortBy" >
         @scope('cell_balance_cents', $row)
         <x-amount-format :amount="$row->balance_cents" :amount-currency="'USD'" />
         @endscope
         {{-- Special `actions` slot --}}
         @scope('actions', $row)
         <div class="flex items-center justify-end">
-            <x-mary-button icon="fas.pencil" href="{{route('app.edit-crypto-wallets', ['wallet' => $row->id])}}" wire:navigate class="btn-sm bg-yellow-300 text-white" />
-            <x-mary-button icon="o-trash" wire:click="delete({{ $row->id }})" class="btn-sm bg-red-500 text-white" />
+            <x-mary-button icon="fas.pencil" href="{{route('app.edit-crypto-wallets', ['wallet' => $row->id])}}" wire:navigate class="btn-sm bg-info" />
+            <x-mary-button icon="o-trash" wire:click="delete({{ $row->id }})" class="btn-sm bg-warning" />
         </div>
         @endscope
     </x-mary-table>

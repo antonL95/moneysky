@@ -19,9 +19,9 @@ class OpenAiService
     protected const string MODEL = 'gpt-3.5-turbo';
 
     /**
-     * @return array<int, TaggedTransactionDto>
+     * @throws OpenAiExceptions
      */
-    public function classifyTransactions(UserBankTransactionRaw $transactions): array
+    public function classifyTransactions(UserBankTransactionRaw $transactionRaw): TaggedTransactionDto
     {
         $tags = TransactionTag::all();
 
@@ -29,17 +29,17 @@ class OpenAiService
         $inputTags = $tags->map(fn (TransactionTag $tag) => $tag->tag)->toArray();
 
         $transactionInput = [
-            'id' => $transactions->id,
-            'text' => $transactions->remittance_information ?? $transactions->additional_information,
-            'amount' => round($transactions->balance_cents / 100, 2),
-            'currency' => $transactions->currency,
+            'id' => $transactionRaw->id,
+            'text' => $transactionRaw->remittance_information ?? $transactionRaw->additional_information,
+            'amount' => round($transactionRaw->balance_cents / 100, 2),
+            'currency' => $transactionRaw->currency,
         ];
 
         $systemPrompt = sprintf(
-            'Sort data from this format "%s" using tags: [%s] and output in this format "%s"',
-            '[{"id": "123", "text": "description", "amount": 123.45, "currency": "USD"}]',
+            'Sort data from this format "%s" using these tags: [%s] and output in this format "%s"',
+            '{"id": "123", "text": "description", "amount": 123.45, "currency": "USD"}',
             implode(',', $inputTags),
-            '[{"id": "123", "tag": "category"}]',
+            '{"id": "123", "tag": "category"}',
         );
 
         $userPrompt = json_encode($transactionInput);
@@ -59,29 +59,20 @@ class OpenAiService
         ]);
 
         if ($response->choices[0]->message->content === null) {
-            return [];
+            throw OpenAiExceptions::invalidResponse();
         }
 
         try {
-            $taggedTransactions = (array) json_decode($response->choices[0]->message->content, true);
+            /** @var array<string, int|string> $taggedTransaction */
+            $taggedTransaction = (array) json_decode($response->choices[0]->message->content, true);
         } catch (JsonException) {
-            return [];
+            throw OpenAiExceptions::invalidResponse();
         }
 
-        $temp = [];
-        foreach ($taggedTransactions as $taggedTransaction) {
-            if (!\is_array($taggedTransaction)) {
-                continue;
-            }
-
-            try {
-                /** @var array<int, string> $taggedTransaction */
-                $temp[] = TaggedTransactionDto::fromArray($taggedTransaction);
-            } catch (OpenAiExceptions) {
-                continue;
-            }
+        try {
+            return TaggedTransactionDto::fromArray($taggedTransaction);
+        } catch (OpenAiExceptions) {
+            throw OpenAiExceptions::couldNotTagTransaction();
         }
-
-        return $temp;
     }
 }

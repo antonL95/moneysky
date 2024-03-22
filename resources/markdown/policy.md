@@ -13,7 +13,3 @@ The information we collect may be used in the following ways:
 - To improve our app
 - To process transactions
 - To send periodic emails
-
-## Log Files
-
-MoneySky follows a standard procedure of using log files. These files log visitors when they visit apps. All hosting companies do this and a part

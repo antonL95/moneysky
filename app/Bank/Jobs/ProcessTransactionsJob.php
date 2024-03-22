@@ -11,11 +11,12 @@ use App\Bank\Models\UserBankTransactionRaw;
 use App\Bank\Models\UserTransaction;
 use App\Bank\Models\UserTransactionTag;
 use App\Models\Scopes\UserScope;
-use App\Models\User;
+use App\OpenAi\Exceptions\OpenAiExceptions;
 use App\OpenAi\Services\OpenAiService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -30,66 +31,63 @@ class ProcessTransactionsJob implements ShouldQueue
         'Disney',
         'Amazon',
         'HBO',
-        'AppleTV', // Or "Apple" depending on how transactions list it
+        'AppleTV',
         'Peacock',
         'Spotify',
-        'AppleMusic', // Or "Apple" if you're not differentiating between services
-        'YouTube', // This might also catch other YouTube services
+        'AppleMusic',
+        'YouTube',
         'Tidal',
         'Paramount',
     ];
 
     protected OpenAiService $openAiService;
 
-    public const int MAX_DAYS = 2;
-
     public int $timeout = 900;
 
+    /**
+     * @param Collection<int, UserBankTransactionRaw> $rawTransactionsToProcess
+     */
     public function __construct(
-        public User $user,
-        public Carbon $from,
-        public Carbon $to,
+        public Collection $rawTransactionsToProcess,
     ) {
     }
 
     public function handle(OpenAiService $openAiService): void
     {
         $this->openAiService = $openAiService;
-        $bankAccounts = UserBankAccount::withoutGlobalScope(UserScope::class)
-            ->where('user_id', $this->user->id)->get();
 
-        if ($bankAccounts->isEmpty()) {
-            return;
-        }
-
-        foreach ($bankAccounts as $account) {
-            $this->processTransactions($account);
-        }
+        $this->processTransactions();
     }
 
-    private function processTransactions(UserBankAccount $account): void
+    private function processTransactions(): void
     {
-        $transactions = UserBankTransactionRaw::where('user_bank_account_id', '=', $account->id)
-            ->whereBetween(
-                'booked_at',
-                [$this->from, $this->to],
-            )->get();
+        foreach ($this->rawTransactionsToProcess as $transaction) {
+            $userBankAccount = UserBankAccount::find($transaction->user_bank_account_id);
 
-        foreach ($transactions as $transaction) {
-            $shouldTag = $this->processTransaction($transaction);
+            if ($userBankAccount === null) {
+                continue;
+            }
+
+            $shouldTag = $this->processTransaction($transaction, $userBankAccount);
+
             if ($shouldTag) {
-                $taggedTransactions = $this->openAiService->classifyTransactions($transaction);
-                if ($taggedTransactions !== []) {
-                    $this->tagTransaction($taggedTransactions, $account);
-                } else {
-                    $this->saveUserTransaction($transaction, $account->id);
+                try {
+                    $taggedTransaction = $this->openAiService->classifyTransactions($transaction);
+                    $this->tagTransaction($taggedTransaction, $userBankAccount);
+                } catch (OpenAiExceptions) {
+                    $this->saveUserTransaction($transaction, $userBankAccount);
                 }
             }
+
+            $transaction->processed = true;
+            $transaction->save();
         }
     }
 
-    private function processTransaction(UserBankTransactionRaw $transaction): bool
-    {
+    private function processTransaction(
+        UserBankTransactionRaw $transaction,
+        UserBankAccount $userBankAccount,
+    ): bool {
         // Find transactions between accounts
         $otherTransaction = UserBankTransactionRaw::where('external_id', '!=', $transaction->external_id)
             ->where('balance_cents', '=', -$transaction->balance_cents)
@@ -118,7 +116,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    $this->saveUserTransaction($transaction, $transaction->user_bank_account_id, $tag);
+                    $this->saveUserTransaction($transaction, $userBankAccount, $tag);
 
                     return false;
                 }
@@ -137,7 +135,7 @@ class ProcessTransactionsJob implements ShouldQueue
                         ]);
                     }
 
-                    $this->saveUserTransaction($transaction, $transaction->user_bank_account_id, $tag);
+                    $this->saveUserTransaction($transaction, $userBankAccount, $tag);
 
                     return false;
                 }
@@ -147,7 +145,7 @@ class ProcessTransactionsJob implements ShouldQueue
         // Find similar already tagged transactions
         $tenPercent = $transaction->balance_cents * 0.02;
         $similarTransaction = UserTransaction::withoutGlobalScope(UserScope::class)
-            ->where('user_id', $this->user->id)
+            ->where('user_id', '=', $userBankAccount->user_id)
             ->whereBetween('balance_cents', [$transaction->balance_cents - $tenPercent, $transaction->balance_cents + $tenPercent])
             ->where('currency', '=', $transaction->currency)
             ->where('description', 'like', '%'.$transaction->remittance_information.'%')
@@ -156,7 +154,7 @@ class ProcessTransactionsJob implements ShouldQueue
         if ($similarTransaction !== null) {
             $this->saveUserTransaction(
                 $transaction,
-                $transaction->user_bank_account_id,
+                $userBankAccount,
                 $similarTransaction->transactionTag,
                 $similarTransaction->userTransactionTag,
             );
@@ -171,46 +169,36 @@ class ProcessTransactionsJob implements ShouldQueue
         return true;
     }
 
-    /**
-     * @param TaggedTransactionDto[] $taggedTransactions
-     */
     private function tagTransaction(
-        array $taggedTransactions,
-        UserBankAccount $account,
+        TaggedTransactionDto $taggedTransaction,
+        UserBankAccount $userBankAccount,
     ): void {
-        foreach ($taggedTransactions as $taggedTransaction) {
-            $tag = TransactionTag::whereTag($taggedTransaction->tag)->first();
+        $tag = TransactionTag::whereTag($taggedTransaction->tag)->first();
+        $rawTransaction = UserBankTransactionRaw::find($taggedTransaction->id);
 
-            if ($tag === null) {
-                continue;
-            }
-
-            $rawTransaction = UserBankTransactionRaw::find($taggedTransaction->id);
-
-            if ($rawTransaction === null) {
-                continue;
-            }
-
-            $this->saveUserTransaction($rawTransaction, $account->id, $tag);
+        if ($tag === null || $rawTransaction === null) {
+            return;
         }
+
+        $this->saveUserTransaction($rawTransaction, $userBankAccount, $tag);
     }
 
     private function saveUserTransaction(
-        UserBankTransactionRaw $transaction,
-        int $accountId,
+        UserBankTransactionRaw $userBankTransactionRaw,
+        UserBankAccount $userBankAccount,
         ?TransactionTag $tag = null,
         ?UserTransactionTag $userTransactionTag = null,
     ): void {
         UserTransaction::withoutGlobalScope(UserScope::class)->insertOrIgnore([
-            'user_id' => $this->user->id,
-            'user_bank_account_id' => $accountId,
+            'user_id' => $userBankAccount->user_id,
+            'user_bank_account_id' => $userBankAccount->id,
             'transaction_tag_id' => $tag?->id,
             'user_transaction_tag_id' => $userTransactionTag?->id,
-            'user_bank_transaction_raw_id' => $transaction->id,
-            'balance_cents' => $transaction->balance_cents,
-            'currency' => $transaction->currency,
-            'description' => $transaction->remittance_information ?? $transaction->additional_information,
-            'booked_at' => $transaction->booked_at ?? Carbon::now(),
+            'user_bank_transaction_raw_id' => $userBankTransactionRaw->id,
+            'balance_cents' => $userBankTransactionRaw->balance_cents,
+            'currency' => $userBankTransactionRaw->currency,
+            'description' => $userBankTransactionRaw->remittance_information ?? $userBankTransactionRaw->additional_information,
+            'booked_at' => $userBankTransactionRaw->booked_at ?? Carbon::now(),
         ]);
     }
 }

@@ -15,32 +15,28 @@
 </span>
 
 @once
-<x-dialog-modal wire:model.live="confirmingPassword">
-    <x-slot name="title">
+<x-mary-modal wire:model.live="confirmingPassword">
+    <x-slot:title>
         {{ $title }}
-    </x-slot>
+    </x-slot:title>
 
-    <x-slot name="content">
-        {{ $content }}
+    {{ $content }}
 
-        <div class="mt-4" x-data="{}" x-on:confirming-password.window="setTimeout(() => $refs.confirmable_password.focus(), 250)">
-            <x-input type="password" class="mt-1 block w-3/4" placeholder="{{ __('Password') }}" autocomplete="current-password"
-                        x-ref="confirmable_password"
-                        wire:model="confirmablePassword"
-                        wire:keydown.enter="confirmPassword" />
+    <div class="mt-4" x-data="{}" x-on:confirming-password.window="setTimeout(() => $refs.confirmable_password.focus(), 250)">
+        <x-mary-input type="password" class="mt-1 block w-3/4" placeholder="{{ __('Password') }}" autocomplete="current-password"
+                    x-ref="confirmable_password"
+                    wire:model="confirmablePassword"
+                    wire:keydown.enter="confirmPassword" />
+    </div>
 
-            <x-input-error for="confirmable_password" class="mt-2" />
-        </div>
-    </x-slot>
-
-    <x-slot name="footer">
-        <x-secondary-button wire:click="stopConfirmingPassword" wire:loading.attr="disabled">
+    <x-slot:actions>
+        <x-mary-button class="btn" wire:click="stopConfirmingPassword" wire:loading.attr="disabled">
             {{ __('Cancel') }}
-        </x-secondary-button>
+        </x-mary-button>
 
-        <x-mary-button class="ms-3" dusk="confirm-password-button" wire:click="confirmPassword" wire:loading.attr="disabled">
+        <x-mary-button class="ms-3 btn btn-primary" dusk="confirm-password-button" wire:click="confirmPassword" wire:loading.attr="disabled">
             {{ $button }}
         </x-mary-button>
-    </x-slot>
-</x-dialog-modal>
+    </x-slot:actions>
+</x-mary-modal>
 @endonce

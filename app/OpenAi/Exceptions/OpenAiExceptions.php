@@ -17,4 +17,14 @@ class OpenAiExceptions extends CustomAppException
     {
         return new self('Invalid data');
     }
+
+    public static function invalidResponse(): self
+    {
+        return new self('Invalid response');
+    }
+
+    public static function couldNotTagTransaction(): self
+    {
+        return new self('Could not tag transaction');
+    }
 }

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    class="bg-white dark:bg-dark-900 text-dark-900 dark:text-white"
 >
 <head>
     <meta charset="utf-8">
@@ -16,11 +15,15 @@
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased bg-base-100">
 
 <div class="min-h-screen">
     <header>
-        <x-navigation.guest-navigation-menu />
+        @auth
+            <x-navigation.navigation-menu />
+        @else
+            <x-navigation.guest-navigation-menu />
+        @endauth
         @if (isset($header))
             <div class="container text-center max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 {{ $header }}
@@ -37,7 +40,7 @@
         @if (isset($footer))
             {{ $footer }}
         @endif
-        <p class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+        <p class="text-sm  sm:text-center ">
             © {{now()->format('Y')}} {{ config('app.name') }}. All rights reserved.</p>
     </footer>
 </div>

@@ -14,7 +14,7 @@
             </x-slot>
 
             <x-slot name="actions">
-                <x-mary-button type="submit">
+                <x-mary-button type="submit" class="btn btn-primary">
                     {{ __('Save') }}
                 </x-mary-button>
             </x-slot>

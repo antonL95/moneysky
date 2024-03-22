@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.guest>
     <div class="pt-20">
         <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
             <div>
@@ -10,4 +10,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-layouts.guest>

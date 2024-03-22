@@ -4,10 +4,8 @@
             <a href="{{Auth::user() ? route('app.home') : route('home')}}"
                wire:navigate
                class="flex items-center justify-between mr-4">
-                <x-application-logo
-                    class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
-                <span
-                    class="hidden sm:inline-flex self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                <x-application-logo class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
+                <span class="hidden sm:inline-flex self-center text-2xl font-semibold whitespace-nowrap">
                     {{ config('app.name') }}
                 </span>
             </a>

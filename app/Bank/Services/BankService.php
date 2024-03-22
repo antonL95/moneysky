@@ -102,7 +102,7 @@ class BankService
             $accountDetail['id'] = $id;
             $detail = BankAccountDto::fromArray($accountDetail);
 
-            UserBankAccount::createOrFirst([
+            $userBankAccount = UserBankAccount::createOrFirst([
                 'user_id' => $user->id,
                 'user_bank_session_id' => $userBankSession->id,
                 'external_id' => $detail->id,
@@ -113,9 +113,9 @@ class BankService
                 'currency' => $detail->currency,
                 'access_expires_at' => now()->addDays($agreementDays),
             ]);
-        }
 
-        ProcessBankAccounts::dispatch($user, $from, now());
+            ProcessBankAccounts::dispatch($userBankAccount, $from, now());
+        }
     }
 
     /**

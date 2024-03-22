@@ -11,7 +11,7 @@
         </x-mary-button>
     </div>
 
-    <x-mary-table :headers="$headers" :rows="$rows" with-pagination class="bg-base-100" :sort-by="$sortBy" >
+    <x-mary-table :headers="$headers" :rows="$rows" with-pagination x-mary-checkbox:sort-by="$sortBy" >
         @scope('cell_balance_cents', $row)
         <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency" />
         @endscope

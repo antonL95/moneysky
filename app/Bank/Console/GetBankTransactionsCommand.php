@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Bank\Console;
 
 use App\Bank\Jobs\ProcessBankAccounts;
-use App\Models\User;
+use App\Bank\Models\UserBankAccount;
+use App\Models\Scopes\UserScope;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -35,11 +36,13 @@ class GetBankTransactionsCommand extends Command
                 ->setTime(0, 0);
         }
 
-        $users = User::all();
+        $userBankAccounts = UserBankAccount::withoutGlobalScope(
+            UserScope::class,
+        )->get();
 
         $i = 0;
-        foreach ($users as $user) {
-            ProcessBankAccounts::dispatch($user, $from, $to)
+        foreach ($userBankAccounts as $userBankAccount) {
+            ProcessBankAccounts::dispatch($userBankAccount, $from, $to)
                 ->delay(now()->addSeconds($i * 5));
             ++$i;
         }

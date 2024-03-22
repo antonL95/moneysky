@@ -24,6 +24,7 @@ class UserBankTransactionRaw extends Model
         'remittance_information',
         'booked_at',
         'merchant_category_code',
+        'processed',
     ];
 
     protected $casts = [

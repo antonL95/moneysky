@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    class="bg-white dark:bg-dark-900 text-dark-900 dark:text-white"
+    class="bg-base-100"
 >
 <head>
     <meta charset="utf-8">
@@ -22,7 +22,7 @@
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased bg-base-100">
 
 {{-- The navbar with `sticky` and `full-width` --}}
 <x-navigation.navigation-menu/>
@@ -31,37 +31,38 @@
 <x-mary-main full-width>
     {{-- This is a sidebar that works also as a drawer on small screens --}}
     {{-- Notice the `main-drawer` reference here --}}
-    <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit md:pt-20 pb-0">
+    <x-slot:sidebar drawer="main-drawer" collapsible class="md:pt-20 pb-0">
         {{-- Activates the menu item when a route matches the `link` property --}}
         <x-mary-menu activate-by-route>
-            @if(auth()->user()->subscribed())
-                <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
-                <x-mary-menu-item title="{{ __('Bank accounts') }}" icon="c-building-library"
-                                  link="{{route('app.bank-accounts')}}"/>
-                <x-mary-menu-item title="{{ __('Crypto wallets') }}" icon="fab.bitcoin"
-                                  link="{{route('app.crypto-wallets')}}"/>
-                <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
-                                  link="{{route('app.kraken-accounts')}}"/>
-                <x-mary-menu-item title="{{ __('Stock market') }}" icon="fas.rocket"
-                                  link="{{route('app.stock-market')}}"/>
-                <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
-                                  link="{{route('app.manual-entries')}}"/>
-            @else
-                <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
-                <x-mary-menu-item title="{{ __('Bank accounts') }}" badge="{{__('All access')}}"
-                                  badge-classes="!badge-warning" icon="c-building-library"
-                                  link="{{route('subscription-checkout', ['plan' => 'monthly'])}}" no-wire-navigate/>
-                <x-mary-menu-item title="{{ __('Crypto wallets') }}" badge="{{__('All access')}}"
-                                  badge-classes="!badge-warning" icon="fab.bitcoin"
-                                  link="{{route('subscription-checkout', ['plan' => 'monthly'])}}" no-wire-navigate/>
-                <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
-                                  link="{{route('app.kraken-accounts')}}"/>
-                <x-mary-menu-item title="{{ __('Stock market') }}" badge="{{__('All access')}}"
-                                  badge-classes="!badge-warning" icon="fas.rocket"
-                                  link="{{route('subscription-checkout', ['plan' => 'monthly'])}}" no-wire-navigate/>
-                <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
-                                  link="{{route('app.manual-entries')}}"/>
-            @endif
+            <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
+            <x-mary-menu-item title="{{ __('Bank accounts') }}" icon="c-building-library"
+                              link="{{route('app.bank-accounts')}}">
+                @if(!auth()->user()->subscribed())
+                    <x-slot:badge>
+                        <x-mary-badge class="badge-warning" value="{{__('All access')}}"/>
+                    </x-slot:badge>
+                @endif
+            </x-mary-menu-item>
+            <x-mary-menu-item title="{{ __('Crypto wallets') }}" icon="fab.bitcoin"
+                              link="{{route('app.crypto-wallets')}}">
+                @if(!auth()->user()->subscribed())
+                    <x-slot:badge>
+                        <x-mary-badge class="badge-warning" value="{{__('All access')}}"/>
+                    </x-slot:badge>
+                @endif
+            </x-mary-menu-item>
+            <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
+                              link="{{route('app.kraken-accounts')}}"/>
+            <x-mary-menu-item title="{{ __('Stock market') }}" icon="fas.rocket"
+                              link="{{route('app.stock-market')}}">
+                @if(!auth()->user()->subscribed())
+                    <x-slot:badge>
+                        <x-mary-badge class="badge-warning" value="{{__('All access')}}"/>
+                    </x-slot:badge>
+                @endif
+            </x-mary-menu-item>
+            <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"
+                              link="{{route('app.manual-entries')}}"/>
         </x-mary-menu>
     </x-slot:sidebar>
 
