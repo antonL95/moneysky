@@ -22,7 +22,7 @@ class ProcessTransactions extends Command
 
     public function handle(): void
     {
-        $transactions = UserBankTransactionRaw::where('processed', false)
+        $transactions = UserBankTransactionRaw::where('processed', '=', false)
             ->limit(20)
             ->get();
 

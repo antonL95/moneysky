@@ -31,6 +31,7 @@ class UserBankTransactionRaw extends Model
         'booked_at' => 'datetime',
         'balance_cents' => 'integer',
         'currency_exchange' => 'array',
+        'processed' => 'boolean',
     ];
 
     protected $table = 'user_bank_transactions_raw';

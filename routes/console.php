@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command(
     'app:get-bank-transactions'
 )->hourly();
+
+Schedule::command(
+    'app:process-transactions'
+)->everyMinute();
+
 Schedule::command(
     'app:download-institutions'
 )->daily();
