@@ -18,7 +18,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Log\Logger;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
@@ -43,8 +42,6 @@ class ProcessTransactionsJob implements ShouldQueue
 
     protected OpenAiService $openAiService;
 
-    protected Logger $logger;
-
     public int $timeout = 900;
 
     /**
@@ -55,10 +52,9 @@ class ProcessTransactionsJob implements ShouldQueue
     ) {
     }
 
-    public function handle(OpenAiService $openAiService, Logger $logger): void
+    public function handle(OpenAiService $openAiService): void
     {
         $this->openAiService = $openAiService;
-        $this->logger = $logger;
 
         $this->processTransactions();
     }
@@ -78,10 +74,7 @@ class ProcessTransactionsJob implements ShouldQueue
                 try {
                     $taggedTransaction = $this->openAiService->classifyTransactions($transaction);
                     $this->tagTransaction($taggedTransaction, $transaction, $userBankAccount);
-                } catch (OpenAiExceptions $e) {
-                    $this->logger->info($e->getMessage(), [
-                        'transaction_id' => $transaction->id,
-                    ]);
+                } catch (OpenAiExceptions) {
                     $this->saveUserTransaction($transaction, $userBankAccount);
                 }
             }
