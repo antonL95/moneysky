@@ -69,10 +69,6 @@ class OpenAiService
             throw OpenAiExceptions::invalidResponse();
         }
 
-        try {
-            return TaggedTransactionDto::fromArray($taggedTransaction);
-        } catch (OpenAiExceptions) {
-            throw OpenAiExceptions::couldNotTagTransaction();
-        }
+        return TaggedTransactionDto::fromArray($taggedTransaction);
     }
 }

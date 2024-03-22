@@ -39,16 +39,28 @@
                               link="{{route('app.bank-accounts')}}">
                 @if(!auth()->user()->subscribed())
                     <x-slot:badge>
-                        <x-mary-badge class="badge-warning" value="{{__('All access')}}"/>
+                        {{__('All access')}}
                     </x-slot:badge>
+                    <x-slot:badgeClasses>
+                        bg-accent
+                    </x-slot:badgeClasses>
+                    <x-slot:noWireNavigate>
+                        true
+                    </x-slot:noWireNavigate>
                 @endif
             </x-mary-menu-item>
             <x-mary-menu-item title="{{ __('Crypto wallets') }}" icon="fab.bitcoin"
                               link="{{route('app.crypto-wallets')}}">
                 @if(!auth()->user()->subscribed())
                     <x-slot:badge>
-                        <x-mary-badge class="badge-warning" value="{{__('All access')}}"/>
+                        {{__('All access')}}
                     </x-slot:badge>
+                    <x-slot:badgeClasses>
+                        bg-accent
+                    </x-slot:badgeClasses>
+                    <x-slot:noWireNavigate>
+                        true
+                    </x-slot:noWireNavigate>
                 @endif
             </x-mary-menu-item>
             <x-mary-menu-item title="{{ __('Kraken account') }}" icon="fas.bitcoin-sign"
@@ -57,8 +69,14 @@
                               link="{{route('app.stock-market')}}">
                 @if(!auth()->user()->subscribed())
                     <x-slot:badge>
-                        <x-mary-badge class="badge-warning" value="{{__('All access')}}"/>
+                        {{__('All access')}}
                     </x-slot:badge>
+                    <x-slot:badgeClasses>
+                        bg-accent
+                    </x-slot:badgeClasses>
+                    <x-slot:noWireNavigate>
+                        true
+                    </x-slot:noWireNavigate>
                 @endif
             </x-mary-menu-item>
             <x-mary-menu-item title="{{ __('Cash wallets') }}" icon="fas.wallet"

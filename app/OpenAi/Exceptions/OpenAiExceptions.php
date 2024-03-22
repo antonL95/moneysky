@@ -13,9 +13,9 @@ class OpenAiExceptions extends CustomAppException
         return new self('Invalid configuration');
     }
 
-    public static function invalidData(): self
+    public static function invalidData(string $data): self
     {
-        return new self('Invalid data');
+        return new self(sprintf('Invalid data: %s', $data));
     }
 
     public static function invalidResponse(): self

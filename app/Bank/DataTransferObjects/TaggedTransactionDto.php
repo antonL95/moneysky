@@ -6,6 +6,8 @@ namespace App\Bank\DataTransferObjects;
 
 use App\OpenAi\Exceptions\OpenAiExceptions;
 
+use function Safe\json_encode;
+
 final readonly class TaggedTransactionDto
 {
     /**
@@ -16,10 +18,10 @@ final readonly class TaggedTransactionDto
     public static function fromArray(array $data): self
     {
         $tag = $data['tag'];
-        $id = $data['id'];
+        $id = (int) $data['id'];
 
         if (!\is_int($id) || !\is_string($tag)) {
-            throw OpenAiExceptions::invalidData();
+            throw OpenAiExceptions::invalidData(json_encode($data));
         }
 
         return new self(

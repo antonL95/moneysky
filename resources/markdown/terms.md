@@ -3,16 +3,6 @@ Last Updated: 22.03.2024
 
 Welcome to moneysky.app. By accessing or using our application, you agree to be bound by the terms and conditions set forth below. If you do not agree with any part of these terms, you are prohibited from using or accessing this app.
 
-## Use License
-Permission is granted to temporarily download one copy of moneysky.app per device for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license, you may not:
-
-## Modify or copy the materials;
-Use the materials for any commercial purpose, or for any public display (commercial or non-commercial);
-Attempt to decompile or reverse engineer any software contained in moneysky.app;
-Remove any copyright or other proprietary notations from the materials; or
-Transfer the materials to another person or "mirror" the materials on any other server.
-This license shall automatically terminate if you violate any of these restrictions and may be terminated by MoneySky at any time.
-
 ## Disclaimer
 The materials on moneysky.app are provided on an 'as is' basis. MoneySky makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
 
