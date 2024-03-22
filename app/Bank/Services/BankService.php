@@ -107,7 +107,11 @@ class BankService
                 'user_bank_session_id' => $userBankSession->id,
                 'external_id' => $detail->id,
                 'resource_id' => $detail->resourceId,
-                'name' => $detail->name,
+                'name' => $detail->name ?? sprintf(
+                    '%s (%s)',
+                    $userBankSession->bankInstitution->name,
+                    $detail->currency,
+                ),
                 'iban' => $detail->iban,
                 'balance_cents' => 0,
                 'currency' => $detail->currency,
