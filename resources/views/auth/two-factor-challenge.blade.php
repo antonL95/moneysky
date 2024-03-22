@@ -17,15 +17,15 @@
                 @csrf
 
                 <div class="mt-4" x-show="! recovery">
-                    <x-mary-input id="recovery_code" label="{{ __('Code') }}" class="block mt-1 w-full" type="text" name="recovery_code" x-ref="recovery_code" autocomplete="one-time-code" />
+                    <x-mary-input id="recovery_code" label="{{ __('Code') }}" class="block mt-1 w-full" type="text" name="code" x-ref="code" autocomplete="one-time-code" />
                 </div>
 
                 <div class="mt-4" x-cloak x-show="recovery">
-                    <x-mary-input id="code" label="{{ __('Code') }}" class="block mt-1 w-full" type="text" name="code" x-ref="code" autocomplete="one-time-code" />
+                    <x-mary-input id="code" label="{{ __('Code') }}" class="block mt-1 w-full" type="text" name="recovery_code" x-ref="recovery_code" autocomplete="one-time-code" />
                 </div>
 
                 <div class="flex items-center justify-end mt-4">
-                    <x-mary-button type="button" class="text-sm  hover: underline cursor-pointer btn"
+                    <x-mary-button type="button" class="text-sm underline cursor-pointer btn"
                                     x-show="! recovery"
                                     x-on:click="
                                         recovery = true;
@@ -34,7 +34,7 @@
                         {{ __('Use a recovery code') }}
                     </x-mary-button>
 
-                    <x-mary-button type="button" class="text-sm  hover: underline cursor-pointer btn"
+                    <x-mary-button type="button" class="text-sm underline cursor-pointer btn"
                                     x-cloak
                                     x-show="recovery"
                                     x-on:click="
