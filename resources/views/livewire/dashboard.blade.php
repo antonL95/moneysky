@@ -1,7 +1,7 @@
 @php use App\Models\UserSetting @endphp
 <div>
     <div class="flex justify-center mb-10 md:grid md:grid-cols-2 max-h-[400px]">
-        <div class="flex">
+        <div class="flex flex-col md:flex-row">
             @if($bankAccountsSum !== null)
                 <x-mary-stat
                     title="{{__('Bank accounts')}}"

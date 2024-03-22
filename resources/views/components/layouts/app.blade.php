@@ -31,7 +31,7 @@
 <x-mary-main full-width>
     {{-- This is a sidebar that works also as a drawer on small screens --}}
     {{-- Notice the `main-drawer` reference here --}}
-    <x-slot:sidebar drawer="main-drawer" collapsible class="md:pt-20 pb-0">
+    <x-slot:sidebar drawer="main-drawer" collapsible class="md:pt-20 pb-0 bg-base-200 md:bg-inherit">
         {{-- Activates the menu item when a route matches the `link` property --}}
         <x-mary-menu activate-by-route>
             <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
