@@ -62,7 +62,7 @@ class ProcessTransactionsJob implements ShouldQueue
     private function processTransactions(): void
     {
         foreach ($this->rawTransactionsToProcess as $transaction) {
-            $userBankAccount = UserBankAccount::find($transaction->user_bank_account_id);
+            $userBankAccount = UserBankAccount::withoutGlobalScope(UserScope::class)->find($transaction->user_bank_account_id);
 
             if ($userBankAccount === null) {
                 continue;
@@ -73,7 +73,7 @@ class ProcessTransactionsJob implements ShouldQueue
             if ($shouldTag) {
                 try {
                     $taggedTransaction = $this->openAiService->classifyTransactions($transaction);
-                    $this->tagTransaction($taggedTransaction, $userBankAccount);
+                    $this->tagTransaction($taggedTransaction, $transaction, $userBankAccount);
                 } catch (OpenAiExceptions) {
                     $this->saveUserTransaction($transaction, $userBankAccount);
                 }
@@ -171,12 +171,12 @@ class ProcessTransactionsJob implements ShouldQueue
 
     private function tagTransaction(
         TaggedTransactionDto $taggedTransaction,
+        UserBankTransactionRaw $rawTransaction,
         UserBankAccount $userBankAccount,
     ): void {
         $tag = TransactionTag::whereTag($taggedTransaction->tag)->first();
-        $rawTransaction = UserBankTransactionRaw::find($taggedTransaction->id);
 
-        if ($tag === null || $rawTransaction === null) {
+        if ($tag === null) {
             return;
         }
 
