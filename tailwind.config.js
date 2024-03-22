@@ -4,13 +4,16 @@ import typography from '@tailwindcss/typography'
 export default {
     darkMode: 'class',
     presets: [
-         "./vendor/robsontenorio/mary/src/View/Components/*.php"
+         "./vendor/robsontenorio/mary/src/View/Components/*.php",
+        "./vendor/robsontenorio/mary/src/View/Components/**/*.php"
     ],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        "./vendor/robsontenorio/mary/src/View/Components/**/*.php",
+        "./vendor/robsontenorio/mary/src/View/Components/*.php",
     ],
     safelist: [
         {pattern: /(bg|text|border|grid|table|h|w|p|py|px|pb|pt|pl|pr|m|mb|mt|mx|my|ml|mr|justify|shadow|ring|rounded|absolute|top|left|right|bottom)-./},
