@@ -51,6 +51,10 @@ jobs:
       - name: Composer install
         run: |
           composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+      - name: Compile CSS and Javascript
+        run: |
+          npm install
+          npm run build
       - name: Create deployment artifact
         env:
           GITHUB_SHA: ${{ github.sha }}
