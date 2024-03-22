@@ -19,6 +19,9 @@ class ChangeUserCurrency extends Component
 
     public string $currency;
 
+    /**
+     * @var string[][]
+     */
     public array $currencies = [];
 
     public function mount(): void

@@ -16,7 +16,6 @@ use App\Models\UserSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -29,11 +28,14 @@ class Dashboard extends Component
 
     protected ConvertCurrency $convertCurrency;
 
-    protected ?User $user;
+    protected User $user;
 
     public ?float $bankAccountsSum = null;
+
     public ?float $cryptoSum = null;
+
     public ?float $cashWalletsSum = null;
+
     public ?float $stocksSum = null;
 
     /**
@@ -41,22 +43,24 @@ class Dashboard extends Component
      */
     public array $sortBy = ['column' => 'booked_at', 'direction' => 'desc'];
 
-
     public function mount(ConvertCurrency $convertCurrency): void
     {
         $this->convertCurrency = $convertCurrency;
 
-        $this->user = auth()->user();
+        $user = auth()->user();
 
-        if ($this->user === null) {
+        if ($user === null) {
             $this->redirect(route('login'));
+
+            return;
         }
+
+        $this->user = $user;
         $this->bankAccountSum();
         $this->cryptoSum();
         $this->stockMarketSum();
         $this->cashWalletsSum();
     }
-
 
     /**
      * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserTransaction>>
@@ -84,13 +88,11 @@ class Dashboard extends Component
         ];
     }
 
-
     #[On('currency-updated')]
     public function render(): View
     {
         return view('livewire.dashboard', $this->with());
     }
-
 
     public function bankAccountSum(): void
     {
@@ -102,7 +104,6 @@ class Dashboard extends Component
 
         $this->bankAccountsSum = $sum;
     }
-
 
     public function cryptoSum(): void
     {
@@ -122,7 +123,6 @@ class Dashboard extends Component
         )->getAmount();
     }
 
-
     public function stockMarketSum(): void
     {
         $stocksSum = UserStockMarket::sum(new Expression('amount * price_cents'));
@@ -140,7 +140,6 @@ class Dashboard extends Component
             new Currency(UserSetting::getCurrencyWithDefault()),
         )->getAmount();
     }
-
 
     public function cashWalletsSum(): void
     {
