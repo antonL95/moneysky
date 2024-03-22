@@ -109,7 +109,7 @@ class BankService
                 'resource_id' => $detail->resourceId,
                 'name' => $detail->name ?? sprintf(
                     '%s (%s)',
-                    $userBankSession->bankInstitution->name,
+                    $userBankSession->bankInstitution?->name,
                     $detail->currency,
                 ),
                 'iban' => $detail->iban,
