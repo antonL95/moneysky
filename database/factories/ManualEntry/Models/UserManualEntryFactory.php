@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Database\Factories\ManualEntry\Models;
 
-use App\Models\UserManualEntry;
+use App\ManualEntry\Models\UserManualEntry;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -12,9 +13,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserManualEntryFactory extends Factory
 {
+    protected $model = UserManualEntry::class;
+
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array

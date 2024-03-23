@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\UserSetting\Models;
 
 use App\Enums\CacheKeys;
-use App\Enums\UserSettingKeys;
 use App\Models\Scopes\UserScope;
+use App\Models\User;
+use App\UserSetting\Enums\UserSettingKeys;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

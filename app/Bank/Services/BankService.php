@@ -198,6 +198,13 @@ class BankService
         }
     }
 
+    public function deleteNotUsedRequisition(UserBankSession $userBankSession): void
+    {
+        $this->client->requisition->deleteRequisition($userBankSession->requisition_id);
+
+        $userBankSession->delete();
+    }
+
     private function getSessionData(
         BankInstitution $bankInstitution,
     ): SessionDto {

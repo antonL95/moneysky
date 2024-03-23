@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Database\Factories\Newsletter\Models;
 
-use App\Models\NewsletterSubscriber;
+use App\Newsletter\Models\NewsletterSubscriber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 

@@ -7,7 +7,7 @@ namespace App\Bank\Models;
 use App\Actions\Currency\ConvertCurrency;
 use App\Models\Scopes\UserScope;
 use App\Models\User;
-use App\Models\UserSetting;
+use App\UserSetting\Models\UserSetting;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

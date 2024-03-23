@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Database\Factories\UserSetting\Models;
 
-use App\Models\UserSetting;
+use App\UserSetting\Models\UserSetting;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -12,9 +13,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserSettingFactory extends Factory
 {
+    protected $model = UserSetting::class;
+
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Bank\Http\Controllers;
 
 use App\Bank\Services\BankService;
-use App\Enums\SessionMessage;
 use App\Exceptions\CustomAppException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -33,29 +32,14 @@ class UserBankAccountRedirect extends Controller
         $ref = $request->get('ref');
 
         if (!\is_string($ref)) {
-            session()->put(
-                SessionMessage::ERROR->value,
-                'Something went wrong with connecting bank account!',
-            );
-
             return redirect()->route('app.bank-accounts');
         }
 
         try {
             $this->connectBankAccounts->create($user, $ref);
 
-            session()->put(
-                SessionMessage::SUCCESS->value,
-                'Bank account connected successfully!',
-            );
-
             return redirect()->route('app.bank-accounts');
         } catch (CustomAppException) {
-            session()->put(
-                SessionMessage::ERROR->value,
-                'Something went wrong with connecting bank account!',
-            );
-
             return redirect()->route('app.bank-accounts');
         }
     }

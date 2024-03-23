@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Enums\CacheKeys;
-use App\Enums\UserSettingKeys;
-use App\Models\UserSetting;
+use App\UserSetting\Enums\UserSettingKeys;
+use App\UserSetting\Models\UserSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;

@@ -1,4 +1,4 @@
-@php use App\Models\UserSetting @endphp
+@php use App\UserSetting\Models\UserSetting@endphp
 <div>
     <div class="flex justify-center mb-10 md:grid md:grid-cols-2 max-h-[400px]">
         <div class="flex flex-col md:flex-row">

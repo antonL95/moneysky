@@ -10,14 +10,8 @@ use Illuminate\Console\Command;
 
 class ProcessTransactions extends Command
 {
-    /**
-     * @var string
-     */
     protected $signature = 'app:process-transactions';
 
-    /**
-     * @var string
-     */
     protected $description = 'Process raw bank transactions and tag them with categories';
 
     public function handle(): void

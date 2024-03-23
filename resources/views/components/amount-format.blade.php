@@ -1,4 +1,4 @@
-@php use App\Actions\Currency\ConvertCurrency;use App\Models\UserSetting;use Money\Currency;use Money\Money; @endphp
+@php use App\Actions\Currency\ConvertCurrency;use App\UserSetting\Models\UserSetting;use Money\Currency;use Money\Money; @endphp
 @props(['amount', 'amountCurrency'])
 <span>
 {{Number::currency(

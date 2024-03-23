@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ScopedBy(UserScope::class)]
@@ -42,5 +43,13 @@ class UserBankSession extends Model
     public function bankInstitution(): BelongsTo
     {
         return $this->belongsTo(BankInstitution::class);
+    }
+
+    /**
+     * @return HasMany<UserBankAccount>
+     */
+    public function userBankAccounts(): HasMany
+    {
+        return $this->hasMany(UserBankAccount::class, 'user_bank_session_id', 'id');
     }
 }

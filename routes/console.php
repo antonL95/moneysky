@@ -17,6 +17,10 @@ Schedule::command(
     'app:download-institutions'
 )->daily();
 
+Schedule::command(
+    'app:check-requisition-accounts'
+)->twiceMonthly();
+
 // Crypto
 Schedule::command(
     'app:kraken-account-balance'
