@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schedule;
 
+// Pulse
+Schedule::command(
+    'pulse:check'
+)->everyFifteenSeconds();
+
 // Bank
 Schedule::command(
     'app:get-bank-transactions'
