@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use Illuminate\Contracts\View\View;
@@ -7,7 +9,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 use Laravel\Cashier\Cashier;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class PricingTable extends Component
@@ -16,28 +17,27 @@ class PricingTable extends Component
 
     public string $currency = 'USD';
 
+    /** @var array<int, array<string, string>> */
     public array $currencies = [
         ['id' => 'USD', 'name' => 'UDS'],
         ['id' => 'EUR', 'name' => 'EUR'],
         ['id' => 'CZK', 'name' => 'CZK'],
     ];
 
-
     public function mount(): void
     {
         $prices = $this->getPrices();
 
-        $this->amount = Number::currency(
+        $this->amount = (string) Number::currency(
             round($prices[$this->currency] / 100, 2),
             $this->currency,
         );
     }
 
-
     public function render(): View
     {
         $prices = $this->getPrices();
-        $this->amount = Number::currency(
+        $this->amount = (string) Number::currency(
             round($prices[$this->currency] / 100, 2),
             $this->currency,
         );
@@ -45,7 +45,9 @@ class PricingTable extends Component
         return view('livewire.pricing-table');
     }
 
-
+    /**
+     * @return array<string, int>
+     */
     private function getPrices(): array
     {
         $priceId = config('services.stripe.monthly_plan');
@@ -55,25 +57,27 @@ class PricingTable extends Component
         }
 
         /** @var array<string, int> $prices */
-        $prices = Cache::remember('stripe_price_' . $priceId, 60 * 60 * 24, fn () => $this->fetchPrices($priceId));
+        $prices = Cache::remember('stripe_price_'.$priceId, 60 * 60 * 24, fn () => $this->fetchPrices($priceId));
 
         return $prices;
     }
-
 
     /**
      * @return array<string, int>
      */
     private function fetchPrices(
         string $priceId,
-    ): array
-    {
+    ): array {
         $price = Cashier::stripe()->prices->retrieve(
             $priceId,
             [
                 'expand' => ['currency_options'],
             ],
         );
+
+        if ($price->currency_options === null) {
+            return [];
+        }
 
         $result = [];
 
