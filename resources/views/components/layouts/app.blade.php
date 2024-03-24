@@ -42,7 +42,7 @@
                         {{__('All access')}}
                     </x-slot:badge>
                     <x-slot:badgeClasses>
-                        bg-accent
+                        bg-accent text-black
                     </x-slot:badgeClasses>
                     <x-slot:noWireNavigate>
                         true
@@ -56,7 +56,7 @@
                         {{__('All access')}}
                     </x-slot:badge>
                     <x-slot:badgeClasses>
-                        bg-accent
+                        bg-accent text-black
                     </x-slot:badgeClasses>
                     <x-slot:noWireNavigate>
                         true
@@ -72,7 +72,7 @@
                         {{__('All access')}}
                     </x-slot:badge>
                     <x-slot:badgeClasses>
-                        bg-accent
+                        bg-accent text-black
                     </x-slot:badgeClasses>
                     <x-slot:noWireNavigate>
                         true

@@ -53,7 +53,7 @@
         @scope('cell_tag', $row)
         <x-mary-badge
             :value="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
-            class=" border-none text-sm h-fit text-center"
+            class="border-none text-sm h-fit text-center text-black"
             style="background-color: {{$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'}}"/>
         @endscope
         @scope('cell_balance_cents', $row)
