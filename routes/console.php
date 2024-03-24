@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schedule;
 // Pulse
 Schedule::command(
     'pulse:check'
-)->everyFifteenSeconds();
+)->everyMinute();
 
 // Bank
 Schedule::command(
