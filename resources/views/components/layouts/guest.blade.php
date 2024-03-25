@@ -20,28 +20,22 @@
 <div class="min-h-screen">
     <header>
         @auth
-            <x-navigation.navigation-menu />
+            <x-navigation.navigation-menu :hide-sidebar="true" />
         @else
             <x-navigation.guest-navigation-menu />
         @endauth
-        @if (isset($header))
-            <div class="container mx-auto">
-                {{ $header }}
-            </div>
-        @endif
     </header>
 
     <main class="max-w-8xl mx-auto px-4 min-h-dvh">
         {{ $slot }}
     </main>
 
-
     <footer class="text-center p-4">
         @if (isset($footer))
             {{ $footer }}
         @endif
         <p class="text-sm  sm:text-center ">
-            © {{now()->format('Y')}} {{ config('app.name') }}. All rights reserved.</p>
+            © {{now()->format('Y')}} {{ config('app.name') }}. {{__('All rights reserved')}}. {{ __('We appreciate your feedback, please contact us here') }}: <a href="mailto:info@moneysky.app">info@moneysky.app</a></p>
     </footer>
 </div>
 

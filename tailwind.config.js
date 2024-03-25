@@ -4,7 +4,7 @@ import typography from '@tailwindcss/typography'
 export default {
     darkMode: 'class',
     presets: [
-         "./vendor/robsontenorio/mary/src/View/Components/*.php",
+        "./vendor/robsontenorio/mary/src/View/Components/*.php",
         "./vendor/robsontenorio/mary/src/View/Components/**/*.php"
     ],
     content: [

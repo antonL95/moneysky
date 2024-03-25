@@ -25,14 +25,14 @@
 <body class="font-sans antialiased bg-base-100">
 
 {{-- The navbar with `sticky` and `full-width` --}}
-<x-navigation.navigation-menu/>
+@auth
+    <x-navigation.navigation-menu />
+@else
+    <x-navigation.guest-navigation-menu />
+@endauth
 
-{{-- The main content with `full-width` --}}
 <x-mary-main full-width>
-    {{-- This is a sidebar that works also as a drawer on small screens --}}
-    {{-- Notice the `main-drawer` reference here --}}
     <x-slot:sidebar drawer="main-drawer" collapsible class="md:pt-20 pb-0 bg-base-200 md:bg-inherit">
-        {{-- Activates the menu item when a route matches the `link` property --}}
         <x-mary-menu activate-by-route>
             <x-mary-menu-item title="{{ __('Overview') }}" icon="fas.chart-pie" link="{{route('app.home')}}"/>
             <x-mary-menu-item title="{{ __('Bank accounts') }}" icon="c-building-library"
@@ -84,11 +84,18 @@
         </x-mary-menu>
     </x-slot:sidebar>
 
-    {{-- The `$slot` goes here --}}
     <x-slot:content class="pt-20 lg:pt-20">
         {{ $slot }}
     </x-slot:content>
 </x-mary-main>
+
+<footer class="text-center p-4">
+    @if (isset($footer))
+        {{ $footer }}
+    @endif
+    <p class="text-sm  sm:text-center ">
+        © {{now()->format('Y')}} {{ config('app.name') }}. {{__('All rights reserved')}}. {{ __('We appreciate your feedback, please contact us here') }}: <a href="mailto:info@moneysky.app">info@moneysky.app</a></p>
+</footer>
 
 {{--  TOAST area --}}
 <x-mary-toast/>

@@ -1,13 +1,17 @@
+@props(['hideSidebar' => false])
 <nav class="px-4 py-2.5 fixed left-0 right-0 top-0 z-20">
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex justify-start items-center">
-            <label for="main-drawer" class="lg:hidden mr-5">
-                <x-mary-icon name="fas.bars-staggered" class="w-6 h-6"/>
-            </label>
-            <a href="{{Auth::user() ? route('app.home') : route('home')}}"
+            @if(!$hideSidebar)
+                <label for="main-drawer" class="lg:hidden mr-5">
+                    <x-mary-icon name="fas.bars-staggered" class="w-6 h-6"/>
+                </label>
+            @endif
+            <a href="{{route('home')}}"
                wire:navigate
                class="flex items-center justify-between mr-4">
-                <x-application-logo class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
+                <x-application-logo
+                    class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
                 <span class="hidden sm:inline-flex self-center text-2xl font-semibold whitespace-nowrap ">
                     {{ config('app.name') }}
                 </span>
@@ -35,7 +39,15 @@
 
             </x-mary-dropdown>
 
-            <x-mary-theme-toggle class="ml-4"/>
+            <div class="ml-4">
+                <x-mary-theme-toggle/>
+            </div>
+
+            <div class="ml-4">
+                <x-mary-button link="{{route('app.home')}}" class="ml-4" class="btn btn-primary">
+                    {{__('Dashboard')}}
+                </x-mary-button>
+            </div>
         </div>
     </div>
 </nav>

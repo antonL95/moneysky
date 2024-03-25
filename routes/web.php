@@ -19,14 +19,12 @@ use App\Livewire\UpdateUserCryptoWallet;
 use App\Livewire\UpdateUserKrakenAccount;
 use App\Livewire\UpdateUserManualEntries;
 use App\Livewire\UpdateUserStockMarket;
-use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static fn () => view('welcome'))
-    ->middleware(RedirectIfAuthenticated::class)
     ->name('home');
 
 Route::middleware([
