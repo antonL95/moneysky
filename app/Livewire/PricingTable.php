@@ -19,7 +19,7 @@ class PricingTable extends Component
 
     /** @var array<int, array<string, string>> */
     public array $currencies = [
-        ['id' => 'USD', 'name' => 'UDS'],
+        ['id' => 'USD', 'name' => 'USD'],
         ['id' => 'EUR', 'name' => 'EUR'],
         ['id' => 'CZK', 'name' => 'CZK'],
     ];
