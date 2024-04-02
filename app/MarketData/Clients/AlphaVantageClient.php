@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\MarketData\Clients;
 
 use App\Actions\Currency\ConvertCurrency;
-use App\MarketData\Contracts\IStockMarketClient;
 use App\MarketData\Exceptions\AlphaVantageClientException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
@@ -15,7 +14,7 @@ use Money\Money;
 
 use function Safe\json_encode;
 
-class AlphaVantageClient implements IStockMarketClient
+readonly class AlphaVantageClient
 {
     private const array EXCHANGE_CURRENCY_MAP = [
         'LON' => 'GBP',
@@ -34,7 +33,7 @@ class AlphaVantageClient implements IStockMarketClient
      * @throws AlphaVantageClientException
      */
     public function __construct(
-        private readonly string $apiUrl = 'https://www.alphavantage.co/query',
+        private string $apiUrl = 'https://www.alphavantage.co/query',
     ) {
         $apiKey = Config::get('services.aplhavantage.apiKey');
 

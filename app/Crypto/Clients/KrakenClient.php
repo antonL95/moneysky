@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Crypto\Clients;
 
-use App\Crypto\Contracts\IExchangeClient;
 use App\Crypto\DataTransferObjects\KrakenParsedPairDto;
 use App\Crypto\DataTransferObjects\KrakenTickerPairDto;
 use App\Crypto\Exceptions\KrakenClientExceptions;
@@ -15,7 +14,7 @@ use Illuminate\Support\Str;
 
 use function Safe\json_encode;
 
-readonly class KrakenClient implements IExchangeClient
+readonly class KrakenClient
 {
     private const array ACCEPTED_FIAT = ['USD', 'EUR'];
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Crypto\Clients;
 
-use App\Crypto\Contracts\ICryptoClient;
 use App\Crypto\DataTransferObjects\CryptoQuoteDto;
 use App\Crypto\Enums\ChainType;
 use App\Crypto\Exceptions\CovalenthqClientExceptions;
@@ -12,7 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
-class CovalenthqClient implements ICryptoClient
+readonly class CovalenthqClient
 {
     protected string $apiKey;
 
@@ -20,7 +19,7 @@ class CovalenthqClient implements ICryptoClient
      * @throws CovalenthqClientExceptions
      */
     public function __construct(
-        protected readonly string $apiUrl = 'https://api.covalenthq.com',
+        protected string $apiUrl = 'https://api.covalenthq.com',
     ) {
         $apiKey = Config::get('services.covalenthq.apiKey');
 

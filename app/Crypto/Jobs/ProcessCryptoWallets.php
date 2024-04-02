@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Crypto\Jobs;
 
-use App\Crypto\Contracts\ICryptoClient;
+use App\Crypto\Clients\CovalenthqClient;
 use App\Crypto\Models\UserCryptoWallets;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +25,7 @@ class ProcessCryptoWallets implements ShouldQueue
     }
 
     public function handle(
-        ICryptoClient $client,
+        CovalenthqClient $client,
     ): void {
         $items = $client->fetchTokenQuotes(
             $this->wallet->chain_type,
