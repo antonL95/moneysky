@@ -35,35 +35,13 @@ jobs:
         run: |
           make test
 
-  create-deployment-artifacts:
-    name: Create deployment artifacts
+  create-deployment-matrix:
+    name: Create deployment matrix
     runs-on: ubuntu-latest
     needs: ci
     outputs:
       DEPLOYMENT_MATRIX: ${{ steps.export-deployment-matrix.outputs.DEPLOYMENT_MATRIX }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Configure PHP 8.3
-        uses: shivammathur/setup-php@master
-        with:
-          php-version: 8.3
-          extensions: mbstring, ctype, fileinfo, openssl, PDO, bcmath, json, tokenizer, xml
-      - name: Composer install
-        run: |
-          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-      - name: Compile CSS and Javascript
-        run: |
-          npm install
-          npm run build
-      - name: Create deployment artifact
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-        run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=node_modules --exclude=tests .env* *
-      - name: Store artifact for distribution
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-build
-          path: ${{ github.sha }}.tar.gz
       - name: Export deployment matrix
         id: export-deployment-matrix
         run: |
@@ -76,24 +54,12 @@ jobs:
   prepare-release-on-servers:
     name: "${{ matrix.server.name }}: Prepare release"
     runs-on: ubuntu-latest
-    needs: create-deployment-artifacts
+    needs: create-deployment-matrix
     strategy:
       matrix:
-        server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
+        server: ${{ fromJson(needs.create-deployment-matrix.outputs.DEPLOYMENT_MATRIX) }}
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: app-build
-      - name: Upload
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          source: ${{ github.sha }}.tar.gz
-          target: ${{ matrix.server.path }}/artifacts
-      - name: Extract archive and create directories
+      - name: Create directories
         uses: appleboy/ssh-action@master
         env:
           GITHUB_SHA: ${{ github.sha }}
@@ -105,7 +71,6 @@ jobs:
           envs: GITHUB_SHA
           script: |
             mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
-            tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
             rm -rf ${{ matrix.server.path }}/releases/${GITHUB_SHA}/storage
 
             mkdir -p ${{ matrix.server.path }}/storage/{app,public,framework,logs}
@@ -115,10 +80,10 @@ jobs:
   activate-release:
     name: "${{ matrix.server.name }}: Activate release"
     runs-on: ubuntu-latest
-    needs: [ create-deployment-artifacts, prepare-release-on-servers ]
+    needs: [ create-deployment-matrix, prepare-release-on-servers ]
     strategy:
       matrix:
-        server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
+        server: ${{ fromJson(needs.create-deployment-matrix.outputs.DEPLOYMENT_MATRIX) }}
     steps:
       - name: Activate release
         uses: appleboy/ssh-action@master
@@ -137,8 +102,10 @@ jobs:
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,ENV_SECRET
           script: |
             echo "$USER"
+            cd $RELEASE_PATH && git clone git@github.com:antonL95/moneysky.git
+            cd $RELEASE_PATH && composer install --no-interaction --prefer-dist --optimize-autoloader
+            cd $RELEASE_PATH && npm install && npm run build
             ln -s -f $STORAGE_PATH $RELEASE_PATH
-            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             ln -s -f ${BASE_PATH}/frankenphp $RELEASE_PATH
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
@@ -149,3 +116,4 @@ jobs:
             /usr/bin/php $RELEASE_PATH/artisan route:cache
             /usr/bin/php $RELEASE_PATH/artisan event:cache
             sudo supervisorctl reload
+            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
