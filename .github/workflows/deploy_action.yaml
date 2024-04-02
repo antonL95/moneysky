@@ -103,9 +103,9 @@ jobs:
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,ENV_SECRET
           script: |
             echo "$USER"
-            cd $RELEASE_PATH && git clone git@github.com:antonL95/moneysky.git
+            cd $RELEASE_PATH && git clone git@github.com:antonL95/moneysky.git ./
             cd $RELEASE_PATH && composer install --no-interaction --prefer-dist --optimize-autoloader
-            cd $RELEASE_PATH && npm install && npm run build
+            cd $RELEASE_PATH && source $BASE_PATH/../.nvm/nvm.sh && npm install && npm run build
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -f ${BASE_PATH}/frankenphp $RELEASE_PATH
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
