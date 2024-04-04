@@ -51,8 +51,6 @@ uses(TestCase::class, LazilyRefreshDatabase::class)->beforeEach(function () {
 |
 */
 
-expect()->extend('toBeOne', fn () => $this->toBe(1));
-
 /*
 |--------------------------------------------------------------------------
 | Functions
