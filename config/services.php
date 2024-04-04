@@ -60,6 +60,6 @@ return [
     ],
 
     'post_hog' => [
-        'api_key' => env('POST_HOG_API_KEY', ''),
+        'api_key' => env('POST_HOG_API_KEY', 'poh'),
     ],
 ];
