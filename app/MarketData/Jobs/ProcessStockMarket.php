@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\MarketData\Jobs;
 
-use App\MarketData\Clients\AlphaVantageClient;
 use App\MarketData\Models\UserStockMarket;
+use App\MarketData\Service\AlphaVantageService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,9 +25,10 @@ class ProcessStockMarket implements ShouldQueue
      * @throws \Exception
      */
     public function handle(
-        AlphaVantageClient $client,
+        AlphaVantageService $client,
     ): void {
         $price = $client->fetchPriceForTicker($this->userStockMarket->ticker);
+
         $this->userStockMarket->price_cents = $price;
         $this->userStockMarket->save();
     }

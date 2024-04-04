@@ -33,16 +33,16 @@ return [
         ],
     ],
 
-    'aplhavantage' => [
-        'apiKey' => env('APLHA_VANTAGE_API_KEY', ''),
+    'alpha_vantage' => [
+        'api_key' => env('ALPHA_VANTAGE_API_KEY', ''),
     ],
 
-    'covalenthq' => [
-        'apiKey' => env('COVALENTHQ_API_KEY', ''),
+    'covalent' => [
+        'api_key' => env('COVALENT_API_KEY', ''),
     ],
 
-    'openexchangerates' => [
-        'app_id' => env('OPENEXCHANGERATES_APP_ID', ''),
+    'open_exchange_rates' => [
+        'app_id' => env('OPEN_EXCHANGE_RATES_APP_ID', ''),
     ],
 
     'bank_data_api' => [
@@ -57,5 +57,9 @@ return [
     'stripe' => [
         'monthly_plan' => env('STRIPE_MONTHLY_PLAN', ''),
         'yearly_plan' => env('STRIPE_YEARLY_PLAN', ''),
+    ],
+
+    'post_hog' => [
+        'api_key' => env('POST_HOG_API_KEY', ''),
     ],
 ];

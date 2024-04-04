@@ -20,7 +20,7 @@ final readonly class TaggedTransactionDto
         $tag = $data['tag'];
         $id = (int) $data['id'];
 
-        if (!\is_int($id) || !\is_string($tag)) {
+        if (!\is_string($tag)) {
             throw OpenAiExceptions::invalidData(json_encode($data));
         }
 

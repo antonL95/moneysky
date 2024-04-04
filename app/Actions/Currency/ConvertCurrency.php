@@ -37,7 +37,7 @@ class ConvertCurrency
             new Swap(
                 new OpenExchangeRates(
                     options: [
-                        'app_id' => config('services.openexchangerates.app_id'),
+                        'app_id' => config('services.open_exchange_rates.app_id'),
                     ],
                 ),
             ),

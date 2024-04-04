@@ -6,7 +6,7 @@ namespace App\Bank\DataTransferObjects;
 
 use App\Bank\Exceptions\InvalidApiException;
 
-readonly class BankAccountDto
+final readonly class BankAccountDto
 {
     /**
      * @param array<string, string|int|string[]|null> $data

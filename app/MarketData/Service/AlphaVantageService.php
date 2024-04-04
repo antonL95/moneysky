@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\MarketData\Clients;
+namespace App\MarketData\Service;
 
 use App\Actions\Currency\ConvertCurrency;
+use App\Http\Integrations\AlphaVantage\AlphaVantage;
+use App\Http\Integrations\AlphaVantage\Requests\TimeSeriesDaily;
 use App\MarketData\Exceptions\AlphaVantageClientException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Money\Currency;
 use Money\Money;
 
 use function Safe\json_encode;
 
-readonly class AlphaVantageClient
+final readonly class AlphaVantageService
 {
     private const array EXCHANGE_CURRENCY_MAP = [
         'LON' => 'GBP',
@@ -27,21 +28,9 @@ readonly class AlphaVantageClient
         'SHZ' => 'CNY',
     ];
 
-    private string $apiKey;
-
-    /**
-     * @throws AlphaVantageClientException
-     */
     public function __construct(
-        private string $apiUrl = 'https://www.alphavantage.co/query',
+        private AlphaVantage $connector,
     ) {
-        $apiKey = Config::get('services.aplhavantage.apiKey');
-
-        if (!\is_string($apiKey)) {
-            throw AlphaVantageClientException::invalidConfig();
-        }
-
-        $this->apiKey = $apiKey;
     }
 
     /**
@@ -51,6 +40,7 @@ readonly class AlphaVantageClient
         string $ticker,
     ): int {
         $cacheKey = sprintf('stock-market-%s', $ticker);
+
         if (!Cache::missing($cacheKey)) {
             $price = Cache::get($cacheKey);
 
@@ -61,37 +51,15 @@ readonly class AlphaVantageClient
             return (int) $price;
         }
 
-        $data = (array) Http::get($this->apiUrl, [
-            'symbol' => $ticker,
-            'function' => 'TIME_SERIES_DAILY',
-            'apikey' => $this->apiKey,
-        ])->json();
+        $response = $this->connector->debug()->send(
+            new TimeSeriesDaily($ticker),
+        );
 
-        if (!isset($data['Time Series (Daily)'])) {
-            throw AlphaVantageClientException::invalidResponseFromApi(
-                json_encode($data),
-            );
-        }
+        $data = (array) Arr::last($response->json());
 
-        $timeSeries = (array) $data['Time Series (Daily)'];
-
-        $firstKey = array_key_first($timeSeries);
-
-        if (!\is_string($firstKey)) {
-            throw AlphaVantageClientException::invalidResponseFromApi(
-                json_encode($data),
-            );
-        }
-
-        $latestTimeSeries = (array) $timeSeries[$firstKey];
-
-        if (!isset($latestTimeSeries['4. close'])) {
-            throw AlphaVantageClientException::invalidResponseFromApi(
-                json_encode($data),
-            );
-        }
-
-        $closeValue = $latestTimeSeries['4. close'];
+        $timeSeries = array_values($data);
+        $latestTimeSeries = array_values((array) $timeSeries[0]);
+        $closeValue = $latestTimeSeries[3];
 
         if (!is_numeric($closeValue)) {
             throw AlphaVantageClientException::invalidResponseFromApi(

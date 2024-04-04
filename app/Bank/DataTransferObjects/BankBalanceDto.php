@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Bank\DataTransferObjects;
 
-readonly class BankBalanceDto
+final readonly class BankBalanceDto
 {
     /**
      * @param array<string, array<string, float>> $data

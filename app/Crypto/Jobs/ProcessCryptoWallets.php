@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Crypto\Jobs;
 
-use App\Crypto\Clients\CovalenthqClient;
 use App\Crypto\Models\UserCryptoWallets;
+use App\Http\Integrations\Covalent\CovalentConnector;
+use App\Http\Integrations\Covalent\Requests\GetTokenBalancesForAddress;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,19 +26,28 @@ class ProcessCryptoWallets implements ShouldQueue
     }
 
     public function handle(
-        CovalenthqClient $client,
+        CovalentConnector $connector,
     ): void {
-        $items = $client->fetchTokenQuotes(
-            $this->wallet->chain_type,
-            $this->wallet->wallet_address,
+        $response = $connector->send(
+            new GetTokenBalancesForAddress(
+                $this->wallet->chain_type->getChainName(),
+                $this->wallet->wallet_address,
+            ),
         );
+
+        $items = $response->collect('data.items');
 
         $totalCents = 0;
         $tokens = [];
 
         foreach ($items as $currency) {
-            $totalCents += $currency->quoteCents;
-            $tokens[$currency->symbol] = $currency->quoteCents;
+            if (!\is_array($currency)) {
+                continue;
+            }
+
+            $quoteCents = (int) round($currency['quote'] * 100);
+            $totalCents += $quoteCents;
+            $tokens[$currency['quote']] = $quoteCents;
         }
 
         $this->wallet->balance_cents = $totalCents;

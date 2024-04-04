@@ -6,7 +6,7 @@ namespace App\Crypto\Exceptions;
 
 use App\Exceptions\CustomAppException;
 
-final class CovalenthqClientExceptions extends CustomAppException
+final class CovalentExceptions extends CustomAppException
 {
     public static function invalidApiConfig(): self
     {

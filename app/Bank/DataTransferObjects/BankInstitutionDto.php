@@ -8,7 +8,7 @@ use App\Bank\Exceptions\InvalidApiException;
 
 use function Safe\json_encode;
 
-readonly class BankInstitutionDto
+final readonly class BankInstitutionDto
 {
     /**
      * @param array<string, string|int|string[]> $data

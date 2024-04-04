@@ -19,12 +19,21 @@ use App\Livewire\UpdateUserCryptoWallet;
 use App\Livewire\UpdateUserKrakenAccount;
 use App\Livewire\UpdateUserManualEntries;
 use App\Livewire\UpdateUserStockMarket;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
+use PostHog\PostHog;
 
-Route::get('/', static fn () => view('welcome'))
+Route::get('/', static function (): View {
+    PostHog::capture([
+        'distinctId' => 'test-user',
+        'event' => 'test-event',
+    ]);
+
+    return view('welcome');
+})
     ->name('home');
 
 Route::middleware([

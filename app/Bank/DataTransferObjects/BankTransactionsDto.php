@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 use function Safe\json_encode;
 
-readonly class BankTransactionsDto
+final readonly class BankTransactionsDto
 {
     /**
      * @param array<string, string|float|int|array<string, string|numeric>|null> $data
