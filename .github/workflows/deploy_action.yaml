@@ -33,6 +33,7 @@ jobs:
           make stan
       - name: Tests
         run: |
+          touch database/moneysky_test.sqlite
           make test
 
   create-deployment-matrix:
