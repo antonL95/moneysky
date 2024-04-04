@@ -11,28 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@master
         with:
           php-version: 8.3
+          extensions: mbstring, ctype, fileinfo, openssl, PDO, bcmath, json, tokenizer, xml
           tools: composer:v2
           coverage: xdebug
 
-      - name: Install Dependencies
+      - name: Composer install
         run: |
           composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install Dependencies
+        run: |
           npm install
           npm run build
 
       - name: Stan
         run: |
-          composer run stan
+          make stan
       - name: Tests
         run: |
           touch database/moneysky_test.sqlite
-          php artisan test
-      - name: Type check
-        run: |
-          ./vendor/bin/pest --type-coverage --min=100
+          make test
