@@ -31,7 +31,7 @@ final class CovalentConnector extends Connector
      */
     protected function defaultAuth(): BasicAuthenticator
     {
-        $apiKey = Config::get('covalent.api_key');
+        $apiKey = Config::get('services.covalent.api_key');
         if (!\is_string($apiKey)) {
             throw CovalentExceptions::invalidApiConfig();
         }
