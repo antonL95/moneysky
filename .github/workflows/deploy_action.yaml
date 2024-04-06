@@ -105,8 +105,8 @@ jobs:
           script: |
             echo "$USER"
             cd $RELEASE_PATH && git clone git@github.com:antonL95/moneysky.git ./
-            cd $RELEASE_PATH && composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-            cd $RELEASE_PATH && source $BASE_PATH/../.nvm/nvm.sh && npm install && npm run build
+            cd $RELEASE_PATH && composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --quiet
+            cd $RELEASE_PATH && source $BASE_PATH/../.nvm/nvm.sh && npm install --no-progress --silent && npm run build
             rm -rf $RELEASE_PATH/storage
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -f ${BASE_PATH}/frankenphp $RELEASE_PATH
