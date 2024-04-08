@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <x-ts-table :headers="$headers" :rows="$rows" paginate simple-pagination loading :$sort >
+    <x-ts-table :headers="$headers" :rows="$rows" paginate loading :$sort >
         @interact('column_tag', $row)
             <x-ts-badge
                 :text="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
