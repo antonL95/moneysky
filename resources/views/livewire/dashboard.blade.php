@@ -52,19 +52,19 @@
 
     <x-ts-table :headers="$headers" :rows="$rows" paginate simple-pagination loading :$sort >
         @interact('column_tag', $row)
-        <x-ts-badge
-            :value="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
-            class="border-none text-sm h-fit text-center text-black"
-            style="background-color: {{$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'}}"/>
+            <x-ts-badge
+                :text="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
+                class="border-none text-sm h-fit text-center text-black"
+                style="background-color: {{$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'}}"/>
         @endinteract
         @interact('column_balance_cents', $row)
-        <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency"/>
+            <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency"/>
         @endinteract
         @interact('column_bank_account', $row)
-        {{$row->userBankAccount->name}}
+            {{$row->userBankAccount->name}}
         @endinteract
         @interact('column_booked_at', $row)
-        {{$row->booked_at->diffForHumans()}}
+            {{$row->booked_at->diffForHumans()}}
         @endinteract
     </x-ts-table>
 </div>
