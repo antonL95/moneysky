@@ -20,8 +20,7 @@ it('happy path', function () {
         ->test(AddUserCryptoWallet::class)
         ->set('form.wallet_address', 'My Wallet')
         ->set('form.chain_type', ChainType::BTC->value)
-        ->call('create')
-        ->assertRedirect(route('app.crypto-wallets'));
+        ->call('create');
 
     expect(UserCryptoWallets::all()->count())->toBe(1)->and(
         UserCryptoWallets::first()->wallet_address,

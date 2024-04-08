@@ -55,8 +55,8 @@ return [
     ],
 
     'stripe' => [
-        'monthly_plan' => env('STRIPE_MONTHLY_PLAN', ''),
-        'yearly_plan' => env('STRIPE_YEARLY_PLAN', ''),
+        'plus_plan_id' => env('PLUS_PLAN_ID', ''),
+        'unlimited_plan_id' => env('UNLIMITED_PLAN_ID', ''),
     ],
 
     'post_hog' => [

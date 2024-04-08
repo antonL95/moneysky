@@ -9,11 +9,11 @@ use App\Crypto\Models\UserCryptoWallets;
 use App\Livewire\Forms\UserCryptoWalletForm;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class UpdateUserCryptoWallet extends Component
 {
-    use Toast;
+    use Interactions;
 
     public UserCryptoWalletForm $form;
 
@@ -44,7 +44,8 @@ class UpdateUserCryptoWallet extends Component
     {
         $this->form->update($wallet);
 
-        $this->success('Crypto wallet updated successfully.', redirectTo: route('app.crypto-wallets'));
+        $this->dispatch('crypto-updated');
+        $this->dispatch('close');
     }
 
     public function render(): View

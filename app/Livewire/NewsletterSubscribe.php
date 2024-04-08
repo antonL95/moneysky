@@ -8,11 +8,11 @@ use App\Newsletter\Models\NewsletterSubscriber;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class NewsletterSubscribe extends Component
 {
-    use Toast;
+    use Interactions;
 
     #[Rule(['required', 'email'])]
     public string $email;
@@ -26,12 +26,12 @@ class NewsletterSubscribe extends Component
         ]);
 
         if ($subscriber->wasRecentlyCreated) {
-            $this->success('You have been subscribed to our newsletter.');
+            $this->toast()->success('You have been subscribed to our newsletter.');
             $this->email = '';
 
             return;
         }
-        $this->success('You are already subscribed to our newsletter.');
+        $this->toast()->success('You are already subscribed to our newsletter.');
 
         $this->email = '';
     }

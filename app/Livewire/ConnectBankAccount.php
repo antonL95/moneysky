@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Bank\Models\BankInstitution;
+use App\Bank\Models\UserBankSession;
 use App\Bank\Services\BankService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class ConnectBankAccount extends Component
 {
-    use Toast;
+    use Interactions;
 
     #[Validate('required')]
     public ?int $institution = null;
@@ -32,21 +32,23 @@ class ConnectBankAccount extends Component
         $this->bankService = $bankService;
     }
 
-    public function mount(): void
-    {
-        $this->search();
-    }
-
     public function connect(): void
     {
         $user = auth()->user();
 
-        if (!$user?->subscribed()) {
-            $this->redirect(route('billing'));
+        if ($user === null || !$user->canAddAdditionalResource(UserBankSession::class)) {
+            $this->toast()->error(
+                'Cannot connect to bank',
+                'You need to upgrade your subscription in order to connect bank account.'
+            )->send();
+
+            $this->dispatch('close-institution-modal');
+
+            return;
         }
 
-        if ($this->institution === null || $user === null || !$user->subscribed()) {
-            $this->error('You need to select a bank institution to connect.');
+        if ($this->institution === null) {
+            $this->toast()->error('Error', 'You need to select a bank institution to connect.')->send();
 
             back();
 
@@ -56,7 +58,7 @@ class ConnectBankAccount extends Component
         $institution = BankInstitution::find($this->institution);
 
         if ($institution === null) {
-            $this->error('Invalid bank institution selected.');
+            $this->toast()->error('Error', 'Invalid bank institution selected.')->send();
 
             back();
 
@@ -73,29 +75,5 @@ class ConnectBankAccount extends Component
         return view(
             'livewire.user-bank-account.connect-bank-account',
         );
-    }
-
-    public function search(string $value = ''): void
-    {
-        $selectedOption = BankInstitution::where('id', $this->institution)->get();
-
-        $this->institutionsSearchable = BankInstitution::query()
-            ->where('name', 'like', "%$value%")
-            ->take(5)
-            ->orderBy('name')
-            ->get()
-            ->merge($selectedOption)
-            ->map(
-                function (BankInstitution $institution) {
-                    return [
-                        'id' => $institution->id,
-                        'name' => $institution->name,
-                        'image' => $institution->logo_url,
-                        'countries' => $institution->countries === null
-                            ? ''
-                            : Arr::join($institution->countries, ','),
-                    ];
-                },
-            );
     }
 }

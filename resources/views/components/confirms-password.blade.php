@@ -15,7 +15,7 @@
 </span>
 
 @once
-<x-mary-modal wire:model.live="confirmingPassword">
+<x-ts-modal wire="confirmingPassword">
     <x-slot:title>
         {{ $title }}
     </x-slot:title>
@@ -23,20 +23,15 @@
     {{ $content }}
 
     <div class="mt-4" x-data="{}" x-on:confirming-password.window="setTimeout(() => $refs.confirmable_password.focus(), 250)">
-        <x-mary-input type="password" class="mt-1 block w-3/4" placeholder="{{ __('Password') }}" autocomplete="current-password"
+        <x-ts-input type="password" class="mt-1 block w-3/4" placeholder="{{ __('Password') }}" autocomplete="current-password"
                     x-ref="confirmable_password"
                     wire:model="confirmablePassword"
                     wire:keydown.enter="confirmPassword" />
     </div>
 
-    <x-slot:actions>
-        <x-mary-button class="btn" wire:click="stopConfirmingPassword" wire:loading.attr="disabled">
-            {{ __('Cancel') }}
-        </x-mary-button>
-
-        <x-mary-button class="ms-3 btn btn-primary" dusk="confirm-password-button" wire:click="confirmPassword" wire:loading.attr="disabled">
-            {{ $button }}
-        </x-mary-button>
-    </x-slot:actions>
-</x-mary-modal>
+    <div class="mt-2">
+        <x-button class="bg-dark-400" wire:click="$toggle(confirmingPassword)" wire:loading.attr="disabled" :title="__('Cancel')"/>
+        <x-button class="ms-3" :title="$button" dusk="confirm-password-button" wire:click="confirmPassword" wire:loading.attr="disabled"/>
+    </div>
+</x-ts-modal>
 @endonce

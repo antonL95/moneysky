@@ -6,4 +6,8 @@ namespace App\Exceptions;
 
 class CustomAppException extends \Exception
 {
+    public static function invalidConfig(): self
+    {
+        return new self('Invalid configuration');
+    }
 }

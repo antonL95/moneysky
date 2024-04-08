@@ -1,21 +1,21 @@
 <x-form-section submit="updatePassword">
-    <x-slot name="title">
+    <x-slot:title>
         {{ __('Update Password') }}
-    </x-slot>
+    </x-slot:title>
 
-    <x-slot name="description">
+    <x-slot:description>
         {{ __('Ensure your account is using a long, random password to stay secure.') }}
-    </x-slot>
+    </x-slot:description>
 
-    <x-slot name="form">
-        <x-mary-input label="{{ __('Current Password') }}" wire:model="state.current_password" type="password" required autocomplete="current-password" />
-        <x-mary-input label="{{ __('New Password') }}" wire:model="state.password" type="password" required autocomplete="new-password" />
-        <x-mary-input label="{{ __('Confirm Password') }}" wire:model="state.password_confirmation" type="password" required autocomplete="new-password" />
-    </x-slot>
+    <x-slot:form>
+        <x-ts-input label="{{ __('Current Password') }}" wire:model="state.current_password" type="password" required autocomplete="current-password" />
+        <x-ts-input label="{{ __('New Password') }}" wire:model="state.password" type="password" required autocomplete="new-password" />
+        <x-ts-input label="{{ __('Confirm Password') }}" wire:model="state.password_confirmation" type="password" required autocomplete="new-password" />
+    </x-slot:form>
 
-    <x-slot name="actions">
-        <x-mary-button type="submit" class="btn btn-primary">
-            {{ __('Save') }}
-        </x-mary-button>
-    </x-slot>
+    <x-slot:actions>
+        <div class="mt-2">
+            <x-button type="submit" :title="__('Save')" />
+        </div>
+    </x-slot:actions>
 </x-form-section>

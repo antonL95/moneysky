@@ -1,17 +1,6 @@
-<div>
-    <x-form-section submit="create">
-        <x-slot name="title">Stock ticker</x-slot>
-        <x-slot name="description">Create ticker with amount</x-slot>
+<form wire:submit="create">
+    <x-ts-input label="{{__('Ticker')}}" wire:model="form.ticker" />
+    <x-ts-number label="{{__('Amount')}}" wire:model="form.amount" step="0.0001"/>
 
-        <x-slot name="form">
-                <x-mary-input label="{{__('Ticker')}}" wire:model="form.ticker" inline />
-                <x-mary-input label="{{__('Amount')}}" wire:model="form.amount" inline step="0.0001" />
-        </x-slot>
-
-        <x-slot name="actions">
-            <x-mary-button type="submit" class="btn btn-primary">
-                {{ __('Save') }}
-            </x-mary-button>
-        </x-slot>
-    </x-form-section>
-</div>
+    <x-button type="submit" class="btn btn-primary" :title="__('Save')" />
+</form>

@@ -57,16 +57,14 @@
         @endif
 
         <div class="flex items-center mt-5">
-            <x-mary-button class="btn btn-warning" wire:click="confirmLogout" wire:loading.attr="disabled">
-                {{ __('Log Out Other Browser Sessions') }}
-            </x-mary-button>
+            <x-button class="btn btn-warning" wire:click="$toggle('confirmingLogout')" wire:loading.attr="disabled" :title="__('Log Out Other Browser Sessions')" />
 
             <x-action-message class="ms-3" on="loggedOut">
                 {{ __('Done.') }}
             </x-action-message>
         </div>
 
-        <x-mary-modal wire:model.live="confirmingLogout"
+        <x-ts-modal wire="confirmingLogout"
                       subtitle="{{ __('Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.') }}"
                       separator>
             <x-slot:title>
@@ -75,7 +73,7 @@
 
             <div x-data="{}"
                  x-on:confirming-logout-other-browser-sessions.window="setTimeout(() => $refs.password.focus(), 250)">
-                <x-mary-input inline type="password" class="mt-1 block w-3/4"
+                <x-ts-input inline type="password" class="mt-1 block w-3/4"
                               autocomplete="current-password"
                               placeholder="{{ __('Confirm your password') }}"
                               x-ref="password"
@@ -83,13 +81,13 @@
                               wire:keydown.enter="logoutOtherBrowserSessions"/>
             </div>
 
-            <x-slot:actions>
-                <x-mary-button label="Cancel" wire:click="$toggle('confirmingLogout')" wire:loading.attr="disabled"/>
-                <x-mary-button label="{{ __('Log Out Other Browser Sessions') }}" class="btn btn-primary"
+            <div class="mt-2">
+                <x-button title="Cancel" wire:click="$toggle('confirmingLogout')" class="bg-dark-400" wire:loading.attr="disabled"/>
+                <x-button title="{{ __('Log Out Other Browser Sessions') }}"
                                type="submit"
-                               wire:click="logoutOtherBrowserSessions"
+                               wire:click="$toggle('confirmingLogout')"
                                wire:loading.attr="disabled"/>
-            </x-slot:actions>
-        </x-mary-modal>
+            </div>
+        </x-ts-modal>
     </x-slot>
 </x-action-section>

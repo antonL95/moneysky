@@ -1,69 +1,70 @@
 @php use App\UserSetting\Models\UserSetting@endphp
 <div>
     <div class="flex justify-center mb-10 md:grid md:grid-cols-2 max-h-[400px]">
-        <div class="flex flex-col md:flex-row">
+        <div class="flex flex-col md:flex-row flex-wrap justify-around gap-1">
             @if($bankAccountsSum !== null)
-                <x-mary-stat
+                <x-ts-stats
+                    class="w-5/12"
                     title="{{__('Bank accounts')}}"
-                    icon="c-building-library"
-                    tooltip="{{__('Total sum of your bank account balances')}}">
-                    <x-slot:value>
+                    icon="credit-card">
+                    <x-slot:number>
                         <x-amount-format :amount="$bankAccountsSum"
                                          :amount-currency="UserSetting::getCurrencyWithDefault()"/>
-                    </x-slot:value>
-                </x-mary-stat>
+                    </x-slot:number>
+                </x-ts-stats>
             @endif
             @if($cryptoSum !== null)
-                <x-mary-stat
+                <x-ts-stats
+                    class="w-5/12"
                     title="{{__('Crypto wallets')}}"
-                    icon="fab.bitcoin"
-                    tooltip="{{__('Total sum of your crypto wallets')}}">
-                    <x-slot:value>
+                    icon="currency-eth">
+                    <x-slot:number>
                         <x-amount-format :amount="$cryptoSum" :amount-currency="UserSetting::getCurrencyWithDefault()"/>
-                    </x-slot:value>
-                </x-mary-stat>
+                    </x-slot:number>
+                </x-ts-stats>
             @endif
             @if($stocksSum !== null)
-                <x-mary-stat
+                <x-ts-stats
+                    class="w-5/12"
                     title="{{__('Stock market')}}"
-                    icon="fas.rocket"
-                    tooltip="{{__('Total sum of your stocks')}}">
-                    <x-slot:value>
+                    icon="chart-bar">
+                    <x-slot:number>
                         <x-amount-format :amount="$stocksSum" :amount-currency="UserSetting::getCurrencyWithDefault()"/>
-                    </x-slot:value>
-                </x-mary-stat>
+                    </x-slot:number>
+                </x-ts-stats>
             @endif
             @if($cashWalletsSum !== null)
-                <x-mary-stat
+                <x-ts-stats
+                    class="w-5/12"
                     title="{{__('Cash wallets')}}"
-                    icon="fas.wallet"
-                    tooltip="{{__('Total sum of your cash wallets')}}">
-                    <x-slot:value>
+                    icon="wallet">
+                    <x-slot:number>
                         <x-amount-format :amount="$cashWalletsSum"
                                          :amount-currency="UserSetting::getCurrencyWithDefault()"/>
-                    </x-slot:value>
-                </x-mary-stat>
+                    </x-slot:number>
+                </x-ts-stats>
             @endif
         </div>
-        <div>
+        <div class="flex flex-col md:flex-row">
+
         </div>
     </div>
 
-    <x-mary-table :headers="$headers" :rows="$rows" with-pagination x-mary-checkbox:sort-by="$sortBy">
-        @scope('cell_tag', $row)
-        <x-mary-badge
+    <x-ts-table :headers="$headers" :rows="$rows" paginate simple-pagination loading :$sort >
+        @interact('column_tag', $row)
+        <x-ts-badge
             :value="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
             class="border-none text-sm h-fit text-center text-black"
             style="background-color: {{$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'}}"/>
-        @endscope
-        @scope('cell_balance_cents', $row)
+        @endinteract
+        @interact('column_balance_cents', $row)
         <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency"/>
-        @endscope
-        @scope('cell_bank_account', $row)
+        @endinteract
+        @interact('column_bank_account', $row)
         {{$row->userBankAccount->name}}
-        @endscope
-        @scope('cell_booked_at', $row)
+        @endinteract
+        @interact('column_booked_at', $row)
         {{$row->booked_at->diffForHumans()}}
-        @endscope
-    </x-mary-table>
+        @endinteract
+    </x-ts-table>
 </div>

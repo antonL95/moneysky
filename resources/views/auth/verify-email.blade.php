@@ -1,15 +1,12 @@
-<x-layouts.guest>
+<x-guest-layout>
     <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo/>
-        </x-slot>
-
-        <div class="mb-4 text-sm  ">
-            {{ __('Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-        </div>
+        <x-slot:headline>
+            {{ __('Verify email') }}
+        </x-slot:headline>
+        {{ __('Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
 
         @if (session('status') === 'verification-link-sent')
-            <div class="mb-4 font-medium text-sm  ">
+            <div class="mb-4 font-medium text-sm">
                 {{ __('A new verification link has been sent to the email address you provided in your profile settings.') }}
             </div>
         @endif
@@ -19,9 +16,11 @@
                 @csrf
 
                 <div>
-                    <x-mary-button type="submit" class="btn btn-primary">
-                        {{ __('Resend Verification Email') }}
-                    </x-mary-button>
+                    <x-button type="submit">
+                        <x-slot:title>
+                            {{ __('Resend Verification Email') }}
+                        </x-slot:title>
+                    </x-button>
                 </div>
             </form>
 
@@ -29,11 +28,13 @@
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
 
-                    <x-mary-button type="submit" class="btn">
-                        {{ __('Log Out') }}
-                    </x-mary-button>
+                    <x-button type="submit" class="bg-red-800 hover:bg-red-900">
+                        <x-slot:title>
+                            {{ __('Log Out') }}
+                        </x-slot:title>
+                    </x-button>
                 </form>
             </div>
         </div>
     </x-authentication-card>
-</x-layouts.guest>
+</x-guest-layout>

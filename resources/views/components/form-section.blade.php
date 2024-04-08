@@ -7,14 +7,12 @@
     </x-section-title>
 
     <div class="mt-5 md:mt-0 md:col-span-2">
-        <x-mary-form wire:submit="{{ $submit }}">
+        <form wire:submit="{{ $submit }}">
             {{ $form }}
 
             @if (isset($actions))
-                <x-slot:actions>
-                    {{ $actions }}
-                </x-slot:actions>
+                {{ $actions }}
             @endif
-        </x-mary-form>
+        </form>
     </div>
 </div>

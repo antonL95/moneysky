@@ -25,7 +25,7 @@
                     <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach (Laravel\Jetstream\Jetstream::$permissions as $permission)
                             <label class="flex items-center">
-                                <x-mary-checkbox wire:model="createApiTokenForm.permissions" :value="$permission"/>
+                                <x-ts-checkbox wire:model="createApiTokenForm.permissions" :value="$permission"/>
                                 <span class="ms-2 text-sm  ">{{ $permission }}</span>
                             </label>
                         @endforeach
@@ -39,9 +39,9 @@
                 {{ __('Created.') }}
             </x-action-message>
 
-            <x-mary-button>
+            <x-button>
                 {{ __('Create') }}
-            </x-mary-button>
+            </x-button>
         </x-slot>
     </x-form-section>
 
@@ -128,7 +128,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach (Laravel\Jetstream\Jetstream::$permissions as $permission)
                     <label class="flex items-center">
-                        <x-mary-checkbox wire:model="updateApiTokenForm.permissions" :value="$permission"/>
+                        <x-ts-checkbox wire:model="updateApiTokenForm.permissions" :value="$permission"/>
                         <span class="ms-2 text-sm  ">{{ $permission }}</span>
                     </label>
                 @endforeach
@@ -140,9 +140,9 @@
                 {{ __('Cancel') }}
             </x-secondary-button>
 
-            <x-mary-button class="ms-3" wire:click="updateApiToken" wire:loading.attr="disabled">
+            <x-button class="ms-3" wire:click="updateApiToken" wire:loading.attr="disabled">
                 {{ __('Save') }}
-            </x-mary-button>
+            </x-button>
         </x-slot>
     </x-dialog-modal>
 

@@ -8,10 +8,10 @@ use App\Bank\Services\BankService;
 use App\Models\User;
 use Laravel\Jetstream\Contracts\DeletesUsers;
 
-class DeleteUser implements DeletesUsers
+readonly class DeleteUser implements DeletesUsers
 {
     public function __construct(
-        protected readonly BankService $bankService,
+        protected BankService $bankService,
     ) {
     }
 

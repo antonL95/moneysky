@@ -7,46 +7,63 @@ namespace App\Livewire;
 use App\Crypto\Models\UserCryptoWallets;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class ShowCryptoWallets extends Component
 {
-    use Toast;
+    use Interactions;
     use WithPagination;
 
     /**
      * @var string[]
      */
-    public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
+    public array $sort = ['column' => 'id', 'direction' => 'desc'];
 
     public function delete(UserCryptoWallets $wallet): void
     {
         $wallet->delete();
 
-        $this->dispatch('wallet-deleted');
-        $this->success('Kraken account deleted!');
+        $this->dispatch('crypto-deleted');
+        $this->toast()->success('Wallet deleted!', 'Wallet deleted successfully')->send();
     }
 
     /**
      * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserCryptoWallets>>
      */
+    #[On('crypto-added')]
+    #[On('crypto-deleted')]
+    #[On('crypto-updated')]
     public function with(): array
     {
         $headers = [
-            ['key' => 'id', 'label' => '#'],
-            ['key' => 'wallet_address', 'label' => 'Wallet Address'],
-            ['key' => 'chain_type', 'label' => 'Chain Type'],
-            ['key' => 'balance_cents', 'label' => 'Balance'],
+            ['index' => 'id', 'label' => '#'],
+            ['index' => 'wallet_address', 'label' => 'Wallet Address'],
+            ['index' => 'chain_type', 'label' => 'Chain Type'],
+            ['index' => 'balance_cents', 'label' => 'Balance'],
+            ['index' => 'action'],
         ];
 
-        $rows = UserCryptoWallets::orderBy(...array_values($this->sortBy))->paginate(10);
+        $rows = UserCryptoWallets::orderBy(...array_values($this->sort))->paginate(10);
 
         return [
             'headers' => $headers,
             'rows' => $rows,
         ];
+    }
+
+    #[On('crypto-added')]
+    public function added(): void
+    {
+        $this->toast()->success('Wallet added!', 'Wallet added successfully!')->send();
+    }
+
+    #[On('crypto-updated')]
+    public function updated(): void
+    {
+        $this->toast()->success('Wallet updated!', 'Wallet updated successfully!')->send();
     }
 
     public function render(): View

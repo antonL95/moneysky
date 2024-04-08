@@ -1,86 +1,50 @@
-import typography from '@tailwindcss/typography'
-
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: 'class',
     presets: [
-        "./vendor/robsontenorio/mary/src/View/Components/*.php",
-        "./vendor/robsontenorio/mary/src/View/Components/**/*.php"
+        require('./vendor/tallstackui/tallstackui/tailwind.config.js')
     ],
+
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
-        "./vendor/robsontenorio/mary/src/View/Components/**/*.php",
-        "./vendor/robsontenorio/mary/src/View/Components/*.php",
+        './vendor/tallstackui/tallstackui/src/**/*.php',
     ],
-/*    safelist: [
-        {pattern: /(bg|text|border|grid|table|h|w|p|py|px|pb|pt|pl|pr|m|mb|mt|mx|my|ml|mr|justify|shadow|ring|rounded|absolute|top|left|right|bottom)-./},
-        {pattern: /(grid|flex|hidden)./}
-    ],*/
 
     theme: {
+        fontSize: {
+            xs: ['0.75rem', { lineHeight: '1rem' }],
+            sm: ['0.875rem', { lineHeight: '1.5rem' }],
+            base: ['1rem', { lineHeight: '1.75rem' }],
+            lg: ['1.125rem', { lineHeight: '2rem' }],
+            xl: ['1.25rem', { lineHeight: '2rem' }],
+            '2xl': ['1.5rem', { lineHeight: '2rem' }],
+            '3xl': ['2rem', { lineHeight: '2.5rem' }],
+            '4xl': ['2.5rem', { lineHeight: '3.5rem' }],
+            '5xl': ['3rem', { lineHeight: '3.5rem' }],
+            '6xl': ['3.75rem', { lineHeight: '1' }],
+            '7xl': ['4.5rem', { lineHeight: '1.1' }],
+            '8xl': ['6rem', { lineHeight: '1' }],
+            '9xl': ['8rem', { lineHeight: '1' }],
+        },
         extend: {
-            fontSize: {
-                sm: '0.750rem',
-                base: '1rem',
-                xl: '1.333rem',
-                '2xl': '1.777rem',
-                '3xl': '2.369rem',
-                '4xl': '3.158rem',
-                '5xl': '4.210rem',
+            borderRadius: {
+                '4xl': '2rem',
             },
             fontFamily: {
                 heading: 'Poppins',
                 body: 'Poppins',
             },
-            fontWeight: {
-                normal: '400',
-                bold: '700',
-            }
+            maxWidth: {
+                '2xl': '40rem',
+            },
         },
     },
     plugins: [
-        typography,
-        require("daisyui")
+        require('@tailwindcss/typography'),
+        require('@tailwindcss/forms'),
+        require('@headlessui/tailwindcss'),
     ],
-
-    daisyui: {
-        themes: [
-            {
-                dark: {
-                    "primary": "#4648f5",
-                    "secondary": "#72ebf8",
-                    "accent": "#00eef3",
-                    "neutral": "#08060e",
-                    "base-100": "#28282e",
-                    "base-200": "#1f1f1f",
-                    "info": "#008fff",
-                    "success": "#2d7c00",
-                    "warning": "#b45a00",
-                    "error": "#ff6682",
-                },
-                light: {
-                    "primary": "#4648f5",
-                    "secondary": "#72ebf8",
-                    "accent": "#828c00",
-                    "neutral": "#171226",
-                    "base-100": "#ececf4",
-                    "base-200": "#b9cbc2",
-                    "info": "#00beff",
-                    "success": "#009800",
-                    "warning": "#be6400",
-                    "error": "#ff4c5a",
-                }
-            },
-        ],
-        darkTheme: "dark", // name of one of the included themes for dark mode
-        base: true, // applies background color and foreground color for root element by default
-        styled: true, // include daisyUI colors and design decisions for all components
-        utils: true, // adds responsive and modifier utility classes
-        prefix: "", // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
-        logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
-        themeRoot: ":root", // The element that receives theme color CSS variables
-    },
 };

@@ -22,7 +22,7 @@ class ShowBankAccounts extends Component
     /**
      * @var string[]
      */
-    public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
+    public array $sort = ['column' => 'id', 'direction' => 'desc'];
 
     public function mount(): void
     {
@@ -46,12 +46,12 @@ class ShowBankAccounts extends Component
     {
         return [
             'headers' => [
-                ['key' => 'id', 'label' => 'ID'],
-                ['key' => 'name', 'label' => 'Name'],
-                ['key' => 'balance_cents', 'label' => 'Balance'],
+                ['index' => 'id', 'label' => 'ID'],
+                ['index' => 'name', 'label' => 'Name'],
+                ['index' => 'balance_cents', 'label' => 'Balance'],
             ],
             'rows' => UserBankAccount::with('institution')
-                ->orderBy(...array_values($this->sortBy))
+                ->orderBy(...array_values($this->sort))
                 ->paginate($this->quantity),
         ];
     }

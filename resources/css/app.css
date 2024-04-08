@@ -5,27 +5,3 @@
 [x-cloak] {
     display: none;
 }
-
-.mary-table-pagination span[aria-current="page"] > span {
-    @apply bg-primary text-white
-}
-
-.mary-table-pagination span[aria-disabled="true"] > span {
-    @apply bg-gray-200
-}
-
-.mary-table-pagination button {
-    @apply bg-base-100 dark:text-white text-black
-}
-
-th.hidden {
-    @apply md:table-cell
-}
-
-td.hidden {
-    @apply md:table-cell
-}
-
-input:where(:not([type])) {
-    @apply border-none outline-none focus:ring-0
-}

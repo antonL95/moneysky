@@ -10,12 +10,12 @@ use App\UserSetting\Models\UserSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
-use Mary\Traits\Toast;
 use Money\Currencies\ISOCurrencies;
+use TallStackUi\Traits\Interactions;
 
 class ChangeUserCurrency extends Component
 {
-    use Toast;
+    use Interactions;
 
     public string $currency;
 
@@ -48,7 +48,8 @@ class ChangeUserCurrency extends Component
 
         Cache::put(CacheKeys::USER_CURRENCY->value.'-'.auth()->id(), $this->currency);
 
-        $this->success('Currency updated successfully');
+        $this->toast()->success('Currency updated!', 'Currency updated successfully')->send();
+
         $this->dispatch('currency-updated');
     }
 

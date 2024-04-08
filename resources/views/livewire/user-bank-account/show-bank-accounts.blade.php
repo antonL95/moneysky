@@ -1,22 +1,19 @@
 <div>
     <div class="flex justify-end">
         @teleport('body')
-        <x-mary-modal wire:model="bankInstitutionModal" class="backdrop-blur">
-            <livewire:connect-bank-account/>
-        </x-mary-modal>
+            <x-ts-modal id="bank-institution-modal" x-on:close-institution-modal="$modalClose('bank-institution-modal')">
+                <livewire:connect-bank-account/>
+            </x-ts-modal>
         @endteleport
-        <x-mary-button class="btn btn-primary" @click="$wire.bankInstitutionModal = true">
-            <x-mary-icon name="fas.plus" class="w-[20px] h-[20px] pr-2"/>
-            {{ __('Connect bank') }}
-        </x-mary-button>
+        <x-table-header-button modal="bank-institution-modal" :title="__('Connect bank')"/>
     </div>
 
-    <x-mary-table :headers="$headers" :rows="$rows" with-pagination x-mary-checkbox:sort-by="$sortBy" >
-        @scope('cell_balance_cents', $row)
-        <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency" />
-        @endscope
-        @scope('cell_name', $row)
+    <x-ts-table :headers="$headers" :rows="$rows" paginate simple-pagination>
+        @interact('column_balance_cents', $row)
+        <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency"/>
+        @endinteract
+        @interact('column_name', $row)
         {{ $row->name ?? $row->institution->name . ' ('.$row->currency.')' }}
-        @endscope
-    </x-mary-table>
+        @endinteract
+    </x-ts-table>
 </div>

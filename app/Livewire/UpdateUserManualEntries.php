@@ -8,12 +8,12 @@ use App\Livewire\Forms\UserManualEntryForm;
 use App\ManualEntry\Models\UserManualEntry;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Mary\Traits\Toast;
 use Money\Currencies\ISOCurrencies;
+use TallStackUi\Traits\Interactions;
 
 class UpdateUserManualEntries extends Component
 {
-    use Toast;
+    use Interactions;
 
     public UserManualEntryForm $form;
 
@@ -46,7 +46,8 @@ class UpdateUserManualEntries extends Component
     {
         $this->form->update($wallet);
 
-        $this->success('User manual entry updated successfully', redirectTo: route('app.manual-entries'));
+        $this->dispatch('cash-updated');
+        $this->dispatch('close');
     }
 
     public function render(): View

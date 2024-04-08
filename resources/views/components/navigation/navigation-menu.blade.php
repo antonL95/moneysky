@@ -1,53 +1,49 @@
-@props(['hideSidebar' => false])
-<nav class="px-4 py-2.5 fixed left-0 right-0 top-0 z-20">
-    <div class="flex flex-wrap justify-between items-center">
-        <div class="flex justify-start items-center">
-            @if(!$hideSidebar)
-                <label for="main-drawer" class="lg:hidden mr-5">
-                    <x-mary-icon name="fas.bars-staggered" class="w-6 h-6"/>
-                </label>
-            @endif
-            <a href="{{route('home')}}"
-               wire:navigate
-               class="flex items-center justify-between mr-4">
-                <x-application-logo
-                    class="w-10 h-10 mr-2 fill-dark-900 stroke-dark-900 dark:stroke-white dark:fill-white"/>
-                <span class="hidden sm:inline-flex self-center text-2xl font-semibold whitespace-nowrap ">
-                    {{ config('app.name') }}
-                </span>
-            </a>
-        </div>
-        <div class="flex items-center lg:order-2">
-            <x-mary-dropdown>
-                <x-slot:trigger>
-                    <x-mary-avatar :image="auth()->user()->profile_photo_url"/>
-                </x-slot:trigger>
+<div>
+    <div class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+        <x-ts-slide id="side-bar-navigation">
+            <x-slot:title>
+                <div class="flex shrink-0 items-center mb-5">
+                    <a href="{{ route('home') }}" wire:navigate class="inline-flex">
+                        <x-application-logo class="h-8 w-8"/>
+                        <span class="text-xl font-bold pl-2">
+                            {{ config('app.name') }}
+                        </span>
+                    </a>
+                </div>
+                <x-navigation.nav-sidebar-list/>
+            </x-slot:title>
+        </x-ts-slide>
+    </div>
 
-                <x-mary-menu-item title="{{__('My profile')}}" link="{{route('profile.show')}}"/>
-                <x-mary-menu-item title="{{__('Billing')}}" link="{{route('billing')}}" no-wire-navigate/>
-
-                <x-mary-menu-separator/>
-
-                <form method="POST" action="{{ route('logout') }}" x-data>
-                    @csrf
-                    <x-mary-menu-item title="{{ __('Sign out') }}"
-                                      link="{{ route('logout') }}"
-                                      no-wire-navigate
-                                      @click.prevent="$root.submit();">
-                    </x-mary-menu-item>
-                </form>
-
-            </x-mary-dropdown>
-
-            <div class="ml-4">
-                <x-mary-theme-toggle/>
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
+            <div class="flex h-16 shrink-0 items-center">
+                <a href="{{ route('home') }}" wire:navigate class="inline-flex">
+                    <x-application-logo class="h-8 w-8"/>
+                    <span class="text-xl font-bold pl-2">
+                        {{ config('app.name') }}
+                    </span>
+                </a>
             </div>
-
-            <div class="ml-4">
-                <x-mary-button link="{{route('app.home')}}" class="ml-4" class="btn btn-primary">
-                    {{__('Dashboard')}}
-                </x-mary-button>
-            </div>
+            <x-navigation.nav-sidebar-list/>
         </div>
     </div>
-</nav>
+
+    <div class="lg:pl-72">
+        <div
+            class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+            <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+                    x-on:click="$slideOpen('side-bar-navigation')">
+                <span class="sr-only">{{ __('Open sidebar') }}</span>
+                <x-ts-icon name="list" class="w-6 h-6"/>
+            </button>
+            <x-navigation.profile-avatar-dropdown/>
+        </div>
+
+        <main class="py-10">
+            <div class="mx-auto max-w-10/12 px-4 sm:px-6 lg:px-8">
+                {{ $slot }}
+            </div>
+        </main>
+    </div>
+</div>

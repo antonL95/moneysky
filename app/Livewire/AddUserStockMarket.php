@@ -5,21 +5,36 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Livewire\Forms\UserStockMarketForm;
+use App\MarketData\Models\UserStockMarket;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class AddUserStockMarket extends Component
 {
-    use Toast;
+    use Interactions;
 
     public UserStockMarketForm $form;
 
     public function create(): void
     {
+        $user = auth()->user();
+
+        if ($user === null || !$user->canAddAdditionalResource(UserStockMarket::class)) {
+            $this->toast()->error(
+                'Cannot add ticker',
+                'You need to upgrade your subscription in order to add another ticker.'
+            )->send();
+
+            $this->dispatch('close');
+
+            return;
+        }
+
         $this->form->store();
 
-        $this->success('Stock Market added!', redirectTo: route('app.stock-market'));
+        $this->dispatch('ticker-added');
+        $this->dispatch('close');
     }
 
     public function render(): View

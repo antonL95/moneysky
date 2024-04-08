@@ -7,12 +7,12 @@ namespace App\Livewire;
 use App\Livewire\Forms\UserManualEntryForm;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Mary\Traits\Toast;
 use Money\Currencies\ISOCurrencies;
+use TallStackUi\Traits\Interactions;
 
 class AddUserManualEntries extends Component
 {
-    use Toast;
+    use Interactions;
 
     public UserManualEntryForm $form;
 
@@ -39,7 +39,8 @@ class AddUserManualEntries extends Component
     {
         $this->form->store();
 
-        $this->success('User manual entry added successfully', redirectTo: route('app.manual-entries'));
+        $this->dispatch('cash-added');
+        $this->dispatch('close');
     }
 
     public function render(): View

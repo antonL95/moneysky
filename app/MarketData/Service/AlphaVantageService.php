@@ -51,7 +51,7 @@ final readonly class AlphaVantageService
             return (int) $price;
         }
 
-        $response = $this->connector->debug()->send(
+        $response = $this->connector->send(
             new TimeSeriesDaily($ticker),
         );
 

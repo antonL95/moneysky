@@ -8,11 +8,11 @@
     </x-slot>
 
     <x-slot name="form">
-            <x-mary-choices-offline
+            <x-ts-select.styled
                 label="{{ __('Currency') }}"
                 :options="$currencies"
                 wire:model.live="currency"
-                single
+                select="label:name|value:id"
                 searchable
                 required/>
     </x-slot>

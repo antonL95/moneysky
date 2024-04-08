@@ -1,17 +1,6 @@
-<div>
-    <x-form-section submit="create">
-        <x-slot name="title">Kraken Account</x-slot>
-        <x-slot name="description">Add your kraken account</x-slot>
+<form wire:submit="create">
+    <x-ts-input label="{{__('Api Key')}}" wire:model="form.api_key" />
+    <x-ts-input label="{{__('Private key')}}" wire:model="form.private_key" type="password" />
 
-        <x-slot name="form" autocomplete="off">
-                <x-mary-input label="{{__('Api Key')}}" wire:model="form.api_key" inline />
-                <x-mary-input label="{{__('Private key')}}" wire:model="form.private_key" inline type="password" autocomplete="off"/>
-        </x-slot>
-
-        <x-slot name="actions">
-            <x-mary-button type="submit" class="btn btn-primary">
-                {{ __('Save') }}
-            </x-mary-button>
-        </x-slot>
-    </x-form-section>
-</div>
+    <x-button type="submit" class="mt-2" :title="__('Save')"/>
+</form>

@@ -1,21 +1,31 @@
 <div>
     <div class="flex justify-end">
-        <x-mary-button class="btn btn-primary" link="{{route('app.add-stock-market')}}" wire:navigate>
-            <x-mary-icon name="fas.plus" class="w-[20px] h-[20px] pr-2"/>
-            {{ __('Add stock ticker') }}
-        </x-mary-button>
+        @teleport('body')
+            <x-ts-modal id="add-stock-ticker" x-on:close="$modalClose(add-stock-ticker)">
+                <livewire:add-user-stock-market/>
+            </x-ts-modal>
+        @endteleport
+        <x-table-header-button modal="add-stock-ticker" :title="__('Add ticker')"/>
     </div>
 
-    <x-mary-table :headers="$headers" :rows="$rows" with-pagination x-mary-checkbox:sort-by="$sortBy" >
-        @scope('cell_price_cents', $row)
-        <x-amount-format :amount="$row->price_cents" :amount-currency="'USD'" />
-        @endscope
-        {{-- Special `actions` slot --}}
-        @scope('actions', $row)
-        <div class="flex items-center justify-end">
-            <x-mary-button icon="fas.pencil" href="{{route('app.update-stock-market', ['ticker' => $row->id])}}" wire:navigate class="btn-sm bg-info" />
-            <x-mary-button icon="o-trash" wire:click="delete({{ $row->id }})"  class="btn-sm bg-warning"  />
-        </div>
-        @endscope
-    </x-mary-table>
+    <x-ts-table :headers="$headers" :rows="$rows" paginate simple-pagination loading :$sort >
+        @interact('column_price_cents', $row)
+            <x-amount-format :amount="$row->price_cents" :amount-currency="'USD'" />
+        @endinteract
+        @interact('column_action', $row)
+            <x-ts-button.circle color="yellow"
+                                icon="pencil"
+                                x-on:click="$modalOpen('edit-stock-ticker-{{ $row->id }}')"/>
+
+            @teleport('body')
+            <x-ts-modal id="edit-stock-ticker-{{ $row->id }}"
+                        x-on:close="$modalClose('edit-stock-ticker-{{ $row->id }}')">
+                <livewire:update-user-stock-market :ticker="$row" :key="uniqid()"/>
+            </x-ts-modal>
+            @endteleport
+            <x-ts-button.circle color="red"
+                                icon="trash"
+                                wire:click="delete('{{ $row->id }}')"/>
+        @endinteract
+    </x-ts-table>
 </div>

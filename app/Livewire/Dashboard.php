@@ -41,7 +41,7 @@ class Dashboard extends Component
     /**
      * @var string[]
      */
-    public array $sortBy = ['column' => 'booked_at', 'direction' => 'desc'];
+    public array $sort = ['column' => 'booked_at', 'direction' => 'desc'];
 
     public function mount(ConvertCurrency $convertCurrency): void
     {
@@ -68,18 +68,18 @@ class Dashboard extends Component
     public function with(): array
     {
         $headers = [
-            ['key' => 'id', 'label' => '#', 'sort_by'],
-            ['key' => 'userBankAccount.name', 'label' => 'Bank account', 'sortable' => false, 'class' => 'hidden md:table-cell'],
-            ['key' => 'balance_cents', 'label' => 'Balance'],
-            ['key' => 'tag', 'label' => 'Tag', 'sortable' => false],
-            ['key' => 'description', 'label' => 'Description', 'sortable' => false, 'class' => 'hidden md:table-cell'],
-            ['key' => 'booked_at', 'label' => 'Booked at'],
+            ['index' => 'id', 'label' => '#', 'sort_by'],
+            ['index' => 'userBankAccount.name', 'label' => 'Bank account', 'sortable' => false, 'class' => 'hidden md:table-cell'],
+            ['index' => 'balance_cents', 'label' => 'Balance'],
+            ['index' => 'tag', 'label' => 'Tag', 'sortable' => false],
+            ['index' => 'description', 'label' => 'Description', 'sortable' => false, 'class' => 'hidden md:table-cell'],
+            ['index' => 'booked_at', 'label' => 'Booked at'],
         ];
 
         $rows = UserTransaction::with('userBankAccount')
             ->with('transactionTag')
             ->with('userTransactionTag')
-            ->orderBy(...array_values($this->sortBy))
+            ->orderBy(...array_values($this->sort))
             ->paginate(20);
 
         return [

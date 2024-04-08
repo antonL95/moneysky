@@ -8,7 +8,7 @@ use App\Livewire\Forms\UserStockMarketForm;
 use App\MarketData\Models\UserStockMarket;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class UpdateUserStockMarket extends Component
 {
@@ -16,7 +16,7 @@ class UpdateUserStockMarket extends Component
 
     public UserStockMarket $ticker;
 
-    use Toast;
+    use Interactions;
 
     public function mount(UserStockMarket $ticker): void
     {
@@ -28,7 +28,8 @@ class UpdateUserStockMarket extends Component
     {
         $this->form->update($userStockMarket);
 
-        $this->success('Stock Market updated successfully', redirectTo: route('app.stock-market'));
+        $this->dispatch('ticker-updated');
+        $this->dispatch('close');
     }
 
     public function render(): View

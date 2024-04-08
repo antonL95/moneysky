@@ -1,13 +1,13 @@
 <x-action-section>
-    <x-slot name="title">
+    <x-slot:title>
         {{ __('Two Factor Authentication') }}
-    </x-slot>
+    </x-slot:title>
 
-    <x-slot name="description">
+    <x-slot:description>
         {{ __('Add additional security to your account using two factor authentication.') }}
-    </x-slot>
+    </x-slot:description>
 
-    <x-slot name="content">
+    <x-slot:content>
         <h3 class="text-lg font-medium">
             @if ($this->enabled)
                 @if ($showingConfirmation)
@@ -50,7 +50,7 @@
 
                 @if ($showingConfirmation)
                     <div class="mt-4">
-                        <x-mary-input wire:model="code" id="code" type="text" class="block mt-1 w-1/2" inputmode="numeric" autofocus autocomplete="one-time-code" label="{{ __('Code') }}" placeholder="{{ __('Code') }}" />
+                        <x-ts-input wire:model="code" id="code" type="text" class="block mt-1 w-1/2" inputmode="numeric" autofocus autocomplete="one-time-code" label="{{ __('Code') }}" placeholder="{{ __('Code') }}" />
                     </div>
                 @endif
             @endif
@@ -73,47 +73,34 @@
         <div class="mt-5">
             @if (! $this->enabled)
                 <x-confirms-password wire:then="enableTwoFactorAuthentication" button="{{ __('Enable') }}" >
-                    <x-mary-button class="btn btn-primary" wire:loading.attr="disabled">
-                        {{ __('Enable') }}
-                    </x-mary-button>
+                    <x-button :title="__('Enable')" wire:loading.attr="disabled" />
                 </x-confirms-password>
 
             @else
                 @if ($showingRecoveryCodes)
                     <x-confirms-password wire:then="regenerateRecoveryCodes" button="{{ __('Regenerate Recovery Codes') }}">
-                    <x-mary-button class="btn me-3">
-                        {{ __('Regenerate Recovery Codes') }}
-                    </x-mary-button>
+                    <x-button class="btn me-3" :title="__('Regenerate Recovery Codes')"/>
                     </x-confirms-password>
                 @elseif ($showingConfirmation)
                     <x-confirms-password wire:then="confirmTwoFactorAuthentication" button="{{ __('Confirm') }}">
-                        <x-mary-button class="btn btn-primary me-3">
-                            {{ __('Confirm') }}
-                        </x-mary-button>
+                        <x-button class="btn btn-primary me-3" :title="__('Confirm')"/>
                     </x-confirms-password>
                 @else
                     <x-confirms-password wire:then="showRecoveryCodes" button="{{ __('Show Recovery Codes') }}">
-                        <x-mary-button class="btn btn-primary me-3">
-                            {{ __('Show Recovery Codes') }}
-                        </x-mary-button>
+                        <x-button class="btn btn-primary me-3" :title="__('Show Recovery Codes')"/>
                     </x-confirms-password>
                 @endif
 
                 @if ($showingConfirmation)
                     <x-confirms-password wire:then="disableTwoFactorAuthentication" button="{{ __('Cancel') }}">
-                        <x-mary-button class="btn me-3">
-                            {{ __('Cancel') }}
-                        </x-mary-button>
+                        <x-button class="btn me-3" :title="__('Cancel')"/>
                     </x-confirms-password>
                 @else
                     <x-confirms-password wire:then="disableTwoFactorAuthentication" button="{{ __('Disable') }}">
-                        <x-mary-button class="btn me-3">
-                            {{ __('Disable') }}
-                        </x-mary-button>
+                        <x-button class="btn me-3" :title="__('Disable')"/>
                     </x-confirms-password>
                 @endif
-
             @endif
         </div>
-    </x-slot>
+    </x-slot:content>
 </x-action-section>

@@ -10,43 +10,59 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class ShowKrakenAccounts extends Component
 {
-    use Toast;
+    use Interactions;
     use WithPagination;
 
     /**
      * @var string[]
      */
-    public array $sortBy = ['column' => 'id', 'direction' => 'desc'];
+    public array $sort = ['column' => 'id', 'direction' => 'desc'];
 
     public function delete(UserKrakenAccount $krakenAccount): void
     {
         $krakenAccount->delete();
 
-        $this->dispatch('kraken-account-deleted');
-        $this->success('Kraken account deleted!');
+        $this->dispatch('kraken-deleted');
+        $this->toast()->success('Kraken account deleted!', 'Kraken account deleted successfully.!')->send();
     }
 
     /**
      * @return array<string, array<int, array<int|string|bool|string>>|LengthAwarePaginator<UserKrakenAccount>>
      */
+    #[On('kraken-added')]
+    #[On('kraken-updated')]
+    #[On('kraken-deleted')]
     public function with(): array
     {
         $headers = [
-            ['key' => 'id', 'label' => '#'],
-            ['key' => 'api_key', 'label' => 'Api key'],
-            ['key' => 'balance_cents', 'label' => 'Balance'],
+            ['index' => 'id', 'label' => '#'],
+            ['index' => 'api_key', 'label' => 'Api key'],
+            ['index' => 'balance_cents', 'label' => 'Balance'],
+            ['index' => 'action'],
         ];
 
-        $rows = UserKrakenAccount::orderBy(...array_values($this->sortBy))->paginate(10);
+        $rows = UserKrakenAccount::orderBy(...array_values($this->sort))->paginate(10);
 
         return [
             'headers' => $headers,
             'rows' => $rows,
         ];
+    }
+
+    #[On('kraken-added')]
+    public function added(): void
+    {
+        $this->toast()->success('Kraken account added!', 'Kraken account added successfully!')->send();
+    }
+
+    #[On('kraken-updated')]
+    public function updated(): void
+    {
+        $this->toast()->success('Kraken account updated!', 'Kraken account updated successfully!')->send();
     }
 
     #[On('kraken-account-deleted')]

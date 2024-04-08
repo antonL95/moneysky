@@ -1,21 +1,31 @@
 <div>
     <div class="flex justify-end">
-        <x-mary-button class="btn btn-primary" link="{{route('app.add-manual-entry')}}" wire:navigate>
-            <x-mary-icon name="fas.plus" class="w-[20px] h-[20px] pr-2"/>
-            {{ __('Add cash wallet') }}
-        </x-mary-button>
+        @teleport('body')
+            <x-ts-modal id="add-manual-entry">
+                <livewire:add-user-manual-entries/>
+            </x-ts-modal>
+        @endteleport
+        <x-table-header-button modal="add-manual-entry" :title="__('Add cash wallet')"/>
     </div>
 
-    <x-mary-table :headers="$headers" :rows="$rows" with-pagination x-mary-checkbox:sort-by="$sortBy" >
-        @scope('cell_amount_cents', $row)
-        <x-amount-format :amount="$row->amount_cents" :amount-currency="$row->currency" />
-        @endscope
-        {{-- Special `actions` slot --}}
-        @scope('actions', $row)
-        <div class="flex items-center justify-end">
-            <x-mary-button icon="fas.pencil" href="{{route('app.update-manual-entry', ['wallet' => $row->id])}}" wire:navigate class="btn-sm bg-info" />
-            <x-mary-button icon="o-trash" wire:click="delete({{ $row->id }})"  class="btn-sm bg-warning"  />
-        </div>
-        @endscope
-    </x-mary-table>
+    <x-ts-table :headers="$headers" :rows="$rows" paginate simple-pagination loading :$sort >
+        @interact('column_amount_cents', $row)
+            <x-amount-format :amount="$row->amount_cents" :amount-currency="$row->currency" />
+        @endinteract
+        @interact('column_action', $row)
+            <x-ts-button.circle color="yellow"
+                                icon="pencil"
+                                x-on:click="$modalOpen('edit-manual-entry-{{ $row->id }}')"/>
+
+            @teleport('body')
+            <x-ts-modal id="edit-manual-entry-{{ $row->id }}"
+                        x-on:close="$modalClose('edit-manual-entry-{{ $row->id }}')">
+                <livewire:update-user-manual-entries :wallet="$row" :key="uniqid()"/>
+            </x-ts-modal>
+            @endteleport
+            <x-ts-button.circle color="red"
+                                icon="trash"
+                                wire:click="delete('{{ $row->id }}')"/>
+        @endinteract
+    </x-ts-table>
 </div>

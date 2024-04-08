@@ -7,11 +7,11 @@ namespace App\Livewire;
 use App\Livewire\Forms\UserKrakenAccountForm;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use TallStackUi\Traits\Interactions;
 
 class AddUserKrakenAccount extends Component
 {
-    use Toast;
+    use Interactions;
 
     public UserKrakenAccountForm $form;
 
@@ -19,7 +19,8 @@ class AddUserKrakenAccount extends Component
     {
         $this->form->store();
 
-        $this->success('Kraken account added!', redirectTo: route('app.kraken-accounts'));
+        $this->dispatch('kraken-added');
+        $this->dispatch('close');
     }
 
     public function render(): View

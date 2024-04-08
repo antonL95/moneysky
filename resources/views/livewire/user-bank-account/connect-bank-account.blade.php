@@ -1,16 +1,13 @@
-@php use App\Bank\Models\BankInstitution; use Illuminate\Support\Facades\Cache; @endphp
-<x-mary-form class="max-w-sm mx-auto min-h-[450px] md:min-h-[600px]" wire:submit="connect">
-    <x-mary-choices
-        label="Choose your bank"
+<form class="max-w-sm mx-auto" wire:submit="connect">
+    <x-ts-select.styled
+        label="{{ __('Chose your bank') }}"
+        :request="route('app.list-institutions')"
+        select="label:name|value:id"
         wire:model="institution"
-        :options="$institutionsSearchable"
-        single
-        option-avatar="image"
-        option-sub-label="countries"
         searchable/>
-    <x-slot:actions>
-        <x-mary-button type="submit" class="btn btn-primary">
+    <x-button type="submit" class="mt-2">
+        <x-slot:title>
             {{ __('Connect') }}
-        </x-mary-button>
-    </x-slot:actions>
-</x-mary-form>
+        </x-slot:title>
+    </x-button>
+</form>

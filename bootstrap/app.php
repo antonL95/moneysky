@@ -6,7 +6,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Sentry\Laravel\Integration;
-use Spatie\CookieConsent\CookieConsentMiddleware;
 
 return Application::configure(basePath: \dirname(__DIR__))
     ->withRouting(
@@ -29,9 +28,6 @@ return Application::configure(basePath: \dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'stripe/*',
         ]);
-        $middleware->append(
-            CookieConsentMiddleware::class,
-        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         Integration::handles($exceptions);
