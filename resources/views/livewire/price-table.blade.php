@@ -42,32 +42,13 @@
                         </li>
                     </ul>
                 </div>
-                @auth()
-                    @if(!auth()->user()->subscribed() || !auth()->user()->subscribed('plus') || !auth()->user()->subscribed('unlimited'))
-                        <a
-                            href="#"
-                            aria-describedby="tier-free"
-                            class="mt-8 bg-white inline-flex justify-center rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
-                            <x-ts-icon name="check" class="w-5 h-5 mr-3"/>
-                            {{ __('Current plan') }}
-                        </a>
-                    @else
-                        <a
-                            href="{{ route('billing') }}"
-                            aria-describedby="tier-free"
-                            class="mt-8 bg-white inline-flex justify-center rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
-                            {{ __('Downgrade plan') }}
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('register') }}"
-                       wire:navigate
-                       aria-describedby="tier-freelancer"
-                       class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
+                <a href="{{ route('register') }}"
+                   wire:navigate
+                   aria-describedby="tier-freelancer"
+                   class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
 
-                        {{ __('Get started for free') }}
-                    </a>
-                @endauth
+                    {{ __('Get started for free') }}
+                </a>
             </div>
             <div
                 class="flex flex-col justify-between rounded-3xl bg-white p-8 ring-1 ring-gray-200 xl:p-10 lg:z-10 lg:rounded-b-none">
@@ -111,32 +92,13 @@
                         </li>
                     </ul>
                 </div>
-                @auth()
-                    @if(auth()->user()->subscribed() || auth()->user()->subscribed('unlimited'))
-                        <a
-                            href="#"
-                            aria-describedby="tier-unlimited"
-                            class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-600 text-white shadow-sm hover:bg-indigo-500">
-                            <x-ts-icon name="check" class="w-5 h-5 mr-3"/>
-                            {{ __('Current plan') }}
-                        </a>
-                    @else
-                        <a
-                            href="{{ route('subscription-checkout', ['plan' => 'unlimited']) }}"
-                            aria-describedby="tier-unlimited"
-                            class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-600 text-white shadow-sm hover:bg-indigo-500">
-                            {{ __('Subscribe') }}
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('register') }}"
-                       wire:navigate
-                       aria-describedby="tier-unlimited"
-                       class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-600 text-white shadow-sm hover:bg-indigo-500">
+                <a href="{{ route('register') }}"
+                   wire:navigate
+                   aria-describedby="tier-unlimited"
+                   class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 bg-indigo-600 text-white shadow-sm hover:bg-indigo-500">
 
-                        {{ __('Go unlimited') }}
-                    </a>
-                @endauth
+                    {{ __('Go unlimited') }}
+                </a>
             </div>
             <div
                 class="flex flex-col justify-between rounded-3xl bg-white p-8 ring-1 ring-gray-200 xl:p-10 lg:mt-8 lg:rounded-l-none">
@@ -176,41 +138,13 @@
                         </li>
                     </ul>
                 </div>
-                @auth()
-                    @if(auth()->user()->subscribed() || auth()->user()->subscribed('plus'))
-                        <a
-                            href="#"
-                            aria-describedby="tier-plus"
-                            class="mt-8 bg-white inline-flex justify-center rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
-                            <x-ts-icon name="check" class="w-5 h-5 mr-3"/>
-                            {{ __('Current plan') }}
-                        </a>
-                    @else
-                        @if(auth()->user()->subscribed() || auth()->user()->subscribed('unlimited'))
-                            <a
-                                href="{{ route('billing') }}"
-                                aria-describedby="tier-plus"
-                                class="mt-8 bg-white inline-flex justify-center rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
-                                {{ __('Downgrade plan') }}
-                            </a>
-                        @else
-                            <a
-                                href="{{ route('subscription-checkout', ['plan' => 'plus']) }}"
-                                aria-describedby="tier-plus"
-                                class="mt-8 bg-white inline-flex justify-center rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
-                                {{ __('Subscribe') }}
-                            </a>
-                        @endif
-                    @endif
-                @else
-                    <a href="{{ route('register') }}"
-                       wire:navigate
-                       aria-describedby="tier-plus"
-                       class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
+                <a href="{{ route('register') }}"
+                   wire:navigate
+                   aria-describedby="tier-plus"
+                   class="mt-8 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
 
-                        {{ __('Go plus') }}
-                    </a>
-                @endauth
+                    {{ __('Go plus') }}
+                </a>
             </div>
         </div>
     </div>

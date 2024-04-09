@@ -1,6 +1,6 @@
 @php use App\UserSetting\Models\UserSetting@endphp
 <div>
-    <div class="flex justify-center mb-10 md:grid md:grid-cols-2 max-h-[400px]">
+    <div class="flex justify-center mb-10 md:grid md:grid-cols-2">
         <div class="flex flex-col md:flex-row flex-wrap justify-around gap-1">
             @if($bankAccountsSum !== null)
                 <x-ts-stats
