@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Actions\Currency\ConvertCurrency;
-use App\Bank\Models\TransactionTag;
 use App\Bank\Models\UserBankAccount;
 use App\Bank\Models\UserTransaction;
 use App\Crypto\Models\UserCryptoWallets;
@@ -41,6 +40,7 @@ class Dashboard extends Component
 
     public ?float $stocksSum = null;
 
+    /** @var array<string, array<string, float>> */
     public array $monthlyExpenses = [];
 
     /**
@@ -185,16 +185,19 @@ class Dashboard extends Component
         ];
     }
 
-
     /**
-     * @param Collection<UserTransaction> $collection
+     * @param Collection<int, UserTransaction> $collection
      */
     private function analyzeTransactions(Collection $collection, int $tagId, int &$sum): void
     {
         foreach ($collection as $item) {
-            if ($item->transactionTag->id === $tagId) {
+            $currency = $item->currency;
+            if ($currency === '') {
+                continue;
+            }
+            if ($item->transactionTag?->id === $tagId) {
                 $sum += (int) $this->convertCurrency->convert(
-                    new Money($item->balance_cents, new Currency($item->currency)),
+                    new Money($item->balance_cents, new Currency($currency)),
                     new Currency(UserSetting::getCurrencyWithDefault()),
                 )->getAmount();
             }
