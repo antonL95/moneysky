@@ -1,14 +1,13 @@
 @php use App\UserSetting\Models\UserSetting@endphp
 <div>
-    <div class="flex justify-center mb-10 md:grid md:grid-cols-2">
-        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
+    <div class="justify-center mb-10 grid grid-cols-1 xl:grid-cols-2 gap-5">
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
             @if($bankAccountsSum !== null)
                 <x-stats-card
                     title="{{__('Bank accounts')}}"
                     icon="credit-card">
                     <x-slot:value>
-                        <x-amount-format :amount="$bankAccountsSum"
-                                         :amount-currency="UserSetting::getCurrencyWithDefault()"/>
+                        <x-amount-format :amount="$bankAccountsSum"/>
                     </x-slot:value>
                 </x-stats-card>
             @endif
@@ -17,7 +16,7 @@
                     title="{{__('Crypto wallets')}}"
                     icon="currency-eth">
                     <x-slot:value>
-                        <x-amount-format :amount="$cryptoSum" :amount-currency="UserSetting::getCurrencyWithDefault()"/>
+                        <x-amount-format :amount="$cryptoSum"/>
                     </x-slot:value>
                 </x-stats-card>
             @endif
@@ -26,7 +25,7 @@
                     title="{{__('Stock market')}}"
                     icon="chart-bar">
                     <x-slot:value>
-                        <x-amount-format :amount="$stocksSum" :amount-currency="UserSetting::getCurrencyWithDefault()"/>
+                        <x-amount-format :amount="$stocksSum"/>
                     </x-slot:value>
                 </x-stats-card>
             @endif
@@ -35,15 +34,49 @@
                     title="{{__('Cash wallets')}}"
                     icon="wallet">
                     <x-slot:value>
-                        <x-amount-format :amount="$cashWalletsSum"
-                                         :amount-currency="UserSetting::getCurrencyWithDefault()"/>
+                        <x-amount-format :amount="$cashWalletsSum"/>
                     </x-slot:value>
                 </x-stats-card>
             @endif
         </dl>
-        <div class="flex flex-col md:flex-row">
-
-        </div>
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
+            @isset($monthlyExpenses['currentMonth']['streaming'])
+            <x-stats-card
+                title="{{__('Streaming (this month)')}}"
+                icon="television">
+                <x-slot:value>
+                    <x-amount-format :amount="$monthlyExpenses['currentMonth']['streaming']"/>
+                </x-slot:value>
+            </x-stats-card>
+            @endisset
+            @isset($monthlyExpenses['currentMonth']['subscriptions'])
+                    <x-stats-card
+                        title="{{__('Subscriptions (this month)')}}"
+                        icon="money">
+                        <x-slot:value>
+                            <x-amount-format :amount="$monthlyExpenses['currentMonth']['subscriptions']"/>
+                        </x-slot:value>
+                    </x-stats-card>
+            @endisset
+            @isset($monthlyExpenses['previousMonth']['streaming'])
+                <x-stats-card
+                    title="{{__('Streaming (previous month)')}}"
+                    icon="television">
+                    <x-slot:value>
+                        <x-amount-format :amount="$monthlyExpenses['previousMonth']['streaming']"/>
+                    </x-slot:value>
+                </x-stats-card>
+            @endisset
+            @isset($monthlyExpenses['previousMonth']['subscriptions'])
+                <x-stats-card
+                    title="{{__('Subscriptions (previous month)')}}"
+                    icon="money">
+                    <x-slot:value>
+                        <x-amount-format :amount="$monthlyExpenses['previousMonth']['subscriptions']"/>
+                    </x-slot:value>
+                </x-stats-card>
+            @endisset
+        </dl>
     </div>
 
     <x-ts-table :headers="$headers" :rows="$rows" paginate loading :$sort >

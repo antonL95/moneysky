@@ -1,10 +1,10 @@
-<div class="bg-white py-16 sm:py-24 lg:py-24">
-    <div class="mx-auto max-w-7xl flex flex-col md:flex-row gap-y-2 justify-between">
+<div class="py-16 sm:py-24 lg:py-24">
+    <div class="mx-auto max-w-7xl flex flex-col lg:flex-row gap-y-2 justify-between">
         <div class="max-w-5/12 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:col-span-7">
             <h2 class="inline sm:block lg:inline xl:block">Want product news and updates?</h2>
             <p class="inline sm:block lg:inline xl:block">Sign up for our newsletter.</p>
         </div>
-        <form wire:submit="subscribe" class="w-5/12 lg:col-span-5 lg:pt-2">
+        <form wire:submit="subscribe" class="w-full lg:w-5/12 lg:col-span-5 lg:pt-2">
             <div class="flex gap-x-4">
                 <input type="email" wire:model="email"
                             required
