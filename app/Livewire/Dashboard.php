@@ -48,10 +48,13 @@ class Dashboard extends Component
      */
     public array $sort = ['column' => 'booked_at', 'direction' => 'desc'];
 
-    public function mount(ConvertCurrency $convertCurrency): void
+    public function boot(ConvertCurrency $convertCurrency): void
     {
         $this->convertCurrency = $convertCurrency;
+    }
 
+    public function mount(): void
+    {
         $user = auth()->user();
 
         if ($user === null) {
