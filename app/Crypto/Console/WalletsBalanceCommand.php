@@ -15,7 +15,6 @@ class WalletsBalanceCommand extends Command
 
     protected $description = 'Fetch and calculate the balance of crypto wallets';
 
-
     public function handle(): void
     {
         $users = User::where('demo', '=', false)->get();

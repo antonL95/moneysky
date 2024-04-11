@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Bank\Models\BankInstitution;
@@ -36,25 +38,24 @@ class DemoAppSeeder extends Seeder
         ]);
 
         DB::insert('INSERT INTO `subscriptions` (`user_id`, `type`, `stripe_id`, `stripe_status`, `stripe_price`, `quantity`, `trial_ends_at`, `ends_at`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-            $user->id,
-            'default',
-            uniqid('stripe_price_id', true),
-            'active',
-            config('services.stripe.unlimited_plan_id'),
-            1,
-            null,
-            now()->addYears(2),
-        ]);
+            [
+                $user->id,
+                'default',
+                uniqid('stripe_price_id', true),
+                'active',
+                config('services.stripe.unlimited_plan_id'),
+                1,
+                null,
+                now()->addYears(2),
+            ]);
 
         $bankSession = UserBankSession::create([
             'user_id' => $user->id,
             'bank_institution_id' => BankInstitution::inRandomOrder()->first()->id,
             'agreement_id' => fake()->uuid,
             'requisition_id' => fake()->uuid,
-            'link' => fake()->url
+            'link' => fake()->url,
         ]);
-
 
         $userBank = UserBankAccount::create([
             'user_id' => $user->id,
@@ -108,9 +109,9 @@ class DemoAppSeeder extends Seeder
 
         $dayDiff = random_int(250, 365);
 
-        for ($i = 0; $i < $dayDiff; $i++) {
+        for ($i = 0; $i < $dayDiff; ++$i) {
             $nOfTransactions = random_int(1, 3);
-            for ($j = 0; $j < $nOfTransactions; $j++) {
+            for ($j = 0; $j < $nOfTransactions; ++$j) {
                 if ($i > 0 && $i % 30 === 0 && $j === 0) {
                     $randomTag = TransactionTag::where('tag', 'Rent/Mortgage')->first();
                     $balance_amount = random_int(15000, 22000) * -100;

@@ -17,7 +17,6 @@ class GetBankTransactionsCommand extends Command
 
     protected $description = 'Download transactions and current balance from bank';
 
-
     public function handle(): int
     {
         $fromArg = $this->argument('from');
