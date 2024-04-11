@@ -7,6 +7,7 @@ namespace App\Bank\Console;
 use App\Bank\Jobs\ProcessBankAccounts;
 use App\Bank\Models\UserBankAccount;
 use App\Models\Scopes\UserScope;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -15,6 +16,7 @@ class GetBankTransactionsCommand extends Command
     protected $signature = 'app:get-bank-transactions {from?} {to?}';
 
     protected $description = 'Download transactions and current balance from bank';
+
 
     public function handle(): int
     {
@@ -36,9 +38,19 @@ class GetBankTransactionsCommand extends Command
                 ->setTime(0, 0);
         }
 
-        $userBankAccounts = UserBankAccount::withoutGlobalScope(
-            UserScope::class,
-        )->get();
+        $userBankAccounts = [];
+
+        $users = User::where('demo', '=', false)->get();
+
+        foreach ($users as $user) {
+            UserBankAccount::withoutGlobalScope(
+                UserScope::class,
+            )->where('user_id', $user->id)->each(
+                function ($bankAccount) use (&$userBankAccounts) {
+                    $userBankAccounts[] = $bankAccount;
+                },
+            );
+        }
 
         $i = 0;
         foreach ($userBankAccounts as $userBankAccount) {

@@ -6,6 +6,7 @@ namespace App\Crypto\Console;
 
 use App\Crypto\Jobs\ProcessCryptoWallets;
 use App\Crypto\Models\UserCryptoWallets;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class WalletsBalanceCommand extends Command
@@ -14,10 +15,17 @@ class WalletsBalanceCommand extends Command
 
     protected $description = 'Fetch and calculate the balance of crypto wallets';
 
+
     public function handle(): void
     {
-        UserCryptoWallets::withoutGlobalScopes()->each(function (UserCryptoWallets $wallet) {
-            ProcessCryptoWallets::dispatch($wallet);
-        });
+        $users = User::where('demo', '=', false)->get();
+
+        foreach ($users as $user) {
+            UserCryptoWallets::withoutGlobalScopes()
+                ->where('user_id', $user->id)
+                ->each(function ($wallet) {
+                    ProcessCryptoWallets::dispatch($wallet);
+                });
+        }
     }
 }

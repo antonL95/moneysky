@@ -6,6 +6,7 @@ namespace App\MarketData\Console;
 
 use App\MarketData\Jobs\ProcessStockMarket;
 use App\MarketData\Models\UserStockMarket;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class StockMarketDataCommand extends Command
@@ -16,9 +17,14 @@ class StockMarketDataCommand extends Command
 
     public function handle(): void
     {
-        UserStockMarket::withoutGlobalScopes()
-            ->each(function (UserStockMarket $userStockMarket) {
-                ProcessStockMarket::dispatch($userStockMarket);
-            });
+        $users = User::where('demo', '=', false)->get();
+
+        foreach ($users as $user) {
+            UserStockMarket::withoutGlobalScopes()->where('user_id', $user->id)->each(
+                function ($userStockMarket) {
+                    ProcessStockMarket::dispatch($userStockMarket);
+                }
+            );
+        }
     }
 }

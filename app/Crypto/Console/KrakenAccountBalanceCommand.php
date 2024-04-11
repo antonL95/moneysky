@@ -6,6 +6,7 @@ namespace App\Crypto\Console;
 
 use App\Crypto\Jobs\ProcessKrakenAccounts;
 use App\Crypto\Models\UserKrakenAccount;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class KrakenAccountBalanceCommand extends Command
@@ -14,12 +15,16 @@ class KrakenAccountBalanceCommand extends Command
 
     protected $description = 'Get account balance from Kraken';
 
-    public function handle(): int
+    public function handle(): void
     {
-        UserKrakenAccount::withoutGlobalScopes()->each(function (UserKrakenAccount $krakenAccount) {
-            ProcessKrakenAccounts::dispatch($krakenAccount);
-        });
+        $users = User::where('demo', '=', false)->get();
 
-        return 0;
+        foreach ($users as $user) {
+            UserKrakenAccount::withoutGlobalScopes()
+                ->where('user_id', $user->id)
+                ->each(function ($krakenAccount) {
+                    ProcessKrakenAccounts::dispatch($krakenAccount);
+                });
+        }
     }
 }
