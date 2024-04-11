@@ -45,7 +45,7 @@ class GetBankTransactionsCommand extends Command
             UserBankAccount::withoutGlobalScope(
                 UserScope::class,
             )->where('user_id', $user->id)->each(
-                function ($bankAccount) use (&$userBankAccounts) {
+                function (UserBankAccount $bankAccount) use (&$userBankAccounts) {
                     $userBankAccounts[] = $bankAccount;
                 },
             );

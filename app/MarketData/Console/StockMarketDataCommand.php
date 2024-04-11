@@ -21,7 +21,7 @@ class StockMarketDataCommand extends Command
 
         foreach ($users as $user) {
             UserStockMarket::withoutGlobalScopes()->where('user_id', $user->id)->each(
-                function ($userStockMarket) {
+                function (UserStockMarket $userStockMarket) {
                     ProcessStockMarket::dispatch($userStockMarket);
                 }
             );

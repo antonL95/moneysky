@@ -22,7 +22,7 @@ class KrakenAccountBalanceCommand extends Command
         foreach ($users as $user) {
             UserKrakenAccount::withoutGlobalScopes()
                 ->where('user_id', $user->id)
-                ->each(function ($krakenAccount) {
+                ->each(function (UserKrakenAccount $krakenAccount) {
                     ProcessKrakenAccounts::dispatch($krakenAccount);
                 });
         }

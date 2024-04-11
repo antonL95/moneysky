@@ -22,7 +22,7 @@ class WalletsBalanceCommand extends Command
         foreach ($users as $user) {
             UserCryptoWallets::withoutGlobalScopes()
                 ->where('user_id', $user->id)
-                ->each(function ($wallet) {
+                ->each(function (UserCryptoWallets $wallet) {
                     ProcessCryptoWallets::dispatch($wallet);
                 });
         }
