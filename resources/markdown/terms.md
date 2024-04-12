@@ -25,3 +25,12 @@ These terms and conditions are governed by and construed in accordance with the 
 moneysky.app may use or offer services from third-party vendors and hosting partners to provide the necessary hardware, software, networking, storage, and related technology required to run MoneySky. MoneySky is not responsible for the privacy policies or practices of these third-party services. Users are encouraged to be aware when they leave our app and to read the privacy statements of any other site that collects personally identifiable information.
 
 By using moneysky.app, you acknowledge and agree to these terms.
+
+## List of services
+
+In the name of security and transparency we list here are all the third-party services that we use:
+
+- [AlphaVantage]("https://www.alphavantage.co/")
+- [CovalenthQ]("https://www.covalenthq.com/")
+- [GoCardless]("https://gocardless.com/bank-account-data/")
+- [PostHog]("https://posthog.com/")
