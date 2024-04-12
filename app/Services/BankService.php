@@ -190,10 +190,14 @@ class BankService
 
     public function deleteUserRequisitions(User $user): void
     {
-        $sessions = UserBankSession::whereUserId($user->id)->get();
+        $sessions = UserBankSession::withoutGlobalScopes()
+            ->where('user_id', $user->id)->get();
 
         foreach ($sessions as $session) {
-            $this->client->requisition->deleteRequisition($session->requisition_id);
+            try {
+                $this->client->requisition->deleteRequisition($session->requisition_id);
+            } catch (\Exception) {}
+
             $session->delete();
         }
     }
