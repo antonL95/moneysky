@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Bank\Models\BankInstitution;
-use App\Bank\Models\UserBankSession;
-use App\Bank\Services\BankService;
+use App\Models\BankInstitution;
+use App\Models\UserBankSession;
+use App\Services\BankService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Validate;

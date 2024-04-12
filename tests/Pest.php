@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Actions\Currency\ConvertCurrency;
-use App\Bank\DataTransferObjects\BankBalanceDto;
-use App\Bank\Services\BankService;
+use App\DataTransferObjects\BankBalanceDto;
+use App\Services\BankService;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Money\Currency;
 use Money\Money;

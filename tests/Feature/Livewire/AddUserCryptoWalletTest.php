@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Crypto\Enums\ChainType;
-use App\Crypto\Models\UserCryptoWallets;
+use App\Enums\ChainType;
 use App\Livewire\AddUserCryptoWallet;
 use App\Models\User;
+use App\Models\UserCryptoWallets;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;

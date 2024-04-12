@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Jetstream;
 
-use App\Bank\Services\BankService;
 use App\Models\User;
+use App\Services\BankService;
 use Laravel\Jetstream\Contracts\DeletesUsers;
 
 readonly class DeleteUser implements DeletesUsers

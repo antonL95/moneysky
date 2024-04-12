@@ -1,4 +1,4 @@
-@php use App\UserSetting\Models\UserSetting@endphp
+@php use App\Models\UserSetting@endphp
 <div>
     <div class="justify-center mb-10 grid grid-cols-1 xl:grid-cols-2 gap-5">
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -41,22 +41,22 @@
         </dl>
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
             @isset($monthlyExpenses['currentMonth']['streaming'])
-            <x-stats-card
-                title="{{__('Streaming (this month)')}}"
-                icon="television">
-                <x-slot:value>
-                    <x-amount-format :amount="$monthlyExpenses['currentMonth']['streaming']"/>
-                </x-slot:value>
-            </x-stats-card>
+                <x-stats-card
+                    title="{{__('Streaming (this month)')}}"
+                    icon="television">
+                    <x-slot:value>
+                        <x-amount-format :amount="$monthlyExpenses['currentMonth']['streaming']"/>
+                    </x-slot:value>
+                </x-stats-card>
             @endisset
             @isset($monthlyExpenses['currentMonth']['subscriptions'])
-                    <x-stats-card
-                        title="{{__('Subscriptions (this month)')}}"
-                        icon="money">
-                        <x-slot:value>
-                            <x-amount-format :amount="$monthlyExpenses['currentMonth']['subscriptions']"/>
-                        </x-slot:value>
-                    </x-stats-card>
+                <x-stats-card
+                    title="{{__('Subscriptions (this month)')}}"
+                    icon="money">
+                    <x-slot:value>
+                        <x-amount-format :amount="$monthlyExpenses['currentMonth']['subscriptions']"/>
+                    </x-slot:value>
+                </x-stats-card>
             @endisset
             @isset($monthlyExpenses['previousMonth']['streaming'])
                 <x-stats-card
@@ -79,20 +79,20 @@
         </dl>
     </div>
 
-    <x-ts-table :headers="$headers" :rows="$rows" paginate loading :$sort >
+    <x-ts-table :headers="$headers" :rows="$rows" paginate loading :$sort>
         @interact('column_tag', $row)
-            <x-badge
-                :text="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
-                :color="$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'"/>
+        <x-badge
+            :text="$row->userTransactionTag?->tag ?? $row->transactionTag?->tag ?? __('unknown')"
+            :color="$row->userTransactionTag?->color ?? $row->transactionTag?->color ?? '#ccc'"/>
         @endinteract
         @interact('column_balance_cents', $row)
-            <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency"/>
+        <x-amount-format :amount="$row->balance_cents" :amount-currency="$row->currency"/>
         @endinteract
         @interact('column_bank_account', $row)
-            {{$row->userBankAccount->name}}
+        {{$row->userBankAccount->name}}
         @endinteract
         @interact('column_booked_at', $row)
-            {{$row->booked_at->diffForHumans()}}
+        {{$row->booked_at->diffForHumans()}}
         @endinteract
     </x-ts-table>
 </div>

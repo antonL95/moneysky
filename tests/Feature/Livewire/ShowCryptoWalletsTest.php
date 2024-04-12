@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Crypto\Models\UserCryptoWallets;
 use App\Livewire\ShowCryptoWallets;
 use App\Models\User;
+use App\Models\UserCryptoWallets;
 use Livewire\Livewire;
 
 it('renders successfully', function () {

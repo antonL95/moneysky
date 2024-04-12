@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Forms;
 
-use App\Crypto\Enums\ChainType;
-use App\Crypto\Jobs\ProcessCryptoWallets;
-use App\Crypto\Models\UserCryptoWallets;
+use App\Enums\ChainType;
+use App\Jobs\ProcessCryptoWallets;
+use App\Models\UserCryptoWallets;
 use Illuminate\Validation\Rules\Enum;
 use Livewire\Attributes\Validate;
 use Livewire\Form;

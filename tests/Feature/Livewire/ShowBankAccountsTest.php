@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Bank\Models\UserBankAccount;
 use App\Livewire\ShowBankAccounts;
 use App\Models\User;
+use App\Models\UserBankAccount;
 use Livewire\Livewire;
 
 it('renders successfully', function () {

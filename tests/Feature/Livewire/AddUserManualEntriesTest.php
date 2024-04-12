@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Livewire\AddUserManualEntries;
-use App\ManualEntry\Models\UserManualEntry;
 use App\Models\User;
+use App\Models\UserManualEntry;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Livewire\Forms\UserManualEntryForm;
-use App\ManualEntry\Models\UserManualEntry;
+use App\Models\UserManualEntry;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Money\Currencies\ISOCurrencies;

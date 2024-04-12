@@ -11,7 +11,7 @@
             </p>
         @endisset
     </dt>
-    <dd class="ml-14 flex items-baseline sm:pb-7">
+    <dd class="ml-14 flex items-baseline pb-4 sm:pb-7">
         <p class="text-md font-semibold text-gray-900">
             {{ $value }}
         </p>

@@ -2,30 +2,21 @@
 
 declare(strict_types=1);
 
-use App\Bank\Http\Controllers\UserBankAccountRedirect;
-use App\Bank\Models\BankInstitution;
+use App\Http\Controllers\UserBankAccountRedirect;
 use App\Livewire\Dashboard;
 use App\Livewire\ShowBankAccounts;
 use App\Livewire\ShowCryptoWallets;
 use App\Livewire\ShowKrakenAccounts;
 use App\Livewire\ShowManualEntries;
 use App\Livewire\ShowStockMarket;
+use App\Models\BankInstitution;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
-use PostHog\PostHog;
 
-Route::get('/', static function (): View {
-    PostHog::capture([
-        'distinctId' => 'test-user',
-        'event' => 'test-event',
-    ]);
-
-    return view('welcome');
-})
-    ->name('home');
+Route::get('/', static fn (): View => view('welcome'))->name('home');
 
 Route::middleware([
     'auth',
@@ -116,7 +107,7 @@ Route::middleware([
 
     Route::get(
         '/billing',
-        static fn (Request $request) => $request->user()->redirectToBillingPortal()
+        static fn (Request $request) => $request->user()->redirectToBillingPortal(),
     )->name('billing');
 });
 

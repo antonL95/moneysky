@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Livewire\Forms\UserStockMarketForm;
-use App\MarketData\Models\UserStockMarket;
+use App\Models\UserStockMarket;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Forms;
 
-use App\Crypto\Jobs\ProcessKrakenAccounts;
-use App\Crypto\Models\UserKrakenAccount;
+use App\Jobs\ProcessKrakenAccounts;
+use App\Models\UserKrakenAccount;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 

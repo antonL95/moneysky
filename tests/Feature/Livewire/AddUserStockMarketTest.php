@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Livewire\AddUserStockMarket;
-use App\MarketData\Models\UserStockMarket;
 use App\Models\User;
+use App\Models\UserStockMarket;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;

@@ -11,6 +11,9 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './vendor/tallstackui/tallstackui/src/**/*.php',
+        './vendor/tallstackui/tallstackui/src/View/Components/*.php',
+        './vendor/tallstackui/tallstackui/src/View/Components/**/*.php',
+        './vendor/tallstackui/tallstackui/src/resources/views/components/**/*.php',
     ],
 
     theme: {

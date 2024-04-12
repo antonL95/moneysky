@@ -155,7 +155,7 @@ return [
             'z-index' => 'z-50',
             'blur' => true,
             'persistent' => false,
-            'size' => 'lg',
+            'size' => 'md',
             'position' => 'left',
         ],
         /*

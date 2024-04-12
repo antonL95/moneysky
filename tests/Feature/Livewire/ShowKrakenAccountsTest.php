@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Crypto\Models\UserKrakenAccount;
 use App\Livewire\ShowKrakenAccounts;
 use App\Models\User;
+use App\Models\UserKrakenAccount;
 use Livewire\Livewire;
 
 it('renders successfully', function () {

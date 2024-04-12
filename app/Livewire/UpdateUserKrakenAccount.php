@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Crypto\Models\UserKrakenAccount;
 use App\Livewire\Forms\UserKrakenAccountForm;
+use App\Models\UserKrakenAccount;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;

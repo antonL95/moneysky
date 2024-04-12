@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Forms;
 
-use App\MarketData\Jobs\ProcessStockMarket;
-use App\MarketData\Models\UserStockMarket;
+use App\Jobs\ProcessStockMarket;
+use App\Models\UserStockMarket;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 

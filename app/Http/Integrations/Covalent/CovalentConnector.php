@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Integrations\Covalent;
 
-use App\Crypto\Exceptions\CovalentExceptions;
+use App\Exceptions\CovalentExceptions;
 use Illuminate\Support\Facades\Config;
 use Saloon\Http\Auth\BasicAuthenticator;
 use Saloon\Http\Connector;

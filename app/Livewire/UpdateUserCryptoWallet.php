@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Crypto\Enums\ChainType;
-use App\Crypto\Models\UserCryptoWallets;
+use App\Enums\ChainType;
 use App\Livewire\Forms\UserCryptoWalletForm;
+use App\Models\UserCryptoWallets;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;

@@ -1,4 +1,4 @@
-<nav class="flex flex-1 flex-col">
+<nav class="flex flex-1 flex-col w-full">
     <ul role="list" class="flex flex-1 flex-col gap-y-2">
         <x-navigation.navigation-item :route="route('app.home')" :title="__('Dashboard')">
             <x-slot:icon>

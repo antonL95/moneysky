@@ -4,19 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Bank\Models\UserBankAccount;
-use App\Bank\Models\UserBankSession;
-use App\Bank\Models\UserBankTransactionRaw;
-use App\Crypto\Models\UserCryptoWallets;
-use App\Crypto\Models\UserKrakenAccount;
-use App\ManualEntry\Models\UserManualEntry;
-use App\MarketData\Models\UserStockMarket;
-use App\UserSetting\Models\UserSetting;
+use App\HasSubscription;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -32,14 +24,13 @@ class User extends Authenticatable implements MustVerifyEmailContract
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
+    use HasSubscription;
     use HasTimestamps;
     use MustVerifyEmail;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
@@ -50,8 +41,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var array<int, string>
      */
     protected $hidden = [
@@ -62,8 +51,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     ];
 
     /**
-     * The attributes that should be cast.
-     *
      * @var array<string, string>
      */
     protected $casts = [
@@ -71,8 +58,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     ];
 
     /**
-     * The accessors to append to the model's array form.
-     *
      * @var array<int, string>
      */
     protected $appends = [
@@ -148,92 +133,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function userSetting(): HasMany
     {
         return $this->hasMany(UserSetting::class, 'user_id', 'id');
-    }
-
-    public function canAddAdditionalResource(
-        string $resource,
-    ): bool {
-
-        $unlimitedPriceId = config('services.stripe.unlimited_plan_id');
-
-        if (!\is_string($unlimitedPriceId)) {
-            return false;
-        }
-
-        if ($this->subscribed(price: $unlimitedPriceId)) {
-            return true;
-        }
-
-        if ($resource === UserManualEntry::class) {
-            return true;
-        }
-
-        if ($resource === UserKrakenAccount::class) {
-            return true;
-        }
-
-        $plusPriceId = config('services.stripe.plus_plan_id');
-
-        if (!\is_string($plusPriceId)) {
-            return false;
-        }
-
-        $numberOfTickers = UserStockMarket::count();
-
-        $numberOfBankAccounts = UserBankSession::count();
-
-        $numberOfCryptoWallets = UserCryptoWallets::count();
-
-        if ($this->subscribed(price: $plusPriceId)) {
-            if ($resource === UserStockMarket::class) {
-                $numberOfTickers = UserStockMarket::count();
-
-                return $numberOfTickers < 15;
-            }
-
-            if ($resource === UserBankSession::class) {
-                return $numberOfBankAccounts <= 0;
-            }
-
-            if ($resource === UserCryptoWallets::class) {
-                return $numberOfCryptoWallets <= 0;
-            }
-        }
-
-        if ($numberOfTickers < 3 && $numberOfCryptoWallets <= 0 && $numberOfBankAccounts <= 0 && $resource === UserStockMarket::class) {
-            return true;
-        }
-
-        if ($numberOfTickers <= 0 && $numberOfCryptoWallets <= 0 && $numberOfBankAccounts <= 0 && $resource === UserCryptoWallets::class) {
-            return true;
-        }
-
-        if ($numberOfTickers <= 0 && $numberOfCryptoWallets <= 0 && $numberOfBankAccounts <= 0 && $resource === UserBankSession::class) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function checkSubscriptionType(
-        string $type,
-    ): bool {
-
-        $plusPriceId = config('services.stripe.plus_plan_id');
-        $unlimitedPriceId = config('services.stripe.unlimited_plan_id');
-
-        if (!\is_string($plusPriceId) || !\is_string($unlimitedPriceId)) {
-            return false;
-        }
-        if ($type === 'unlimited' && $this->subscribed(price: $unlimitedPriceId)) {
-            return true;
-        }
-
-        if ($type === 'plus' && $this->subscribed(price: $plusPriceId)) {
-            return true;
-        }
-
-        return false;
     }
 
     public function canAccessPulse(): bool
