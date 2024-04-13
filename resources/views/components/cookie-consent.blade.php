@@ -1,31 +1,12 @@
-<script>
-    function setConsentCookie() {
-        const d = new Date();
-        const name = 'cookie-consent';
-        d.setTime(d.getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
-        document.cookie = `name=${name};expires=${d.toUTCString()};domain={{ config('session.domain') }};path=/{{ config('session.secure') ? ';secure' : '' }}{{ config('session.same_site') ? ';samesite' : '' }}`;
-    }
-
-    function userDidConsent() {
-        return document.cookie.split(';').indexOf(`name=cookie-consent`) !== -1;
-    }
-</script>
-
 <div
     aria-live="assertive"
     class="fixed inset-x-1 bottom-0 left-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
     x-cloak
-    x-data="{
-        open: ! userDidConsent(),
-        toggle() {
-            this.open = ! this.open
-            setConsentCookie()
-        },
-    }"
+    x-data="cookieConsent"
 >
     <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
         <div
-            x-show="open"
+            x-show="consentOpen"
             x-transition:enter="transform transition duration-300 ease-out"
             x-transition:enter-start="translate-y-2 opacity-0 sm:translate-x-2 sm:translate-y-0"
             x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
@@ -74,3 +55,11 @@
         </div>
     </div>
 </div>
+<script>
+    function setConsentCookie() {
+        const d = new Date();
+        const name = 'cookie-consent';
+        d.setTime(d.getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
+        document.cookie = `name=${name};expires=${d.toUTCString()};domain={{ config('session.domain') }};path=/{{ config('session.secure') ? ';secure' : '' }}{{ config('session.same_site') ? ';samesite=' . config('session.same_site') : '' }}`;
+    }
+</script>
