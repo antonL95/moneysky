@@ -11,7 +11,3 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 });
-
-function userDidConsent() {
-    return document.cookie.split(';').indexOf(`name=cookie-consent`) !== -1;
-}

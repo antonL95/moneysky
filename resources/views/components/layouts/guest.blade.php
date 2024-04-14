@@ -21,6 +21,7 @@
         </script>
     </head>
     <body class="flex min-h-dvh flex-col font-sans antialiased">
+        <x-ts-toast />
         <header>
             <x-navigation.guest-navigation-menu />
         </header>
@@ -41,8 +42,6 @@
                 </div>
             </div>
         </footer>
-
-        <x-ts-toast />
         <x-cookie-consent />
         @livewireScripts
     </body>

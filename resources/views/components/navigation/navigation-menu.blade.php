@@ -5,7 +5,7 @@
             this.openSidebar = ! this.openSidebar
         },
     }"
-    x-on:keydown.escape="openSidebar = false"
+    x-on:keydown.escape.window="openSidebar = false"
 >
     <div class="relative z-50 lg:hidden" role="dialog" aria-modal="true" x-cloak>
         <div

@@ -60,6 +60,14 @@
         const d = new Date();
         const name = 'cookie-consent';
         d.setTime(d.getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
-        document.cookie = `name=${name};expires=${d.toUTCString()};domain={{ config('session.domain') }};path=/{{ config('session.secure') ? ';secure' : '' }}{{ config('session.same_site') ? ';samesite=' . config('session.same_site') : '' }}`;
+        document.cookie = `${name}=true;expires=${d.toUTCString()};domain={{ config('session.domain') }};path=/{{ config('session.secure') ? ';secure' : '' }}{{ config('session.same_site') ? ';samesite=' . config('session.same_site') : '' }}`;
+    }
+
+    function userDidConsent() {
+        const cookies = document.cookie.split(';').map((cookie) => {
+            return cookie.trim();
+        });
+
+        return cookies.includes('cookie-consent=true');
     }
 </script>
