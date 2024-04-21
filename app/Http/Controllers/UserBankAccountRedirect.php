@@ -25,10 +25,6 @@ class UserBankAccountRedirect extends Controller
             return redirect()->route('login');
         }
 
-        if (!$user->canAddAdditionalResource(UserBankSession::class)) {
-            return redirect()->route('billing');
-        }
-
         $ref = $request->get('ref');
 
         if (!\is_string($ref)) {
