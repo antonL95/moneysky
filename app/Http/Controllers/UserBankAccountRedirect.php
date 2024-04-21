@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Exceptions\CustomAppException;
+use App\Models\UserBankSession;
 use App\Services\BankService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class UserBankAccountRedirect extends Controller
             return redirect()->route('login');
         }
 
-        if (!$user->subscribed()) {
+        if (!$user->canAddAdditionalResource(UserBankSession::class)) {
             return redirect()->route('billing');
         }
 
