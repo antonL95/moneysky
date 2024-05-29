@@ -32,8 +32,11 @@ jobs:
         run: |
           make stan
       - name: Tests
+        env:
+          key: ${{ secrets.ENV_TESTING_KEY }}
         run: |
           touch database/database.sqlite
+          php artisan env:decrypt --env=testing --key=$key
           make test
   activate-release:
     name: "Release"
