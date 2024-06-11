@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Nordigen\NordigenPHP\API\NordigenClient;
+use Nordigen\NordigenPHP\Exceptions\NordigenExceptions\NordigenException;
 
 class BankService
 {
@@ -135,11 +136,17 @@ class BankService
 
         $account = $this->client->account($userBankAccount->external_id);
 
-        if (!isset($account->getAccountBalances()['balances'])) {
+        try {
+            $accountBalances = $account->getAccountBalances();
+        } catch (NordigenException) {
             throw InvalidApiException::noDataFound();
         }
 
-        $balances = $account->getAccountBalances()['balances'];
+        if (!isset($accountBalances['balances'])) {
+            throw InvalidApiException::noDataFound();
+        }
+
+        $balances = $accountBalances['balances'];
 
         $bankBalance = BankBalanceDto::fromArray($balances[0]);
 
@@ -168,11 +175,15 @@ class BankService
             throw InvalidApiException::invalidConfiguration();
         }
 
-        $transactions = $this->client->account($userBankAccount->external_id)
-            ->getAccountTransactions(
-                $from->toDateString(),
-                $to->toDateString(),
-            );
+        try {
+            $transactions = $this->client->account($userBankAccount->external_id)
+                ->getAccountTransactions(
+                    $from->toDateString(),
+                    $to->toDateString(),
+                );
+        } catch (NordigenException) {
+            return new Collection;
+        }
 
         if (!isset($transactions['transactions']['booked'])) {
             return collect();
@@ -196,7 +207,8 @@ class BankService
         foreach ($sessions as $session) {
             try {
                 $this->client->requisition->deleteRequisition($session->requisition_id);
-            } catch (\Exception) {}
+            } catch (\Exception) {
+            }
 
             $session->delete();
         }

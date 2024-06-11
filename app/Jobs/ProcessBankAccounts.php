@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Exceptions\InvalidApiException;
 use App\Models\UserBankAccount;
 use App\Models\UserBankTransactionRaw;
 use App\Services\BankService;
@@ -57,7 +58,11 @@ class ProcessBankAccounts implements ShouldQueue
 
     private function fetchBalance(): void
     {
-        $balance = $this->bankService->getAccountBalance($this->userBankAccount);
+        try {
+            $balance = $this->bankService->getAccountBalance($this->userBankAccount);
+        } catch (InvalidApiException) {
+            return;
+        }
 
         $this->userBankAccount->balance_cents = $balance->balance;
         $this->userBankAccount->save();
