@@ -26,7 +26,9 @@
         "laravel/cashier": "^v15.6.2"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^v3.15.2",
         "fakerphp/faker": "^1.24.1",
+        "larastan/larastan": "^3.1.0",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.21",
         "laravel/sail": "^1.41",
@@ -35,10 +37,9 @@
         "pestphp/pest": "^3.7.4",
         "pestphp/pest-plugin-drift": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.1",
-        "barryvdh/laravel-debugbar": "^v3.15.2",
+        "pestphp/pest-plugin-type-coverage": "^3.3",
         "rector/rector": "^2.0.9",
-        "roave/security-advisories": "dev-latest",
-        "larastan/larastan": "^3.1.0"
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
@@ -71,6 +72,22 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "lint": "pint",
+        "refactor": "rector",
+        "test:lint": "pint --test",
+        "test:refactor": "rector --dry-run",
+        "test:types": "phpstan analyse --memory-limit=512M",
+        "test:arch": "pest --filter=arch",
+        "test:type-cov": "pest --type-coverage --min=100",
+        "test:unit": "pest --parallel",
+        "test": [
+            "@test:lint",
+            "@test:refactor",
+            "@test:types",
+            "@test:type-cov",
+            "@test:arch",
+            "@test:unit"
         ]
     },
     "extra": {
