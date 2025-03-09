@@ -13,8 +13,26 @@ declare(strict_types=1);
 |
 */
 
+use App\Http\Integrations\AlphaVantage\Requests\TimeSeriesDaily;
+use App\Http\Integrations\Fixer\Requests\GetLatestCurrencyRates;
+use App\Http\Integrations\Kraken\Requests\BalanceRequest;
+use App\Http\Integrations\Kraken\Requests\TickerRequest;
+use Saloon\Http\Faking\MockResponse;
+
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->beforeEach(function () {
+        Saloon\Laravel\Facades\Saloon::fake([
+            GetLatestCurrencyRates::class => MockResponse::fixture('latest-currency-rates.json'),
+            TimeSeriesDaily::class => MockResponse::fixture('ticker-time-series-daily.json'),
+            TickerRequest::class => MockResponse::fixture('kraken-ticker-ticker.json'),
+            BalanceRequest::class => MockResponse::make([
+                'result' => [
+                    'XETHZ' => '1',
+                ],
+            ]),
+        ]);
+    })
     ->in('Feature');
 
 /*

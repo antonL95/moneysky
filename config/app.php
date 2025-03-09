@@ -125,4 +125,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'default_currency' => env('APP_DEFAULT_CURRENCY', 'EUR'),
+
 ];

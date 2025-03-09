@@ -1,13 +1,16 @@
+import { useToast } from '@/hooks/useToast';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import { type BreadcrumbItem } from '@/types';
+import { ReactNode } from 'react';
 
 interface AppLayoutProps {
-    children: React.ReactNode;
-    breadcrumbs?: BreadcrumbItem[];
+    children: ReactNode;
 }
 
-export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
-    <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        {children}
-    </AppLayoutTemplate>
-);
+export default function ({ children, ...props }: AppLayoutProps) {
+    const flash = useToast();
+    return (
+        <AppLayoutTemplate flash={flash} {...props}>
+            {children}
+        </AppLayoutTemplate>
+    );
+}

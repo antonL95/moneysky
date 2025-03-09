@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Inspiring;
+use App\Data\App\FlashData;
+use App\Data\App\UserData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Override;
 
 final class HandleInertiaRequests extends Middleware
 {
@@ -24,6 +26,7 @@ final class HandleInertiaRequests extends Middleware
      *
      * @see https://inertiajs.com/asset-versioning
      */
+    #[Override]
     public function version(Request $request): ?string
     {
         return parent::version($request);
@@ -36,13 +39,18 @@ final class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
+    #[Override]
     public function share(Request $request): array
     {
+        /* @phpstan-ignore-next-line */
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'flash' => FlashData::optional($request->session()->pull('flash')),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() === null
+                    ? null
+                    : UserData::from($request->user()),
             ],
         ];
     }

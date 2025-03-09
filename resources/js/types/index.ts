@@ -1,7 +1,7 @@
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
-    user: User;
+    user: App.Data.App.UserData;
 }
 
 export interface BreadcrumbItem {
@@ -24,6 +24,7 @@ export interface NavItem {
 export interface SharedData {
     name: string;
     auth: Auth;
+    flash?: App.Data.App.FlashData;
     [key: string]: unknown;
 }
 

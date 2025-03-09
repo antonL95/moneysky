@@ -49,12 +49,12 @@ final class NewPasswordController
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user) use ($request): void {
                 $user->forceFill([
-                    'password' => Hash::make($request->password),
+                    'password' => Hash::make($request->str('password')->value()),
                     'remember_token' => Str::random(60),
                 ])->save();
 
                 event(new PasswordReset($user));
-            }
+            },
         );
 
         // If the password was successfully reset, we will redirect the user back to
@@ -65,7 +65,7 @@ final class NewPasswordController
         }
 
         throw ValidationException::withMessages([
-            'email' => [__($status)],
+            'email' => [__(is_string($status) ? $status : null)],
         ]);
     }
 }
