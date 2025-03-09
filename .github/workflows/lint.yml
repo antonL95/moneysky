@@ -29,4 +29,4 @@ jobs:
           npm install --legacy-peer-deps
 
       - name: Run lints
-        run: composer lint
+        run: composer test:lint
