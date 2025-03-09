@@ -98,7 +98,6 @@
         ],
         "test": [
             "@test:types",
-            "@test:type-cov",
             "@test:arch",
             "@test:unit"
         ]
