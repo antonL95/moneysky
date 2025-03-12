@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Data\TransactionData;
+use App\Data\App\Dashboard\TransactionData;
 use App\Jobs\CalculateBudgetJob;
 use App\Jobs\RecalculateTransactionAggregatesJob;
 use App\Models\TransactionTag;

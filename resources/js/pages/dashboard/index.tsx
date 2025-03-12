@@ -1,13 +1,23 @@
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import Budgets from '@/pages/dashboard/partials/budgets';
+import BudgetForm from '@/pages/dashboard/partials/forms/budget-form';
+import TransactionForm from '@/pages/dashboard/partials/forms/transaction-form';
 import Investments from '@/pages/dashboard/partials/investments';
+import Transactions from '@/pages/dashboard/partials/transactions';
 import { Head, router, WhenVisible } from '@inertiajs/react';
+import { useState } from 'react';
 import TagData = App.Data.App.Dashboard.TagData;
 import AssetData = App.Data.App.Dashboard.AssetData;
 import HistoricalAssetsData = App.Data.App.Dashboard.HistoricalAssetsData;
 import UserBudgetData = App.Data.App.Dashboard.UserBudgetData;
+import TransactionAggregateData = App.Data.App.Dashboard.TransactionAggregateData;
+import UserTransactionData = App.Data.App.Dashboard.UserTransactionData;
+import UserManualEntryData = App.Data.App.ManualEntry.UserManualEntryData;
 
 export default function Index({
     totalAssets,
@@ -17,6 +27,11 @@ export default function Index({
     activeTab = 'investments',
     tags,
     currencies,
+    transactionAggregates,
+    transactions,
+    userManualEntries,
+    historicalDates,
+    selectedDate,
 }: {
     totalAssets: AssetData;
     assets: AssetData[];
@@ -25,11 +40,19 @@ export default function Index({
     activeTab: string;
     tags: TagData[];
     currencies: { [key: string]: string };
+    transactionAggregates: TransactionAggregateData[];
+    transactions?: UserTransactionData[];
+    userManualEntries: UserManualEntryData[];
+    historicalDates: string[];
+    selectedDate: string;
 }) {
+    const [open, setOpen] = useState(false);
+    const [openTransaction, setOpenTransaction] = useState(false);
+
     return (
         <AppLayout>
             <Head title="Dashboard" />
-            <Tabs defaultValue={activeTab} className={`flex h-full flex-1 flex-col gap-4 rounded-xl p-4`}>
+            <Tabs defaultValue={activeTab} className={`flex h-full max-w-full flex-1 flex-col gap-4 rounded-xl p-4`}>
                 <TabsList className="mx-auto grid w-full grid-cols-2 lg:max-w-md">
                     <TabsTrigger
                         value="investments"
@@ -55,24 +78,85 @@ export default function Index({
                             router.visit(route('dashboard', { activeTab: 'budget' }), {
                                 preserveScroll: true,
                                 preserveState: true,
-                                only: ['budgets', 'tags', 'activeTab'],
+                                only: ['budgets', 'tags', 'transactionAggregates', 'activeTab', 'userManualEntries'],
                             });
                         }}
                     >
                         Budget
                     </TabsTrigger>
                 </TabsList>
-                <TabsContent value="investments" className={`flex h-full flex-1 flex-col gap-4`}>
+                <TabsContent value="investments" className={`flex h-full w-full flex-1 flex-col gap-4`}>
                     <WhenVisible fallback={<SkeletonCard />} data={['totalAssets', 'assets', 'historicalAssets']}>
                         <Investments assets={assets} totalAssets={totalAssets} historicalAssets={historicalAssets} />
                     </WhenVisible>
                 </TabsContent>
-                <TabsContent value="budget" className={`flex h-full flex-1 flex-col gap-4 rounded-xl`}>
+                <TabsContent value="budget" className={`flex h-full w-full flex-1 flex-col gap-4 rounded-xl`}>
+                    <div className={'flex flex-col justify-between lg:flex-row'}>
+                        <div>
+                            <Select
+                                onValueChange={(value) =>
+                                    router.reload({
+                                        data: { date: value },
+                                        only: ['budgets', 'transactionAggregates', 'selectedDate'],
+                                    })
+                                }
+                                value={selectedDate}
+                            >
+                                <SelectTrigger className="w-[180px] stroke-white text-white uppercase">
+                                    <SelectValue placeholder="Select date" />
+                                </SelectTrigger>
+                                <SelectContent className={`bg-black text-white uppercase max-lg:landscape:h-48`}>
+                                    <SelectGroup>
+                                        {historicalDates.map((date, index) => (
+                                            <SelectItem value={date} key={index}>
+                                                {date}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className={'flex flex-row flex-wrap justify-between gap-4'}>
+                            <Button onClick={() => setOpen(true)}>Create budget</Button>
+                            <Button onClick={() => setOpenTransaction(true)}>Add transaction</Button>
+                        </div>
+                    </div>
                     <WhenVisible fallback={<SkeletonCard />} data={['budgets', 'tags']}>
                         <Budgets budgets={budgets} tags={tags} currencies={currencies} />
                     </WhenVisible>
+                    <WhenVisible fallback={<SkeletonCard />} data={['transactionAggregates']}>
+                        <Transactions
+                            transactionAggregates={transactionAggregates}
+                            transactions={transactions}
+                            currencies={currencies}
+                            tags={tags}
+                            userManualEntries={userManualEntries}
+                        />
+                    </WhenVisible>
                 </TabsContent>
             </Tabs>
+
+            <Dialog open={open} onOpenChange={() => setOpen(false)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add budget</DialogTitle>
+                    </DialogHeader>
+                    <BudgetForm tags={tags} closeModal={() => setOpen(false)} currencies={currencies} />
+                </DialogContent>
+            </Dialog>
+            <Dialog open={openTransaction} onOpenChange={setOpenTransaction}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add transaction</DialogTitle>
+                    </DialogHeader>
+                    <TransactionForm
+                        tags={tags}
+                        closeModal={() => setOpenTransaction(false)}
+                        currencies={currencies}
+                        userManualWallets={userManualEntries}
+                    />
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

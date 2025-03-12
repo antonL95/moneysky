@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\TransactionTag;
 use App\Models\User;
 use App\Models\UserBudget;
 use Laravel\Cashier\Subscription;
@@ -12,50 +13,49 @@ use function Pest\Laravel\delete;
 use function Pest\Laravel\post;
 use function Pest\Laravel\put;
 
-it('can create budget', function () {
-    $user = User::factory()->create([
+beforeEach(function () {
+    $this->user = User::factory()->create([
         'demo' => false,
     ]);
 
     Subscription::factory()->create([
-        'user_id' => $user->id,
-        'stripe_price' => 'unlimited',
+        'user_id' => $this->user->id,
     ]);
+});
 
-    actingAs($user);
+it('can create budget', function () {
+    actingAs($this->user);
+
+    TransactionTag::factory(10)->create();
 
     post(route('budget.store'), [
         'name' => 'Testing',
         'balance' => 20_000,
         'currency' => 'CZK',
-        'tags' => null,
+        'tags' => TransactionTag::inRandomOrder()->take(2)->pluck('id')->toArray(),
     ]);
 
     assertDatabaseCount('user_budgets', 1);
 
-    expect($user->budgets->first()->currency)
+    expect($this->user->budgets->first()->currency)
         ->toBe('CZK')
-        ->and($user->budgets->first()->balance_cents)
-        ->toBe(20_000_00);
+        ->and($this->user->budgets->first()->balance_cents)
+        ->toBe(20_000_00)
+        ->and($this->user->budgets->first()->currency)
+        ->toBe('CZK')
+        ->and($this->user->budgets->first()->tags)
+        ->not
+        ->toBeNull();
 });
 
 it('can update budget', function () {
-    $user = User::factory()->create([
-        'demo' => false,
-    ]);
-
-    Subscription::factory()->create([
-        'user_id' => $user->id,
-        'stripe_price' => 'unlimited',
-    ]);
-
-    $userBudgets = $user->budgets()->create([
+    $userBudgets = $this->user->budgets()->create([
         'name' => 'Testing',
         'balance_cents' => 20_000_00,
         'currency' => 'CZK',
     ]);
 
-    actingAs($user);
+    actingAs($this->user);
 
     put(
         route('budget.update', ['budget' => $userBudgets->id]),
@@ -68,22 +68,13 @@ it('can update budget', function () {
     )
         ->assertSessionHas('flash');
 
-    expect($user->budgets->first()->currency)
+    expect($this->user->budgets->first()->currency)
         ->toBe('EUR')
-        ->and($user->budgets->first()->balance_cents)
+        ->and($this->user->budgets->first()->balance_cents)
         ->toBe(20_000_00);
 });
 
 it('cant update budget', function () {
-    $user = User::factory()->create([
-        'demo' => false,
-    ]);
-
-    Subscription::factory()->create([
-        'user_id' => $user->id,
-        'stripe_price' => 'unlimited',
-    ]);
-
     $user2 = User::factory()->create([
         'demo' => false,
     ]);
@@ -95,7 +86,7 @@ it('cant update budget', function () {
         'user_id' => $user2->id,
     ]);
 
-    actingAs($user);
+    actingAs($this->user);
 
     put(route('budget.update', ['budget' => $userBudget->id]),
         [
@@ -112,22 +103,13 @@ it('cant update budget', function () {
 });
 
 it('can delete budget', function () {
-    $user = User::factory()->create([
-        'demo' => false,
-    ]);
-
-    Subscription::factory()->create([
-        'user_id' => $user->id,
-        'stripe_price' => 'unlimited',
-    ]);
-
-    $userBudget = $user->budgets()->create([
+    $userBudget = $this->user->budgets()->create([
         'name' => 'Testing',
         'balance_cents' => 20_000_00,
         'currency' => 'CZK',
     ]);
 
-    actingAs($user);
+    actingAs($this->user);
 
     assertDatabaseCount('user_budgets', 1);
 
@@ -143,15 +125,6 @@ it('can delete budget', function () {
 });
 
 it('cant delete budget', function () {
-    $user = User::factory()->create([
-        'demo' => false,
-    ]);
-
-    Subscription::factory()->create([
-        'user_id' => $user->id,
-        'stripe_price' => 'unlimited',
-    ]);
-
     $user2 = User::factory()->create([
         'demo' => false,
     ]);
@@ -163,7 +136,7 @@ it('cant delete budget', function () {
         'user_id' => $user2->id,
     ]);
 
-    actingAs($user);
+    actingAs($this->user);
 
     assertDatabaseCount('user_budgets', 1);
 

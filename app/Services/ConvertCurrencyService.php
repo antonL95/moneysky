@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\CacheKeys;
 use App\Helpers\CurrencyHelper;
 use App\Http\Integrations\Fixer\FixerConnector;
 use App\Http\Integrations\Fixer\Requests\GetLatestCurrencyRates;
@@ -72,11 +73,9 @@ final class ConvertCurrencyService
         Currency $from,
         Currency $to,
     ): string {
-        $key = 'exchange-rates';
-
         /** @var array<string, float> $rates */
         $rates = Cache::remember(
-            $key,
+            CacheKeys::EXCHANGE_RATES->value,
             now()->addDay(),
             fn (): array => $this->fetchExchangeRates(),
         );

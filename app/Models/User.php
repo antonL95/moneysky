@@ -6,8 +6,6 @@ namespace App\Models;
 
 use App\Concerns\HasSubscription;
 use Database\Factories\UserFactory;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -19,7 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 
-final class User extends Authenticatable implements FilamentUser, MustVerifyEmailContract
+final class User extends Authenticatable implements MustVerifyEmailContract
 {
     use Billable;
 
@@ -179,11 +177,6 @@ final class User extends Authenticatable implements FilamentUser, MustVerifyEmai
     }
 
     public function canAccessPulse(): bool
-    {
-        return $this->is_admin;
-    }
-
-    public function canAccessPanel(Panel $panel): bool
     {
         return $this->is_admin;
     }

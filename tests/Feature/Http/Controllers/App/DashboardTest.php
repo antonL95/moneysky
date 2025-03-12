@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Inertia\Testing\AssertableInertia;
 
 use function Pest\Laravel\actingAs;
 
@@ -23,4 +24,12 @@ test('nullable user is redirected to login', function () {
 test('authenticated users can visit the dashboard', function () {
     actingAs($this->user);
     $this->get(route('dashboard'))->assertOk();
+});
+
+test('authenticated users can visit the dashboard with date', function () {
+    actingAs($this->user);
+    $this->get(route('dashboard', ['date' => '03/2025']))->assertOk()->assertInertia(
+        fn (AssertableInertia $page) => $page->component('dashboard/index')
+            ->where('selectedDate', '03/2025'),
+    );
 });

@@ -2,7 +2,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import BudgetForm from '@/pages/dashboard/partials/forms/budget-form';
 import { SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
@@ -30,8 +38,20 @@ export default function ({
             route('budget.destroy', {
                 budget: budget.budgetId,
             }),
+            {
+                except: [
+                    'totalAssets',
+                    'assets',
+                    'historicalAssets',
+                    'activeTab',
+                    'transactionAggregates',
+                    'tags',
+                    'manualEntries',
+                ],
+            },
         );
     };
+
     const handleEditClick = (budget: UserBudgetData) => {
         setSelectedBudget(budget);
         setOpenEdit(true);
@@ -39,10 +59,10 @@ export default function ({
 
     return (
         <>
-            <Carousel>
-                <CarouselContent className={`mx-auto justify-center`}>
+            <Carousel className={`w-full`}>
+                <CarouselContent className={`w-full`}>
                     {budgets.map((budget) => (
-                        <CarouselItem className="basis-1/1 lg:basis-1/4" key={budget.id}>
+                        <CarouselItem className="basis-1/1 lg:basis-1/3" key={budget.id}>
                             <BudgetChart
                                 budget={budget}
                                 handleEditClick={(budget: UserBudgetData) => {
@@ -161,14 +181,32 @@ function BudgetChart({
                     </RadialBarChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="w-full flex-col gap-2 text-sm">
-                <div className={'flex w-full justify-around'}>
-                    <Button onClick={() => handleEditClick(budget)}>Edit budget</Button>
-                    <Button onClick={() => handleDeleteClick(budget)} variant={'destructive'}>
-                        <Trash />
-                    </Button>
-                </div>
-            </CardFooter>
+            <Dialog>
+                <CardFooter className="w-full flex-col gap-2 text-sm">
+                    <div className={'flex w-full justify-around'}>
+                        <Button onClick={() => handleEditClick(budget)}>Edit budget</Button>
+                        <DialogTrigger asChild>
+                            <Button variant={'destructive'}>
+                                <Trash />
+                            </Button>
+                        </DialogTrigger>
+                    </div>
+                </CardFooter>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. Are you sure you want to permanently delete this budget from
+                            our servers?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button onClick={() => handleDeleteClick(budget)} variant={`destructive`}>
+                            Confirm
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 }

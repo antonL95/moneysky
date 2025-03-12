@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 
 export default function Toast({ flash }: { flash?: App.Data.App.FlashData }) {
     useEffect(() => {
-        console.log(flash);
         if (!flash) return;
 
         toast(flash.title, {

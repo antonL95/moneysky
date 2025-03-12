@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions\Dashboard;
 
-use App\Data\TransactionData;
+use App\Data\App\Dashboard\TransactionData;
+use App\Enums\CacheKeys;
 use App\Models\User;
 use App\Models\UserTransaction;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Cache;
 
 final readonly class UpdateTransaction
 {
@@ -19,6 +21,13 @@ final readonly class UpdateTransaction
     {
         $balanceCents = abs($data->balance * 100);
         $balanceCentsBefore = $userTransaction->balance_cents * -1;
+
+        $cacheKey = sprintf(
+            CacheKeys::USER_TRANSACTIONS->value,
+            $user->id,
+            $userTransaction->transaction_tag_id ?? 'other',
+            now()->format('Y-m-d'),
+        );
 
         $updateData = [
             'transaction_tag_id' => $data->transaction_tag_id,
@@ -41,5 +50,7 @@ final readonly class UpdateTransaction
             (int) ($balanceCentsBefore - $balanceCents),
             CarbonImmutable::now(),
         );
+
+        Cache::forget($cacheKey);
     }
 }

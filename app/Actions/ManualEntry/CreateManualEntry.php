@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\ManualEntry;
 
-use App\Data\ManualEntryData;
+use App\Data\App\ManualEntry\ManualEntryData;
 use App\Jobs\ProcessSnapshotJob;
 use App\Models\User;
 

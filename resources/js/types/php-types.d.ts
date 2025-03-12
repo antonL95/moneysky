@@ -7,13 +7,6 @@ declare namespace App.Data {
         ticker: string;
         amount: number;
     };
-    export type TransactionData = {
-        balance: number;
-        currency: string;
-        description: string | null;
-        transaction_tag_id: number | null;
-        user_manual_entry_id: number | null;
-    };
 }
 declare namespace App.Data.App {
     export type FlashData = {
@@ -63,6 +56,19 @@ declare namespace App.Data.App.Dashboard {
         id: number;
         name: string;
     };
+    export type TransactionAggregateData = {
+        name: string;
+        value: string;
+        amount: number;
+        tagId: string | number | null;
+    };
+    export type TransactionData = {
+        balance: number;
+        currency: string;
+        description: string | null;
+        transaction_tag_id: number | null;
+        user_manual_entry_id: number | null;
+    };
     export type UserBudgetData = {
         id: number;
         name: string;
@@ -71,6 +77,35 @@ declare namespace App.Data.App.Dashboard {
         currency: string;
         tags: Array;
         budgetId: number;
+    };
+    export type UserTransactionData = {
+        id: number;
+        balance: string;
+        amount: number;
+        description: string | null;
+        currency: string;
+        bookedAt: string;
+        userManualEntryId: number | null;
+        transactionTagId: number | null;
+        transactionType: App.Enums.TransactionType;
+        bankAccountName: string | null;
+        cashWalletName: string | null;
+    };
+}
+declare namespace App.Data.App.ManualEntry {
+    export type ManualEntryData = {
+        name: string;
+        description: string | null;
+        balance: number;
+        currency: string;
+    };
+    export type UserManualEntryData = {
+        id: number;
+        name: string;
+        description: string | null;
+        balance: string | null;
+        amount: number;
+        currency: string;
     };
 }
 declare namespace App.Enums {

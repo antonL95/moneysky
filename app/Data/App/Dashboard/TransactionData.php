@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Data;
+namespace App\Data\App\Dashboard;
 
 use App\Helpers\CurrencyHelper;
 use Illuminate\Validation\Rule;
@@ -24,7 +24,7 @@ final class TransactionData extends Data
     ) {}
 
     /**
-     * @return array<string, array<string|In>>
+     * @return array<string, array<int, string|In>>
      */
     public static function rules(): array
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\PrivacyController;
-use App\Http\Controllers\App\SpendingController;
 use App\Http\Controllers\App\TosController;
 use App\Http\Controllers\App\UserBankAccountController;
 use App\Http\Controllers\App\UserBudgetController;
@@ -28,10 +27,8 @@ Route::get('/privacy', PrivacyController::class)->name('policy.show');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('spending', [SpendingController::class, 'index'])->name('spending.index');
     Route::resource('manual-entry', UserManualEntryController::class)->except('show', 'edit');
     Route::resource('budget', UserBudgetController::class)->except('show', 'index', 'edit');
-    Route::get('spending/transactions/{transactionTag?}', [UserTransactionController::class, 'index'])->name('spending.transaction.index');
     Route::post('spending/transactions', [UserTransactionController::class, 'store'])->name('spending.transaction.store');
     Route::put('spending/transactions/{user_transaction}', [UserTransactionController::class, 'update'])->name('spending.transaction.update');
 
@@ -60,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return redirect()->route('login');
         }
 
-        $priceId = type(Config::get('services.stripe.monthly_price_id'))->asString();
+        $priceId = Config::string('services.stripe.monthly_price_id');
 
         return $user->newSubscription('default', $priceId)
             ->trialDays(14)

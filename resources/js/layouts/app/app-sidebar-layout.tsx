@@ -9,7 +9,7 @@ export default function AppSidebarLayout({ children, flash }: { children: ReactN
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar">
+            <AppContent variant="sidebar" className={`w-full`}>
                 <AppSidebarHeader />
                 {children}
             </AppContent>

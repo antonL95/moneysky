@@ -45,7 +45,7 @@ export default function ({
                             closeModal();
                         }, 100);
                     },
-                    only: ['budgets', 'flash'],
+                    except: ['totalAssets', 'assets', 'historicalAssets', 'activeTab'],
                 },
             );
         } else {
@@ -56,7 +56,7 @@ export default function ({
                         closeModal();
                     }, 100);
                 },
-                only: ['budgets', 'flash'],
+                except: ['totalAssets', 'assets', 'historicalAssets', 'activeTab'],
             });
         }
     };

@@ -10,12 +10,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "aws/aws-sdk-php": "^3.342.2",
+        "aws/aws-sdk-php": "^3.342.4",
         "echolabsdev/prism": "^0.47.2",
-        "filament/filament": "^3.3.3",
         "inertiajs/inertia-laravel": "^2.0.1",
         "laravel/cashier": "^v15.6.2",
-        "laravel/framework": "^12.1.1",
+        "laravel/framework": "^12.2.0",
         "laravel/pulse": "^1.4",
         "laravel/socialite": "^v5.18.0",
         "laravel/tinker": "^2.10.1",
@@ -36,7 +35,7 @@
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.1.0",
         "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.21",
+        "laravel/pint": "^1.21.1",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.6.1",
@@ -97,6 +96,7 @@
             "@refactor"
         ],
         "test": [
+            "@test:lint",
             "@test:types",
             "@test:arch",
             "@test:unit"

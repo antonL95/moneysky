@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Enums\AssetType;
 use App\Enums\ChainType;
+use App\Helpers\CurrencyHelper;
 use App\Models\BankInstitution;
 use App\Models\Post;
 use App\Models\TransactionTag;
@@ -20,6 +21,7 @@ use App\Models\UserManualEntry;
 use App\Models\UserPortfolioAsset;
 use App\Models\UserPortfolioSnapshot;
 use App\Models\UserStockMarket;
+use App\Models\UserTransaction;
 use App\Models\UserTransactionAggregate;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
@@ -147,7 +149,7 @@ final class DemoAppSeeder extends Seeder
 
                 $dayDiff = $now->diffInDays($beginningOfTheMonth);
 
-                for ($i = 0; $i < 30; $i++) {
+                for ($i = 0; $i < 120; $i++) {
                     $day = $now->subDays($i)->toDateString();
 
                     $snapshot = UserPortfolioSnapshot::create([
@@ -182,7 +184,7 @@ final class DemoAppSeeder extends Seeder
                         'change' => 0,
                     ]);
 
-                    TransactionTag::all()->map(function (TransactionTag $tag) use ($day, $user, $housingBudget, $streamingBudget, $foodBudget, $dayDiff): void {
+                    TransactionTag::all()->map(function (TransactionTag $tag) use ($day, $user, $housingBudget, $streamingBudget, $foodBudget, $dayDiff, $userBankAccount, $i): void {
                         $balance = null;
 
                         if (in_array($tag->tag, [
@@ -212,6 +214,15 @@ final class DemoAppSeeder extends Seeder
                             'transaction_tag_id' => $tag->id,
                             'balance_cents' => $balance === null ? random_int(10_00, 15_00) : (int) round($balance / $dayDiff, mode: PHP_ROUND_HALF_DOWN),
                             'change' => 0,
+                        ]);
+
+                        UserTransaction::factory(random_int(1, 5))->create([
+                            'user_bank_account_id' => $userBankAccount->id,
+                            'user_id' => $user->id,
+                            'transaction_tag_id' => $tag->id,
+                            'booked_at' => $day,
+                            'currency' => $user->currency ?? CurrencyHelper::defaultCurrency(),
+                            'description' => $tag->tag.$i.fake()->word,
                         ]);
                     });
 
