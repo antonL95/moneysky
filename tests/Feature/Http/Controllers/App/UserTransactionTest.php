@@ -280,3 +280,53 @@ it('cant update automatic transaction', function () {
         ->and($transaction->fresh()->user_manual_entry_id)
         ->toBeNull();
 });
+
+it('can update manual transaction with different currencies', function () {
+    actingAs($this->user);
+
+    $tag = TransactionTag::factory()->create([
+        'tag' => 'test',
+    ]);
+
+    $userManualEntry = UserManualEntry::factory()->create([
+        'user_id' => $this->user->id,
+        'currency' => 'USD',
+        'balance_cents' => 1500_00,
+    ]);
+
+    $transaction = $this->user->userTransaction()->create([
+        'transaction_tag_id' => null,
+        'user_bank_account_id' => null,
+        'user_bank_transaction_raw_id' => null,
+        'booked_at' => now(),
+        'user_transaction_tag_id' => null,
+        'balance_cents' => 1000_00,
+        'currency' => 'EUR',
+        'user_manual_entry_id' => $userManualEntry->id,
+    ]);
+
+    $data = new TransactionData(
+        100,
+        'EUR',
+        null,
+        $tag->id,
+        $userManualEntry->id,
+    );
+
+    put(
+        route(
+            'spending.transaction.update',
+            ['user_transaction' => $transaction->id],
+        ),
+        $data->toArray(),
+    )
+        ->assertStatus(302)
+        ->assertSessionHas('flash');
+
+    expect($transaction->fresh()->balance_cents)
+        ->toBe(-10000)
+        ->and($transaction->fresh()->transaction_tag_id)
+        ->toBe($tag->id)
+        ->and($userManualEntry->fresh()->balance_cents)
+        ->toBe(269202);
+});

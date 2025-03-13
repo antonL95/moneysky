@@ -21,16 +21,12 @@ final readonly class CalculateBudget
     public function handle(
         UserBudgetPeriod $userBudgetPeriod
     ): void {
-        /** @var UserBudget|null $userBudget */
+        /** @var UserBudget $userBudget */
         $userBudget = $userBudgetPeriod->userBudget()
             ->getQuery()
             ->withoutGlobalScope(UserScope::class)
             ->with('tags')
             ->first();
-
-        if ($userBudget === null) {
-            return;
-        }
 
         $userTransactionsQuery = UserTransaction::withoutGlobalScopes()
             ->whereHidden(false)

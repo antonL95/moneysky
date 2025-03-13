@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid } from 'lucide-react';
+import { BitcoinIcon, ChartBar, LandmarkIcon, LayoutGrid, PiggyBankIcon, WalletCardsIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -20,6 +20,31 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         url: route(`dashboard`),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Bank Account',
+        url: route(`bank-account.index`),
+        icon: LandmarkIcon,
+    },
+    {
+        title: 'Stock Market',
+        url: route(`stock-market.index`),
+        icon: ChartBar,
+    },
+    {
+        title: 'Kraken account',
+        url: route(`kraken-account.index`),
+        icon: BitcoinIcon,
+    },
+    {
+        title: 'Digital wallet',
+        url: route(`digital-wallet.index`),
+        icon: WalletCardsIcon,
+    },
+    {
+        title: 'Manual wallet',
+        url: route(`manual-entry.index`),
+        icon: PiggyBankIcon,
     },
 ];
 

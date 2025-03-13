@@ -7,8 +7,8 @@ namespace App\Http\Controllers\App;
 use App\Actions\KrakenAccount\CreateKrakenAccount;
 use App\Actions\KrakenAccount\UpdateKrakenAccount;
 use App\Concerns\HasRedirectWithFlashMessage;
-use App\Data\KrakenAccountData;
-use App\Data\UserKrakenAccountData;
+use App\Data\App\KrakenAccount\KrakenAccountData;
+use App\Data\App\KrakenAccount\UserKrakenAccountData;
 use App\Enums\FlashMessageAction;
 use App\Jobs\ProcessSnapshotJob;
 use App\Models\UserKrakenAccount;
@@ -51,7 +51,7 @@ final class UserKrakenAccountController
             );
         }
 
-        return Inertia::render('KrakenAccount/Index', [
+        return Inertia::render('kraken-account/index', [
             'columns' => [
                 'Id',
                 'Api Key',

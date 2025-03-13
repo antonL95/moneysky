@@ -6,9 +6,9 @@ namespace App\Http\Controllers\App;
 
 use App\Actions\BankAccount\UpdateBankAccount;
 use App\Concerns\HasRedirectWithFlashMessage;
-use App\Data\BankAccountData;
-use App\Data\BankInstitutionData;
-use App\Data\UserBankAccountData;
+use App\Data\App\BankAccount\BankAccountData;
+use App\Data\App\BankAccount\BankInstitutionData;
+use App\Data\App\BankAccount\UserBankAccountData;
 use App\Enums\FlashMessageAction;
 use App\Enums\FlashMessageType;
 use App\Exceptions\AbstractAppException;
@@ -64,7 +64,7 @@ final readonly class UserBankAccountController
             );
         }
 
-        return Inertia::render('BankAccount/Index', [
+        return Inertia::render('bank-account/index', [
             'columns' => [
                 'Id',
                 'Name',
@@ -72,6 +72,7 @@ final readonly class UserBankAccountController
                 'Status',
             ],
             'rows' => $rows,
+            'banks' => Inertia::optional(fn () => $this->search($request))
         ]);
     }
 
@@ -212,11 +213,10 @@ final readonly class UserBankAccountController
     /**
      * @return Collection<int, BankInstitutionData>
      */
-    public function search(Request $request): Collection
+    private function search(Request $request): Collection
     {
-        return BankInstitution::where(
+        return BankInstitution::whereLike(
             'name',
-            'LIKE',
             '%'.$request->str('q')->value().'%',
         )->limit(25)
             ->get()

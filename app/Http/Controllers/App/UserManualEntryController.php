@@ -47,7 +47,7 @@ final class UserManualEntryController
             ),
         );
 
-        return Inertia::render('ManualEntry/Index', [
+        return Inertia::render('manual-entry/index', [
             'columns' => [
                 'Id',
                 'Name',

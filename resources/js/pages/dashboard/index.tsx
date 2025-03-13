@@ -102,7 +102,7 @@ export default function Index({
                                 }
                                 value={selectedDate}
                             >
-                                <SelectTrigger className="w-[180px] stroke-white text-white uppercase">
+                                <SelectTrigger className="w-full mb-6 lg:w-[180px] stroke-white text-white uppercase">
                                     <SelectValue placeholder="Select date" />
                                 </SelectTrigger>
                                 <SelectContent className={`bg-black text-white uppercase max-lg:landscape:h-48`}>

@@ -19,27 +19,9 @@ final readonly class CalculateSnapshotBalances
     {
         $totalSum = 0;
 
-        $previousSnapshot = UserPortfolioSnapshot::withoutGlobalScopes()
-            ->where('user_id', $user->id)
-            ->where('aggregate_date', $snapshot->aggregate_date->subDay()->toDateString())
-            ->first();
-
         foreach (AssetType::cases() as $assetType) {
             $sum = $this->getSumOfAssets($user, $assetType);
             $totalSum += $sum;
-            $percentageChange = 0;
-
-            if ($previousSnapshot !== null) {
-                $previousAssetSnapshot = $user->assetSnapshots()
-                    ->withoutGlobalScopes()
-                    ->where('snapshot_id', $previousSnapshot->id)
-                    ->where('asset_type', $assetType->value)
-                    ->first();
-
-                if ($previousAssetSnapshot !== null && $previousAssetSnapshot->balance_cents !== 0) {
-                    $percentageChange = (($sum - $previousAssetSnapshot->balance_cents) / $previousAssetSnapshot->balance_cents) * 100;
-                }
-            }
 
             $user->assetSnapshots()
                 ->withoutGlobalScopes()
@@ -48,18 +30,12 @@ final readonly class CalculateSnapshotBalances
                     'snapshot_id' => $snapshot->id,
                 ], [
                     'balance_cents' => $sum,
-                    'change' => $percentageChange,
+                    'change' => 0,
                 ]);
         }
 
-        $percentageChange = 0;
-
-        if ($previousSnapshot !== null && $previousSnapshot->balance_cents !== 0) {
-            $percentageChange = (($totalSum - $previousSnapshot->balance_cents) / $previousSnapshot->balance_cents) * 100;
-        }
-
         $snapshot->balance_cents = $totalSum;
-        $snapshot->change = $percentageChange;
+        $snapshot->change = 0;
         $snapshot->save();
     }
 

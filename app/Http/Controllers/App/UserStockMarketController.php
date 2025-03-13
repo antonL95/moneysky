@@ -7,8 +7,8 @@ namespace App\Http\Controllers\App;
 use App\Actions\StockMarket\CreateStockMarket;
 use App\Actions\StockMarket\UpdateStockMarket;
 use App\Concerns\HasRedirectWithFlashMessage;
-use App\Data\StockMarketData;
-use App\Data\UserStockMarketData;
+use App\Data\App\StockMarket\StockMarketData;
+use App\Data\App\StockMarket\UserStockMarketData;
 use App\Enums\FlashMessageAction;
 use App\Jobs\ProcessSnapshotJob;
 use App\Models\UserStockMarket;
@@ -49,7 +49,7 @@ final class UserStockMarketController
             ),
         );
 
-        return Inertia::render('StockMarket/Index', [
+        return Inertia::render('stock-market/index', [
             'columns' => [
                 'Id',
                 'Ticker',

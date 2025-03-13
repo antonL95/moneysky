@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get(
         'subscribe',
-        static fn () => Inertia::render('Auth/Subscribe'),
+        static fn () => Inertia::render('auth/subscribe'),
     )->name('subscribe');
 
     Route::middleware([Subscribed::class])->group(function () {
@@ -42,7 +42,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('user-bank-redirect/{bankInstitution}', [UserBankAccountController::class, 'connectRedirect'])->name('bank-account.redirect');
         Route::get('connect-bank/{userBankSession}', [UserBankAccountController::class, 'renew'])->name('bank-account.renew-callback');
         Route::get('connect-bank', [UserBankAccountController::class, 'connect'])->name('bank-account.callback');
-        Route::post('bank-account', [UserBankAccountController::class, 'search'])->name('bank-account.search');
 
         Route::resource('bank-account', UserBankAccountController::class)->except('show', 'create', 'edit');
         Route::resource('digital-wallet', UserCryptoWalletController::class)->except('show', 'edit');

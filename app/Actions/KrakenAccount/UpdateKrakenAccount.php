@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\KrakenAccount;
 
-use App\Data\KrakenAccountData;
+use App\Data\App\KrakenAccount\KrakenAccountData;
 use App\Jobs\ProcessKrakenAccountsJob;
 use App\Models\UserKrakenAccount;
 

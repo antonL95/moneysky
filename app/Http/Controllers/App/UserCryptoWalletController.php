@@ -51,7 +51,7 @@ final class UserCryptoWalletController
             );
         }
 
-        return Inertia::render('CryptoWallet/Index', [
+        return Inertia::render('crypto-wallet/index', [
             'columns' => [
                 'Id',
                 'Address',

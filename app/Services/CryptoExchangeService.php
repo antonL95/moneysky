@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Data\KrakenParsedPairData;
+use App\Data\App\KrakenAccount\KrakenParsedPairData;
 use App\Http\Integrations\Kraken\KrakenConnector;
 use App\Http\Integrations\Kraken\Requests\BalanceRequest;
 use App\Http\Integrations\Kraken\Requests\TickerRequest;
@@ -12,7 +12,6 @@ use App\Models\KrakenTradingPairs;
 use App\Models\UserKrakenAccount;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
-
 use function count;
 use function in_array;
 use function is_array;

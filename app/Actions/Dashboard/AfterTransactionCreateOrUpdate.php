@@ -22,7 +22,10 @@ final readonly class AfterTransactionCreateOrUpdate
 {
     public function __construct(
         private ConvertCurrencyService $convertCurrency,
-    ) {}
+    )
+    {
+    }
+
 
     public function handle(User $user, UserTransaction $userTransaction, int $balanceCents, CarbonImmutable $now): void
     {
@@ -32,27 +35,29 @@ final readonly class AfterTransactionCreateOrUpdate
                 $userManualEntry = UserManualEntry::findOrFail($userTransaction->user_manual_entry_id);
 
                 if ($userManualEntry->currency !== $userTransaction->currency) {
-                    $balanceCents = (int) $this->convertCurrency->convert(
-                        new Money(
-                            $balanceCents,
-                            new Currency($userTransaction->currency), // @phpstan-ignore-line
-                        ),
-                        new Currency($userManualEntry->currency), // @phpstan-ignore-line
-                    )->getAmount();
+                    $balanceCents = $this->convertCurrency->convertSimple(
+                        $balanceCents,
+                        $userTransaction->currency,
+                        $userManualEntry->currency,
+                    );
                 }
                 $userManualEntry->decrement('balance_cents', $balanceCents);
             }
+        // @codeCoverageIgnoreStart
         } catch (ModelNotFoundException) {
         }
+        // @codeCoverageIgnoreEnd
 
         $this->dispatchJobs($user, $userTransaction, $now);
     }
+
 
     public function dispatchJobs(
         User $user,
         UserTransaction $userTransaction,
         CarbonImmutable $now,
-    ): void {
+    ): void
+    {
         $user->budgets()->with(
             [// @phpstan-ignore-line
                 'periods' => fn (HasMany $builder) => $builder->whereRaw(

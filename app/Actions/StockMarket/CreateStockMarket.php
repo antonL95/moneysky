@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\StockMarket;
 
-use App\Data\StockMarketData;
+use App\Data\App\StockMarket\StockMarketData;
 use App\Jobs\ProcessStockMarketJob;
 use App\Models\User;
 

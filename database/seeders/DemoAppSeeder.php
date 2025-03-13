@@ -39,6 +39,7 @@ final class DemoAppSeeder extends Seeder
         DB::transaction(
             static function (): void {
                 Artisan::call('app:kraken-assets');
+
                 $user = User::create([
                     'name' => 'Anton Loginov',
                     'email' => 'anton@moneysky.app',
@@ -286,15 +287,6 @@ final class DemoAppSeeder extends Seeder
                     'start_date' => CarbonImmutable::now()->startOfMonth()->toDateString(),
                     'end_date' => CarbonImmutable::now()->endOfMonth()->toDateString(),
                     'balance_cents' => $foodBudget,
-                ]);
-
-                $title = fake()->sentence;
-                Post::create([
-                    'title' => $title,
-                    'image_url' => fake()->imageUrl,
-                    'slug' => Str::slug($title),
-                    'content' => fake()->realText(400),
-                    'published_at' => $now,
                 ]);
             },
         );

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\BankAccount;
 
-use App\Data\BankAccountData;
+use App\Data\App\BankAccount\BankAccountData;
 use App\Models\UserBankAccount;
 
 final readonly class UpdateBankAccount
