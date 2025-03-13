@@ -17,8 +17,6 @@ final class UserTransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create(),
-            'user_bank_account_id' => UserBankAccount::factory()->create(),
             'balance_cents' => $this->faker->randomNumber(),
             'currency' => $this->faker->randomElement(['EUR', 'USD', 'CZK']),
             'description' => $this->faker->text(),
