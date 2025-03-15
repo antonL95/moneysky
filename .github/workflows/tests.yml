@@ -31,17 +31,17 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
+      - name: Install Dependencies
+        run: composer install -q --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Install Node Dependencies
         run: npm ci --legacy-peer-deps
 
       - name: Build Assets
-        run: npm run build
+        run: npm run build:ssr
 
       - name: Create SQLite Database
         run: touch database/test.sqlite
-
-      - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Copy Environment File
         run: cp .env.example .env
