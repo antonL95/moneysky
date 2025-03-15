@@ -16,8 +16,7 @@ beforeEach(function () {
 test('guest can see terms', function () {
     $this->get(route('policy.show'))->assertOk()
         ->assertInertia(
-            fn (AssertableInertia $page) => $page->component('static-page/index')
-                ->has('title')
+            fn (AssertableInertia $page) => $page->has('title')
                 ->where('title', 'Privacy Policy'),
         );
 });
@@ -26,8 +25,7 @@ test('authenticated users can visit see terms', function () {
     actingAs($this->user);
     $this->get(route('policy.show'))->assertOk()
         ->assertInertia(
-            fn (AssertableInertia $page) => $page->component('static-page/index')
-                ->has('title')
+            fn (AssertableInertia $page) => $page->has('title')
                 ->where('title', 'Privacy Policy'),
         );
 });

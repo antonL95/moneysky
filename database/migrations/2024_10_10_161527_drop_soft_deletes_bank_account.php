@@ -14,11 +14,4 @@ return new class extends Migration
             $table->dropSoftDeletes();
         });
     }
-
-    public function down(): void
-    {
-        Schema::table('user_bank_accounts', function (Blueprint $table): void {
-            //
-        });
-    }
 };

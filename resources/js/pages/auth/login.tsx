@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import AuthLayout from '@/layouts/auth-layout';
 
 interface LoginForm {
@@ -95,6 +96,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <TextLink href={route('register')} tabIndex={5}>
                         Sign up
                     </TextLink>
+                </div>
+                <Separator />
+                <div className="flex w-full flex-col flex-wrap gap-4">
+                    <Button className="w-full" asChild>
+                        <a href={route('social.redirect', { driver: 'google' })}>Continue with Google</a>
+                    </Button>
                 </div>
             </form>
 

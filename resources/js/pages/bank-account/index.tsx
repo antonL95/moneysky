@@ -2,7 +2,12 @@ import TableAction from '@/components/table-action';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import BankAccountForm from '@/pages/bank-account/partials/bank-account-form';
@@ -30,17 +35,41 @@ export default function Index({
     const createStatusTag = (status: BankAccountStatus) => {
         switch (status) {
             case 'READY':
-                return <Badge color={'green'}>Ready</Badge>;
+                return (
+                    <Badge color={'green'} className={`bg-green-500 text-white`}>
+                        Ready
+                    </Badge>
+                );
             case 'DISCOVERED':
-                return <Badge color={'blue'}>Discovered</Badge>;
+                return (
+                    <Badge color={'blue'} className={`bg-blue-500 text-white`}>
+                        Discovered
+                    </Badge>
+                );
             case 'ERROR':
-                return <Badge color={'red'}>Error</Badge>;
+                return (
+                    <Badge color={'red'} className={`bg-red-500 text-white`}>
+                        Error
+                    </Badge>
+                );
             case 'EXPIRED':
-                return <Badge color={'red'}>Expired</Badge>;
+                return (
+                    <Badge color={'red'} className={`bg-red-500 text-white`}>
+                        Expired
+                    </Badge>
+                );
             case 'PROCESSING':
-                return <Badge color={'blue'}>Processing</Badge>;
+                return (
+                    <Badge color={'blue'} className={`bg-blue-500 text-white`}>
+                        Processing
+                    </Badge>
+                );
             case 'SUSPENDED':
-                return <Badge color={'red'}>Suspended</Badge>;
+                return (
+                    <Badge color={'red'} className={`bg-red-500 text-white`}>
+                        Suspended
+                    </Badge>
+                );
         }
     };
 
@@ -99,7 +128,7 @@ export default function Index({
                                                     <MoreVertical className={'h-5 w-5'} />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenu>
+                                            <DropdownMenuContent>
                                                 <DropdownMenuItem
                                                     className={`hover:bg-red-500`}
                                                     onClick={() => destroy(row)}
@@ -107,7 +136,7 @@ export default function Index({
                                                     <Trash className={'mr-2 h-5 w-5'} type={'light'} />
                                                     Delete
                                                 </DropdownMenuItem>
-                                            </DropdownMenu>
+                                            </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
                                 ) : (

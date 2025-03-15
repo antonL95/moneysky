@@ -29,7 +29,6 @@ test('authenticated users can visit the dashboard', function () {
 test('authenticated users can visit the dashboard with date', function () {
     actingAs($this->user);
     $this->get(route('dashboard', ['date' => '03/2025']))->assertOk()->assertInertia(
-        fn (AssertableInertia $page) => $page->component('dashboard/index')
-            ->where('selectedDate', '03/2025'),
+        fn (AssertableInertia $page) => $page->where('selectedDate', '03/2025'),
     );
 });

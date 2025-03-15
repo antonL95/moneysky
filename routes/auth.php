@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\App\SocialController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -34,6 +35,9 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    Route::get('auth/{driver}/redirect', [SocialController::class, 'redirect'])->name('social.redirect');
+    Route::get('auth/{driver}/callback', [SocialController::class, 'callback'])->name('social.callback');
 });
 
 Route::middleware('auth')->group(function () {

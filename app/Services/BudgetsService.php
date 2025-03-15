@@ -13,6 +13,10 @@ use Illuminate\Support\Collection;
 
 final readonly class BudgetsService
 {
+    public function __construct(
+        private ConvertCurrencyService $convertCurrencyService,
+    ) {}
+
     /**
      * @return Collection<int, UserBudgetData>
      */
@@ -42,7 +46,11 @@ final readonly class BudgetsService
             )->map(fn (UserBudget $userBudget): UserBudgetData => new UserBudgetData(
                 $userBudget->periods->first()->id ?? 0,
                 $userBudget->name,
-                $userBudget->periods->first()->balance_numeric ?? 0,
+                $this->convertCurrencyService->convertSimple(
+                    (int) $userBudget->periods->first()?->balance_cents,
+                    $userBudget->currency,
+                    $user->currency,
+                ) / 100,
                 $userBudget->balance_numeric,
                 $userBudget->currency,
                 $userBudget->tags->pluck('id')->toArray(), // @phpstan-ignore-line

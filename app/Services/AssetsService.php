@@ -25,7 +25,7 @@ final readonly class AssetsService
         /** @var Collection<int, UserPortfolioSnapshot> $snapshots */
         $snapshots = $user->dailySnapshots()
             ->with('assetSnapshots')
-            ->latest('id')
+            ->where('created_at', '>=', now()->subDays(30))
             ->limit($limit)
             ->get();
 
@@ -43,7 +43,7 @@ final readonly class AssetsService
             $assetSnapshots = $user->assetSnapshots()
                 ->with('snapshot')
                 ->where('asset_type', $type)
-                ->latest()
+                ->where('created_at', '>=', now()->subDays(30))
                 ->limit($limit)
                 ->get();
 

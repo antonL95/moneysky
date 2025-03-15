@@ -102,10 +102,10 @@ export default function Index({
                                 }
                                 value={selectedDate}
                             >
-                                <SelectTrigger className="mb-6 w-full stroke-white text-white uppercase lg:w-[180px]">
+                                <SelectTrigger className="mb-6 w-full uppercase lg:w-[180px]">
                                     <SelectValue placeholder="Select date" />
                                 </SelectTrigger>
-                                <SelectContent className={`bg-black text-white uppercase max-lg:landscape:h-48`}>
+                                <SelectContent className={`uppercase max-lg:landscape:h-48`}>
                                     <SelectGroup>
                                         {historicalDates.map((date, index) => (
                                             <SelectItem value={date} key={index}>
