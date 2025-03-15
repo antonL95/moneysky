@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Actions\BankAccount\UpdateBankAccount;
 use App\Data\App\BankAccount\BankAccountData;
 use App\Models\UserBankAccount;
+
 use function Pest\Laravel\assertDatabaseHas;
 
 it('successfully updates', function () {
