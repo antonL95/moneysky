@@ -12,6 +12,7 @@ use App\Models\KrakenTradingPairs;
 use App\Models\UserKrakenAccount;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+
 use function count;
 use function in_array;
 use function is_array;
