@@ -14,7 +14,7 @@ final class TransactionTagFactory extends Factory
     public function definition(): array
     {
         return [
-            'tag' => $this->faker->randomElement([
+            'tag' => $this->faker->unique()->randomElement([
                 'Groceries',
                 'Dining Out',
                 'Utilities',
