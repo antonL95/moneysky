@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
     Combobox,
     ComboboxInput,
@@ -10,20 +8,29 @@ import {
     Transition,
     TransitionChild,
 } from '@headlessui/react';
-import { clsx } from 'clsx';
 import { router } from '@inertiajs/react';
-import BankInstitutionData = App.Data.App.BankAccount.BankInstitutionData;
+import { clsx } from 'clsx';
 import { Search, StopCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import BankInstitutionData = App.Data.App.BankAccount.BankInstitutionData;
 
-export default function SearchBanks({ open, setOpen, banks }: { open: boolean; setOpen: (open: boolean) => void; banks?: BankInstitutionData[]}) {
+export default function SearchBanks({
+    open,
+    setOpen,
+    banks,
+}: {
+    open: boolean;
+    setOpen: (open: boolean) => void;
+    banks?: BankInstitutionData[];
+}) {
     const [query, setQuery] = useState('');
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             router.reload({
-                data: {q: query},
+                data: { q: query },
                 only: ['banks'],
-            })
+            });
         }, 250);
 
         return () => clearTimeout(timeoutId);
@@ -45,16 +52,16 @@ export default function SearchBanks({ open, setOpen, banks }: { open: boolean; s
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                     >
-                        <DialogPanel className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
+                        <DialogPanel className="ring-opacity-5 mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black transition-all">
                             <Combobox>
                                 <div className="relative">
                                     <Search
-                                        className="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-gray-400"
+                                        className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400"
                                         aria-hidden="true"
                                     />
                                     <ComboboxInput
                                         autoFocus
-                                        className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                                        className="h-12 w-full border-0 bg-transparent pr-4 pl-11 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                                         placeholder="Search..."
                                         onChange={(e) => {
                                             setQuery(e.target.value);
@@ -73,7 +80,7 @@ export default function SearchBanks({ open, setOpen, banks }: { open: boolean; s
                                                 value={item}
                                                 className={({ focus }) =>
                                                     clsx(
-                                                        'flex cursor-default select-none rounded-xl p-3',
+                                                        'flex cursor-default rounded-xl p-3 select-none',
                                                         focus && 'bg-gray-100',
                                                     )
                                                 }

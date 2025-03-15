@@ -1,7 +1,6 @@
-import { Head } from '@inertiajs/react';
 import PricingCard from '@/components/pricing-card';
-import React from 'react';
 import GuestLayout from '@/layouts/guest-layout';
+import { Head } from '@inertiajs/react';
 
 export default function Subscribe() {
     return (

@@ -15,17 +15,12 @@ use App\Services\ConvertCurrencyService;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Money\Currency;
-use Money\Money;
 
 final readonly class AfterTransactionCreateOrUpdate
 {
     public function __construct(
         private ConvertCurrencyService $convertCurrency,
-    )
-    {
-    }
-
+    ) {}
 
     public function handle(User $user, UserTransaction $userTransaction, int $balanceCents, CarbonImmutable $now): void
     {
@@ -43,7 +38,7 @@ final readonly class AfterTransactionCreateOrUpdate
                 }
                 $userManualEntry->decrement('balance_cents', $balanceCents);
             }
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
         } catch (ModelNotFoundException) {
         }
         // @codeCoverageIgnoreEnd
@@ -51,13 +46,11 @@ final readonly class AfterTransactionCreateOrUpdate
         $this->dispatchJobs($user, $userTransaction, $now);
     }
 
-
     public function dispatchJobs(
         User $user,
         UserTransaction $userTransaction,
         CarbonImmutable $now,
-    ): void
-    {
+    ): void {
         $user->budgets()->with(
             [// @phpstan-ignore-line
                 'periods' => fn (HasMany $builder) => $builder->whereRaw(

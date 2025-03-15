@@ -14,7 +14,15 @@ import UserBankAccountData = App.Data.App.BankAccount.UserBankAccountData;
 import BankAccountStatus = App.Enums.BankAccountStatus;
 import BankInstitutionData = App.Data.App.BankAccount.BankInstitutionData;
 
-export default function Index({ columns, rows, banks }: { columns: string[]; rows?: UserBankAccountData[]; banks?: BankInstitutionData[] }) {
+export default function Index({
+    columns,
+    rows,
+    banks,
+}: {
+    columns: string[];
+    rows?: UserBankAccountData[];
+    banks?: BankInstitutionData[];
+}) {
     const [open, setOpen] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedRow, setSelectedRow] = useState<UserBankAccountData | null>(null);

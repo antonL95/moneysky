@@ -50,7 +50,14 @@ final class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user() === null
                     ? null
-                    : UserData::from($request->user()),
+                    : new UserData(
+                        $request->user()->id,
+                        $request->user()->name ?? '',
+                        $request->user()->email,
+                        $request->user()->currency,
+                        $request->user()->subscribed(),
+                        $request->user()->email_verified,
+                    ),
             ],
         ];
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Data\App\BankAccount\BankInstitutionData;
 use App\Data\GoCardless\AccountBalanceData;
 use App\Data\GoCardless\AccountDetailsData;
 use App\Data\GoCardless\AccountMetadataData;
@@ -25,6 +26,7 @@ use App\Models\UserBankSession;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Sentry\Laravel\Integration;
 use Spatie\LaravelData\Optional;
 
@@ -276,5 +278,41 @@ final readonly class BankService
             $requisition->id,
             $agreement->id,
         );
+    }
+
+    /**
+     * @return array<int, array<int, BankInstitutionData>>
+     */
+    public function getActiveBankInstitutions(): array
+    {
+        /** @var Collection<int, BankInstitutionData> $institutions */
+        $institutions = Cache::rememberForever(
+            'bank-institutions',
+            /** @returns Collection<int, BankInstitutionData> */
+            static fn (): Collection => BankInstitution::whereActive(true)
+                ->get()
+                ->map(
+                    fn (BankInstitution $bankInstitution): BankInstitutionData => new BankInstitutionData(
+                        $bankInstitution->id,
+                        $bankInstitution->name,
+                        $bankInstitution->logo_url,
+                        null,
+                    ),
+                ),
+        );
+
+        $result = [];
+
+        foreach ($institutions as $institution) {
+            $result[$institution->logo] = $institution;
+        }
+
+        /** @var Collection<string, BankInstitutionData> $institutions */
+        $institutions = collect($result);
+
+        /** @var array<int, array<int, BankInstitutionData>> $result */
+        $result = $institutions->shuffle()->chunk((int) ceil($institutions->count() / 4))->toArray();
+
+        return $result;
     }
 }

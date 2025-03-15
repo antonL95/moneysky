@@ -168,14 +168,6 @@ final class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(UserSocialProvider::class, 'user_id', 'id');
     }
 
-    /**
-     * @return HasMany<Feedback, $this>
-     */
-    public function feedbacks(): HasMany
-    {
-        return $this->hasMany(Feedback::class, 'user_id', 'id');
-    }
-
     public function canAccessPulse(): bool
     {
         return $this->is_admin;

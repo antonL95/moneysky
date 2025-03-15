@@ -3,10 +3,12 @@ import { useToast } from '@/hooks/useToast';
 import type { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { ReactNode } from 'react';
+import { SocialIcon } from 'react-social-icons';
 
 interface AppLayoutProps {
     children: ReactNode;
 }
+
 export default function ({ children }: AppLayoutProps) {
     const flash = useToast();
     const { auth } = usePage<SharedData>().props;
@@ -42,11 +44,32 @@ export default function ({ children }: AppLayoutProps) {
             </header>
 
             <main
-                className={`flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0`}
+                className={`flex w-full flex-col items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0`}
             >
                 {children}
                 <Toast flash={flash} />
             </main>
+            <footer className={`w-full`}>
+                <div className="border-muted-foreground flex flex-col justify-center gap-8 border-t py-10">
+                    <div className="flex flex-row items-center justify-center gap-x-4 text-center">
+                        <SocialIcon
+                            className={`size-7`}
+                            url={`https://www.linkedin.com/company/moneysky-app`}
+                            target="_blank"
+                        />
+                        <SocialIcon
+                            className={`size-7`}
+                            url={`https://www.facebook.com/profile.php?id=61564166234647`}
+                            target={`_blank`}
+                        />
+                    </div>
+                </div>
+                <p className="text-foreground mt-6 space-x-2 text-center text-sm sm:mt-0">
+                    <span>Copyright &copy; {new Date().getFullYear()} Moneysky. All rights reserved.</span>
+                    <Link href={route('terms.show')}>Terms of service</Link>
+                    <Link href={route('policy.show')}>Privacy policy</Link>
+                </p>
+            </footer>
         </div>
     );
 }

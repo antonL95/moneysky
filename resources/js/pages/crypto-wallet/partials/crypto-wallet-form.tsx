@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -6,7 +7,6 @@ import { useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import CryptoWalletData = App.Data.App.CryptoWallet.CryptoWalletData;
-import { FormMessage } from '@/components/ui/form';
 import UserCryptoWalletData = App.Data.App.CryptoWallet.UserCryptoWalletData;
 
 const chains = [
@@ -15,7 +15,13 @@ const chains = [
     { value: 'btc', name: 'Bitcoin' },
 ] as { value: App.Enums.ChainType; name: string }[];
 
-export default function CryptoWalletForm({ wallet, closeModal }: { wallet?: UserCryptoWalletData; closeModal: () => void }) {
+export default function CryptoWalletForm({
+    wallet,
+    closeModal,
+}: {
+    wallet?: UserCryptoWalletData;
+    closeModal: () => void;
+}) {
     const { data, setData, errors, post, put, processing, reset } = useForm<CryptoWalletData>({
         address: wallet?.walletAddress || '',
         chainType: wallet?.chainType || 'btc',

@@ -8,7 +8,6 @@ use App\Enums\AssetType;
 use App\Enums\ChainType;
 use App\Helpers\CurrencyHelper;
 use App\Models\BankInstitution;
-use App\Models\Post;
 use App\Models\TransactionTag;
 use App\Models\User;
 use App\Models\UserBankAccount;

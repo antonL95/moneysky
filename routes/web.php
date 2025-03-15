@@ -12,6 +12,7 @@ use App\Http\Controllers\App\UserKrakenAccountController;
 use App\Http\Controllers\App\UserManualEntryController;
 use App\Http\Controllers\App\UserStockMarketController;
 use App\Http\Controllers\App\UserTransactionController;
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\Subscribed;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn () => Inertia::render('welcome'))->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('/terms', TosController::class)->name('terms.show');
 Route::get('/privacy', PrivacyController::class)->name('policy.show');

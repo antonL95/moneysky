@@ -1,14 +1,14 @@
-import { useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import CurrencySelect from '@/components/ui/currency-select';
+import { FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import { FormEventHandler } from 'react';
 import UserManualEntryData = App.Data.App.ManualEntry.UserManualEntryData;
 import ManualEntryData = App.Data.App.ManualEntry.ManualEntryData;
-import { FormMessage } from '@/components/ui/form';
 
 export default function ManualEntryForm({
     manualEntry,

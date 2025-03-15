@@ -31,39 +31,37 @@ export default function Index({ columns, rows }: { columns: string[]; rows?: Use
 
             <div className={`flex h-full max-w-full flex-1 flex-col gap-4 rounded-xl p-4`}>
                 <div className={`flex self-end`}>
-                    <Button onClick={() => setOpen(true)}>
-                        Add kraken account
-                    </Button>
+                    <Button onClick={() => setOpen(true)}>Add kraken account</Button>
                 </div>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        {columns.map((column: string) => (
-                            <TableHead key={column}>{column}</TableHead>
-                        ))}
-                        <TableHead className="relative w-0">
-                            <span className="sr-only">Actions</span>
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {rows?.map((row: UserKrakenAccountData) => (
-                        <TableRow key={row.id}>
-                            <TableCell>{row.id}</TableCell>
-                            <TableCell>{row.apiKey}</TableCell>
-                            <TableCell>{row.privateKey}</TableCell>
-                            <TableCell>{row.balance}</TableCell>
-                            <TableCell>
-                                <TableAction
-                                    row={row}
-                                    destroy={() => destroy(row)}
-                                    handleEditClick={() => handleEditClick(row)}
-                                />
-                            </TableCell>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            {columns.map((column: string) => (
+                                <TableHead key={column}>{column}</TableHead>
+                            ))}
+                            <TableHead className="relative w-0">
+                                <span className="sr-only">Actions</span>
+                            </TableHead>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody>
+                        {rows?.map((row: UserKrakenAccountData) => (
+                            <TableRow key={row.id}>
+                                <TableCell>{row.id}</TableCell>
+                                <TableCell>{row.apiKey}</TableCell>
+                                <TableCell>{row.privateKey}</TableCell>
+                                <TableCell>{row.balance}</TableCell>
+                                <TableCell>
+                                    <TableAction
+                                        row={row}
+                                        destroy={() => destroy(row)}
+                                        handleEditClick={() => handleEditClick(row)}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
 
             <Dialog open={open} onOpenChange={() => setOpen(false)}>

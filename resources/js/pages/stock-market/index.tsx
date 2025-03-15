@@ -31,9 +31,7 @@ export default function Index({ columns, rows }: { columns: string[]; rows?: Use
 
             <div className={`flex h-full max-w-full flex-1 flex-col gap-4 rounded-xl p-4`}>
                 <div className={`flex self-end`}>
-                    <Button onClick={() => setOpen(true)}>
-                        Add stock ticker
-                    </Button>
+                    <Button onClick={() => setOpen(true)}>Add stock ticker</Button>
                 </div>
                 <Table>
                     <TableHeader>

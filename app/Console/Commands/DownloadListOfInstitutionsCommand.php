@@ -8,6 +8,7 @@ use App\Data\GoCardless\InstitutionsData;
 use App\Models\BankInstitution;
 use App\Services\BankService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 final class DownloadListOfInstitutionsCommand extends Command
@@ -27,7 +28,7 @@ final class DownloadListOfInstitutionsCommand extends Command
         $institutions = $this->bankService->getInstitutions();
 
         DB::transaction(static function () use ($institutions): void {
-            DB::update('UPDATE `bank_institutions` SET `active` = 0');
+            DB::update('UPDATE "bank_institutions" SET "active" = FALSE');
 
             $institutions->each(function (InstitutionsData $data): void {
                 $institution = BankInstitution::where('external_id', $data->id)->first();
@@ -50,5 +51,7 @@ final class DownloadListOfInstitutionsCommand extends Command
                 }
             });
         });
+
+        Cache::forget('bank-institutions');
     }
 }

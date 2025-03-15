@@ -1,11 +1,12 @@
-import { useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import UserBankAccountData = App.Data.App.BankAccount.UserBankAccountData;
-import { Label } from '@/components/ui/label';
 import { FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useForm } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
+import { FormEventHandler } from 'react';
+import UserBankAccountData = App.Data.App.BankAccount.UserBankAccountData;
+import BankAccountData = App.Data.App.BankAccount.BankAccountData;
 
 export default function BankAccountForm({
     bankAccount,
@@ -14,8 +15,8 @@ export default function BankAccountForm({
     bankAccount: UserBankAccountData;
     closeModal: () => void;
 }) {
-    const { data, setData, errors, put, processing, reset } = useForm({
-        name: bankAccount.name,
+    const { data, setData, errors, put, processing, reset } = useForm<BankAccountData>({
+        name: bankAccount.name || '',
     });
 
     const submit: FormEventHandler = (e) => {

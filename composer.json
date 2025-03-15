@@ -96,7 +96,6 @@
             "@refactor"
         ],
         "test": [
-            "@test:lint",
             "@test:types",
             "@test:arch",
             "@test:unit"

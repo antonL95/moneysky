@@ -72,7 +72,7 @@ final readonly class UserBankAccountController
                 'Status',
             ],
             'rows' => $rows,
-            'banks' => Inertia::optional(fn () => $this->search($request))
+            'banks' => Inertia::optional(fn (): Collection => $this->search($request)),
         ]);
     }
 

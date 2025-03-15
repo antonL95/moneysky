@@ -23,8 +23,8 @@ final class ObtainNewAccessRefreshTokenPair extends Request implements Cacheable
     protected Method $method = Method::POST;
 
     public function __construct(
-        private string $secretId,
-        private string $secretKey,
+        private readonly string $secretId,
+        private readonly string $secretKey,
     ) {}
 
     public function resolveEndpoint(): string

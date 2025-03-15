@@ -1,12 +1,12 @@
-import { useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import { FormEventHandler } from 'react';
 import UserKrakenAccountData = App.Data.App.KrakenAccount.UserKrakenAccountData;
 import KrakenAccountData = App.Data.App.KrakenAccount.KrakenAccountData;
-import { FormMessage } from '@/components/ui/form';
 
 export default function KrakenAccountForm({
     krakenAccount,

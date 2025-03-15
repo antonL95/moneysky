@@ -20,7 +20,7 @@ final class CurrencyController
         $user = Auth::user();
 
         if (! $user instanceof User) {
-            redirect()->route('login');
+            return redirect()->route('login');
         }
 
         $user->currency = $data->currency;
