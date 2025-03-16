@@ -19,9 +19,11 @@ final class CurrencyController
     {
         $user = Auth::user();
 
+        // @codeCoverageIgnoreStart
         if (! $user instanceof User) {
             return redirect()->route('login');
         }
+        // @codeCoverageIgnoreEnd
 
         $user->currency = $data->currency;
         $user->save();

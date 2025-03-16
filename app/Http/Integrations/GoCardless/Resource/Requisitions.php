@@ -7,17 +7,11 @@ namespace App\Http\Integrations\GoCardless\Resource;
 use App\Http\Integrations\GoCardless\Requests\Requisitions\CreateRequisition;
 use App\Http\Integrations\GoCardless\Requests\Requisitions\DeleteRequisitionById;
 use App\Http\Integrations\GoCardless\Requests\Requisitions\RequisitionById;
-use App\Http\Integrations\GoCardless\Requests\Requisitions\RetrieveAllRequisitions;
 use App\Http\Integrations\GoCardless\Resource;
 use Saloon\Http\Response;
 
 final class Requisitions extends Resource
 {
-    public function retrieveAllRequisitions(?int $limit, ?int $offset): Response
-    {
-        return $this->connector->send(new RetrieveAllRequisitions($limit, $offset));
-    }
-
     public function createRequisition(
         string $institutionId,
         string $agreementId,

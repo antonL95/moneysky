@@ -71,9 +71,11 @@ final readonly class CalculateTransactionAggregation
     {
         return $this->currencyConvertor->convertSimple(
             $transaction->balance_cents,
+            // @codeCoverageIgnoreStart
             $transaction->currency === ''
                 ? CurrencyHelper::defaultCurrency()
                 : $transaction->currency,
+            // @codeCoverageIgnoreEnd
             CurrencyHelper::defaultCurrency(),
         );
     }

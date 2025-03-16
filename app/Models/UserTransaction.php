@@ -32,7 +32,6 @@ final class UserTransaction extends Model
         'description',
         'booked_at',
         'transaction_tag_id',
-        'user_transaction_tag_id',
         'user_bank_transaction_raw_id',
         'user_manual_entry_id',
         'hidden',
@@ -68,14 +67,6 @@ final class UserTransaction extends Model
     public function transactionTag(): HasOne
     {
         return $this->hasOne(TransactionTag::class, 'id', 'transaction_tag_id');
-    }
-
-    /**
-     * @return HasOne<UserTransactionTag, $this>
-     */
-    public function userTransactionTag(): HasOne
-    {
-        return $this->hasOne(UserTransactionTag::class, 'id', 'user_transaction_tag_id');
     }
 
     /**

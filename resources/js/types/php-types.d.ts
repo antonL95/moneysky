@@ -169,11 +169,8 @@ declare namespace App.Enums {
     export type BankAccountStatus = 'READY' | 'DISCOVERED' | 'ERROR' | 'EXPIRED' | 'PROCESSING' | 'SUSPENDED';
     export type CacheKeys = 'transaction_aggregate:%s:%s' | 'user_transactions:%s:%s:%s' | 'exchange-rates';
     export type ChainType = 'eth' | 'matic' | 'btc';
-    export type ChangeType = 'positive' | 'negative';
     export type ErrorCodes = 1000;
     export type FlashMessageAction = 'delete' | 'update' | 'create' | 'renew';
     export type FlashMessageType = 'success' | 'danger';
-    export type Subscriptions = 'monthly' | 'yearly';
     export type TransactionType = 'manual' | 'automatic';
-    export type UserSettingKeys = 'currency';
 }

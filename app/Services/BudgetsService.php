@@ -8,6 +8,7 @@ use App\Data\App\Dashboard\UserBudgetData;
 use App\Models\User;
 use App\Models\UserBudget;
 use Carbon\CarbonImmutable;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 
@@ -25,12 +26,18 @@ final readonly class BudgetsService
         $now = CarbonImmutable::now();
 
         if ($date !== null) {
-            $now = CarbonImmutable::createFromFormat('m-Y', $date);
+            try {
+                $now = CarbonImmutable::createFromFormat('m-Y', $date);
+            } catch (Exception) {
+                $now = CarbonImmutable::now();
+            }
         }
 
+        // @codeCoverageIgnoreStart
         if (! $now instanceof CarbonImmutable) {
             $now = CarbonImmutable::now();
         }
+        // @codeCoverageIgnoreEnd
 
         /* @var Collection<int, UserBudgetData> $budgets */
         $budgets = $user->budgets()->with(

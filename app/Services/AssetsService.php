@@ -25,8 +25,7 @@ final readonly class AssetsService
         /** @var Collection<int, UserPortfolioSnapshot> $snapshots */
         $snapshots = $user->dailySnapshots()
             ->with('assetSnapshots')
-            ->where('created_at', '>=', now()->subDays(30))
-            ->limit($limit)
+            ->where('aggregate_date', '>=', now()->subDays($limit))
             ->get();
 
         $results[] = new HistoricalAssetsData(
@@ -41,10 +40,9 @@ final readonly class AssetsService
 
         foreach (AssetType::cases() as $type) {
             $assetSnapshots = $user->assetSnapshots()
-                ->with('snapshot')
+                ->with(['snapshot'])
+                ->withWhereRelation('snapshot', 'aggregate_date', '>=', now()->subDays($limit))
                 ->where('asset_type', $type)
-                ->where('created_at', '>=', now()->subDays(30))
-                ->limit($limit)
                 ->get();
 
             $results[] = new HistoricalAssetsData(

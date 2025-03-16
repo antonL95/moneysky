@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Actions\TransactionAggregate\RecalculateTransactionAggregationAfterTransactionUpdate;
+use App\Actions\TransactionAggregate\CalculateTransactionAggregation;
 use App\Models\TransactionTag;
 use App\Models\User;
 use App\Models\UserTransaction;
@@ -23,7 +23,7 @@ final class RecalculateTransactionAggregatesJob implements ShouldQueue
         private readonly UserTransaction $userTransaction,
     ) {}
 
-    public function handle(RecalculateTransactionAggregationAfterTransactionUpdate $action): void
+    public function handle(CalculateTransactionAggregation $action): void
     {
         $action->handle(
             $this->user,
