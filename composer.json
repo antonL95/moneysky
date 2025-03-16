@@ -28,7 +28,8 @@
         "spatie/laravel-data": "^4.14.0",
         "spatie/laravel-enum": "^3.2.0",
         "spatie/laravel-typescript-transformer": "^2.5.1",
-        "tightenco/ziggy": "^2.5.2"
+        "tightenco/ziggy": "^2.5.2",
+        "silviolleite/laravelpwa": "^2.0.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^v3.15.2",

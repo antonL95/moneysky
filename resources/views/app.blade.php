@@ -13,6 +13,7 @@
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
+        @laravelPWA
     </head>
     <body class="font-sans antialiased">
         @inertia
