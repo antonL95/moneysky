@@ -49,7 +49,7 @@ export default function ({ children }: AppLayoutProps) {
                 {children}
                 <Toast flash={flash} />
             </main>
-            <footer className={`w-full`}>
+            <footer className={`w-full mt-10 lg:mt-20`}>
                 <div className="border-muted-foreground flex flex-col justify-center gap-8 border-t py-10">
                     <div className="flex flex-row items-center justify-center gap-x-4 text-center">
                         <SocialIcon

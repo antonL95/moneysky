@@ -88,7 +88,15 @@ export default function () {
                                 Automate your finance tracking and stay informed with real-time updates.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
-                                {auth.user !== null ? <Button>Go to the App</Button> : <Button>Get started</Button>}
+                                {auth.user !== null ? (
+                                    <Button asChild>
+                                        <Link href={route('dashboard')}>Go to the App</Link>
+                                    </Button>
+                                ) : (
+                                    <Button asChild>
+                                        <Link href={route('register')}>Get started</Link>
+                                    </Button>
+                                )}
                             </div>
                         </div>
                         <div className="mt-16 sm:mt-24 lg:mt-0 lg:hidden lg:shrink-0 lg:grow">
