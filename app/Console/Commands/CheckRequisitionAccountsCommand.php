@@ -18,7 +18,7 @@ final class CheckRequisitionAccountsCommand extends Command
     public function handle(): void
     {
         $requisitions = UserBankSession::withoutGlobalScopes()
-            ->whereDoesntHave('userBankAccounts', function (Builder $query) {
+            ->whereDoesntHave('userBankAccounts', function (Builder $query): void {
                 $query->withoutGlobalScopes();
             })
             ->get();

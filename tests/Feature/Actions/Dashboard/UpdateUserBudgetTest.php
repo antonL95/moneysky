@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\Dashboard\UpdateUserBudget;
 use App\Data\App\Dashboard\BudgetData;
 use App\Models\TransactionTag;
 use App\Models\UserBudget;
 
 beforeEach(function () {
-    $this->user = \App\Models\User::factory()->create();
+    $this->user = App\Models\User::factory()->create();
 });
 
 it('updates budget values without tags', function () {

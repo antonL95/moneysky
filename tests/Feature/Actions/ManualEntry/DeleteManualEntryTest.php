@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\ManualEntry\DeleteManualEntry;
 use App\Jobs\ProcessSnapshotJob;
 use App\Models\UserManualEntry;
+
 use function Pest\Laravel\assertDatabaseCount;
 
 it('successfully deletes manual entry', function () {

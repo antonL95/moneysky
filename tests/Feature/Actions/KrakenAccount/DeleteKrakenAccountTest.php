@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\KrakenAccount\DeleteKrakenAccount;
 use App\Jobs\ProcessSnapshotJob;
 use App\Models\UserKrakenAccount;
+
 use function Pest\Laravel\assertDatabaseCount;
 
 it('successfully deletes account', function () {

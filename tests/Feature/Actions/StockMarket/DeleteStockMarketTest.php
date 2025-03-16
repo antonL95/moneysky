@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\StockMarket\DeleteStockMarket;
 use App\Jobs\ProcessSnapshotJob;
 use App\Models\UserStockMarket;
+
 use function Pest\Laravel\assertDatabaseCount;
 
 it('successfully deletes stock market ticker', function () {

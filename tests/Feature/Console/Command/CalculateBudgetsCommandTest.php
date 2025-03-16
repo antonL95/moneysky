@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Console\Commands\CalculateBudgetsCommand;
 use App\Jobs\CalculateBudgetJob;
 use Database\Seeders\TestSeeder;
+
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\seed;
 

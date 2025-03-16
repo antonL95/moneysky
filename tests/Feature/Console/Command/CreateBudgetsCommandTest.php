@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Console\Commands\CreateBudgetsCommand;
 use App\Models\UserBudget;
+
 use function Pest\Laravel\artisan;
 use function Pest\Laravel\assertDatabaseCount;
 
