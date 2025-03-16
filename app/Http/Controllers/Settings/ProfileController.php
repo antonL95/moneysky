@@ -1,18 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Settings;
 
-use App\Http\Controllers\Controller;
+use App\Concerns\HasRedirectWithFlashMessage;
+use App\Enums\FlashMessageAction;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\UserBankAccount;
+use App\Models\UserCryptoWallet;
+use App\Models\UserKrakenAccount;
+use App\Models\UserManualEntry;
+use App\Models\UserStockMarket;
+use App\Services\BankService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ProfileController extends Controller
+final class ProfileController
 {
+    use AuthorizesRequests;
+    use HasRedirectWithFlashMessage;
+
     /**
      * Show the user's profile settings page.
      */
@@ -29,13 +44,19 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user === null) {
+            return redirect()->route('login');
         }
 
-        $request->user()->save();
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return to_route('profile.edit');
     }
@@ -43,13 +64,42 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request, BankService $bankService): RedirectResponse
     {
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
 
         $user = $request->user();
+
+        if ($user === null) {
+            return redirect()->route('login');
+        }
+
+        try {
+            $this->authorize('forceDelete', $user);
+        } catch (AuthorizationException) {
+            return $this->error(FlashMessageAction::DELETE);
+        }
+
+        if ($user->subscribed()) {
+            return back()->with(
+                'flash',
+                [
+                    'title' => 'Cancel subscription before deleting',
+                    'description' => 'Before deleting account please cancel subscription',
+                    'type' => 'danger',
+                ],
+            );
+        }
+
+        $user->userCryptoWallet()->each(fn (UserCryptoWallet $userCryptoWallets) => $userCryptoWallets->forceDelete());
+        $user->userKrakenAccount()->each(fn (UserKrakenAccount $userKrakenAccount) => $userKrakenAccount->forceDelete());
+        $user->userManualEntry()->each(fn (UserManualEntry $userManualEntry) => $userManualEntry->forceDelete());
+        $user->userStockMarket()->each(fn (UserStockMarket $userStockMarket) => $userStockMarket->forceDelete());
+        $user->userBankAccount()->each(fn (UserBankAccount $userBankAccount) => $userBankAccount->forceDelete());
+
+        $bankService->deleteUserRequisitions($user);
 
         Auth::logout();
 
@@ -58,6 +108,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return Redirect::route('home');
     }
 }

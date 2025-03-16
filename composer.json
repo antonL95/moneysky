@@ -9,36 +9,42 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
+        "aws/aws-sdk-php": "^3.342.6",
+        "echolabsdev/prism": "^0.47.2",
         "inertiajs/inertia-laravel": "^2.0.1",
-        "laravel/framework": "^12.0.1",
+        "laravel/cashier": "^v15.6.2",
+        "laravel/framework": "^12.2.0",
+        "laravel/pulse": "^1.4",
+        "laravel/socialite": "^v5.18.0",
         "laravel/tinker": "^2.10.1",
-        "tightenco/ziggy": "^2.5.1",
-        "spatie/laravel-data": "^4.13.1",
-        "spatie/laravel-enum": "^3.2.0",
+        "league/flysystem-aws-s3-v3": "^3.29",
+        "moneyphp/money": "^4.6",
         "pinkary-project/type-guard": "^0.1.0",
         "saloonphp/cache-plugin": "^v3.0.0",
         "saloonphp/laravel-plugin": "^v3.5.1",
-        "saloonphp/saloon": "^v3.11.0",
-        "league/flysystem-aws-s3-v3": "^3.29",
-        "aws/aws-sdk-php": "^3.340.2",
-        "laravel/socialite": "^v5.18.0",
-        "laravel/cashier": "^v15.6.2"
+        "saloonphp/saloon": "^3.11.2",
+        "sentry/sentry-laravel": "^4.13.0",
+        "spatie/laravel-data": "^4.14.0",
+        "spatie/laravel-enum": "^3.2.0",
+        "spatie/laravel-typescript-transformer": "^2.5.1",
+        "tightenco/ziggy": "^2.5.2"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^v3.15.2",
         "fakerphp/faker": "^1.24.1",
+        "larastan/larastan": "^3.2.0",
         "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.21",
+        "laravel/pint": "^1.21.2",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.6.1",
+        "nunomaduro/collision": "^8.7.0",
         "pestphp/pest": "^3.7.4",
         "pestphp/pest-plugin-drift": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.1",
-        "barryvdh/laravel-debugbar": "^v3.15.2",
-        "rector/rector": "^2.0.9",
-        "roave/security-advisories": "dev-latest",
-        "larastan/larastan": "^3.1.0"
+        "pestphp/pest-plugin-type-coverage": "^3.4",
+        "rector/rector": "^2.0.10",
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
@@ -71,6 +77,29 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "refactor": "rector",
+        "test:lint": [
+            "pint --test",
+            "npm run format:check",
+            "@test:refactor"
+        ],
+        "test:refactor": "rector --dry-run",
+        "test:types": "phpstan analyse --memory-limit=3G",
+        "test:arch": "pest --filter=arch",
+        "test:type-cov": "pest --type-coverage --min=100",
+        "test:unit": "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --coverage",
+        "lint": [
+            "pint",
+            "npm run lint",
+            "npm run format",
+            "@refactor"
+        ],
+        "test": [
+            "@test:types",
+            "@test:arch",
+            "@test:type-cov",
+            "@test:unit"
         ]
     },
     "extra": {

@@ -8,6 +8,4 @@ parameters:
         - bootstrap
         - routes
     ignoreErrors:
-        - '#Access to an undefined property [a-zA-Z0-9\\_]+::\$balance_numeric#'
-        - '#Access to an undefined property [a-zA-Z0-9\\_]+::\$balance#'
     excludePaths:
