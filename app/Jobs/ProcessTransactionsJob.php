@@ -15,7 +15,6 @@ use App\Models\UserBankTransactionRaw;
 use App\Models\UserBudget;
 use App\Models\UserBudgetPeriod;
 use App\Models\UserTransaction;
-use App\Models\UserTransactionTag;
 use App\Services\AiService;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -167,14 +166,9 @@ final class ProcessTransactionsJob implements ShouldQueue
             foreach (self::STREAMING_SERVICES_IDENTIFIERS as $service) {
                 if (str_contains($transaction->remittance_information, $service)) {
                     $tag = TransactionTag::where('tag', '=', 'Streaming Services')->first();
-
                     if ($tag === null) {
-                        $tag = TransactionTag::create([
-                            'tag' => 'Streaming Services',
-                            'color' => '#DC143C',
-                        ]);
+                        return true;
                     }
-
                     $this->saveUserTransaction($transaction, $userBankAccount, $tag);
 
                     return false;
@@ -186,14 +180,9 @@ final class ProcessTransactionsJob implements ShouldQueue
             foreach (self::STREAMING_SERVICES_IDENTIFIERS as $service) {
                 if (str_contains($transaction->additional_information, $service)) {
                     $tag = TransactionTag::where('tag', '=', 'Streaming Services')->first();
-
                     if ($tag === null) {
-                        $tag = TransactionTag::create([
-                            'tag' => 'Streaming Services',
-                            'color' => '#DC143C',
-                        ]);
+                        return true;
                     }
-
                     $this->saveUserTransaction($transaction, $userBankAccount, $tag);
 
                     return false;
@@ -205,9 +194,10 @@ final class ProcessTransactionsJob implements ShouldQueue
         $tenPercent = $transaction->balance_cents * 0.05;
         $similarTransaction = UserTransaction::withoutGlobalScope(UserScope::class)
             ->where('user_id', '=', $userBankAccount->user_id)
-            ->whereBetween('balance_cents', [$transaction->balance_cents - $tenPercent, $transaction->balance_cents + $tenPercent])
+            ->where('balance_cents', '>=', (int) ($transaction->balance_cents - $tenPercent))
+            ->where('balance_cents', '<=', (int) ($transaction->balance_cents - $tenPercent))
             ->where('currency', '=', $transaction->currency)
-            ->where('description', 'like', '%'.$transaction->remittance_information.'%')
+            ->whereLike('description', (string) $transaction->remittance_information)
             ->first();
 
         if ($similarTransaction !== null) {
@@ -215,7 +205,6 @@ final class ProcessTransactionsJob implements ShouldQueue
                 $transaction,
                 $userBankAccount,
                 $similarTransaction->transactionTag,
-                $similarTransaction->userTransactionTag,
             );
 
             return false;
@@ -242,7 +231,6 @@ final class ProcessTransactionsJob implements ShouldQueue
         UserBankTransactionRaw $userBankTransactionRaw,
         UserBankAccount $userBankAccount,
         ?TransactionTag $tag = null,
-        ?UserTransactionTag $userTransactionTag = null,
     ): void {
         $booked = $userBankTransactionRaw->booked_at ?? CarbonImmutable::now();
 
@@ -250,7 +238,6 @@ final class ProcessTransactionsJob implements ShouldQueue
             'user_id' => $userBankAccount->user_id,
             'user_bank_account_id' => $userBankAccount->id,
             'transaction_tag_id' => $tag?->id,
-            'user_transaction_tag_id' => $userTransactionTag?->id,
             'user_bank_transaction_raw_id' => $userBankTransactionRaw->id,
             'balance_cents' => $userBankTransactionRaw->balance_cents,
             'currency' => $userBankTransactionRaw->currency,

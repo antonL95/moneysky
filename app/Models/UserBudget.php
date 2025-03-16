@@ -46,14 +46,6 @@ final class UserBudget extends Model
     }
 
     /**
-     * @return BelongsToMany<UserTransactionTag, $this>
-     */
-    public function userTags(): BelongsToMany
-    {
-        return $this->belongsToMany(UserTransactionTag::class, 'user_budget_tags', 'user_budget_id', 'user_transaction_tag_id');
-    }
-
-    /**
      * @return HasMany<UserBudgetPeriod, $this>
      */
     public function periods(): HasMany

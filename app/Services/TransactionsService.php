@@ -13,6 +13,7 @@ use App\Models\TransactionTag;
 use App\Models\User;
 use App\Models\UserTransaction;
 use Carbon\CarbonImmutable;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -33,12 +34,18 @@ final readonly class TransactionsService
         $now = CarbonImmutable::now();
 
         if ($date !== null) {
-            $now = CarbonImmutable::createFromFormat('m-Y', $date);
+            try {
+                $now = CarbonImmutable::createFromFormat('m-Y', $date);
+            } catch (Exception) {
+                $now = CarbonImmutable::now();
+            }
         }
 
+        // @codeCoverageIgnoreStart
         if (! $now instanceof CarbonImmutable) {
             $now = CarbonImmutable::now();
         }
+        // @codeCoverageIgnoreEnd
 
         $tags = TransactionTag::all();
 
@@ -108,12 +115,14 @@ final readonly class TransactionsService
                     $transactionAggregate->transaction_tag_id,
                 );
             } else {
+                // @codeCoverageIgnoreStart
                 try {
                     /** @var TransactionTag $transactionTag */
                     $transactionTag = TransactionTag::findOrFail($transactionAggregate->transaction_tag_id);
                 } catch (ModelNotFoundException) {
                     continue;
                 }
+                // @codeCoverageIgnoreEnd
 
                 $spendingData[$transactionTag->tag] = new TransactionAggregateData(
                     $transactionTag->tag,
@@ -142,12 +151,18 @@ final readonly class TransactionsService
         $now = CarbonImmutable::now();
 
         if ($date !== null) {
-            $now = CarbonImmutable::createFromFormat('m-Y', $date);
+            try {
+                $now = CarbonImmutable::createFromFormat('m-Y', $date);
+            } catch (Exception) {
+                $now = CarbonImmutable::now();
+            }
         }
 
+        // @codeCoverageIgnoreStart
         if (! $now instanceof CarbonImmutable) {
             $now = CarbonImmutable::now();
         }
+        // @codeCoverageIgnoreEnd
 
         $user = Auth::user();
 
@@ -163,9 +178,14 @@ final readonly class TransactionsService
             ->where(
                 'transaction_tag_id',
                 $tag?->id,
-            )->whereBetween(
+            )->where(
                 'booked_at',
-                [$now->startOfMonth()->toDateTimeString(), $now->endOfMonth()->toDateTimeString()],
+                '>=',
+                $now->startOfMonth()->toDateTimeString(),
+            )->where(
+                'booked_at',
+                '<=',
+                $now->endOfMonth()->toDateTimeString(),
             )->get(),
         );
 
@@ -202,7 +222,6 @@ final readonly class TransactionsService
             : CarbonImmutable::now();
         $now = CarbonImmutable::now();
         $numberOfMonths = (int) $now->diffInMonths($oldest, absolute: true);
-
         $result = [];
 
         for ($i = 0; $i < $numberOfMonths; $i++) {

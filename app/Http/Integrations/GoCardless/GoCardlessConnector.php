@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Integrations\GoCardless;
 
 use App\Data\GoCardless\TokenData;
-use App\Http\Integrations\GoCardless\Requests\Token\GetNewAccessToken;
 use App\Http\Integrations\GoCardless\Requests\Token\ObtainNewAccessRefreshTokenPair;
 use App\Http\Integrations\GoCardless\Resource\Accounts;
 use App\Http\Integrations\GoCardless\Resource\Agreements;
@@ -52,8 +51,7 @@ final class GoCardlessConnector extends Connector
 
     public function boot(PendingRequest $pendingRequest): void
     {
-        if ($pendingRequest->getRequest() instanceof ObtainNewAccessRefreshTokenPair
-            || $pendingRequest->getRequest() instanceof GetNewAccessToken) {
+        if ($pendingRequest->getRequest() instanceof ObtainNewAccessRefreshTokenPair) {
             return;
         }
 

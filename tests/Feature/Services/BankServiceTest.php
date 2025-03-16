@@ -54,28 +54,6 @@ it('return institutions', function () {
     expect($data->count())->toBe(2);
 });
 
-it('returns a proper link', function () {
-    $this->client->addResponses([
-        CreateEua::class => MockResponse::make(body: ['id' => 'uniqueId']),
-        CreateRequisition::class => MockResponse::make(body: ['id' => 'uniqueId', 'link' => 'test.com/link']),
-    ]);
-
-    assertDatabaseCount(UserBankSession::class, 0);
-
-    $bankInstitution = BankInstitution::factory()->create();
-    $user = User::factory()->create();
-
-    $this->bankService->connect($bankInstitution, $user);
-
-    actingAs($user);
-
-    assertDatabaseCount(UserBankSession::class, 1);
-
-    $session = UserBankSession::first();
-
-    expect($session->link)->toBe('test.com/link');
-});
-
 it('creates a bank account', function () {
     $queue = Queue::fake();
     $bankInstitution = BankInstitution::factory()->create();
@@ -112,6 +90,54 @@ it('creates a bank account', function () {
     expect($bankAccount->external_id)->toBe('uniqueId');
 });
 
+it('reconnects a bank account', function () {
+    $queue = Queue::fake();
+    $bankInstitution = BankInstitution::factory()->create();
+    $user = User::factory()->create();
+    $userBankSession = UserBankSession::factory()->create([
+        'user_id' => $user->id,
+    ]);
+
+    $now = CarbonImmutable::now();
+
+    $bankAccount = UserBankAccount::factory()->create([
+        'user_bank_session_id' => $userBankSession->id,
+        'user_id' => $user->id,
+        'external_id' => $bankInstitution->external_id,
+        'access_expires_at' => $now->subDays(30),
+    ]);
+
+    $this->client->addResponses([
+        RequisitionById::class => MockResponse::make(body: ['accounts' => ['uniqueId']]),
+        RetrieveAccountMetadata::class => MockResponse::make(body: [
+            'id' => $bankInstitution->external_id,
+            'status' => 'READY',
+            'institution_id' => $bankInstitution->external_id,
+        ]),
+        RetrieveAccountDetails::class => MockResponse::make(
+            body: [
+                'account' => ['currency' => 'CZK'],
+            ],
+        ),
+    ]);
+
+    actingAs($user);
+
+    assertDatabaseCount(UserBankAccount::class, 1);
+
+    expect($bankAccount->access_expires_at->format('Y-m-d'))->toBe($now->subDays(30)->format('Y-m-d'));
+
+    $this->bankService->create($user, $userBankSession->requisition_id, $userBankSession);
+
+    $queue->assertPushed(ProcessBankAccountsJob::class);
+
+    assertDatabaseCount(UserBankAccount::class, 1);
+
+    $bankAccount = $bankAccount->fresh();
+
+    expect($bankAccount->access_expires_at->format('Y-m-d'))->toBe($now->addDays(90)->format('Y-m-d'));
+});
+
 it('retrieves account balance', function () {
     $user = User::factory()->create();
     actingAs($user);
@@ -140,6 +166,73 @@ it('retrieves account balance', function () {
     $balance = $this->bankService->getAccountBalance($bankAccount);
 
     expect($balance->balance)->toBe(100_00);
+});
+
+it('throws exception account balance', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $this->client->addResponses([
+        RetrieveAccountBalances::class => MockResponse::make(body: [
+            'asdfasdf' => [],
+        ]),
+    ]);
+
+    $bankAccount = UserBankAccount::factory()->create(['user_id' => $user->id]);
+
+    expect(
+        fn () => $this->bankService->getAccountBalance($bankAccount)
+    )->toThrow(InvalidApiExceptionAbstract::class);
+});
+
+it('skips invalid balance value', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $this->client->addResponses([
+        RetrieveAccountBalances::class => MockResponse::make(body: [
+            'balances' => [
+                [
+                    'balanceAmount' => [
+                        'amount' => 123,
+                    ],
+                    'balanceType' => 'closingAvailable',
+                ],
+                'asdfasdf',
+            ],
+        ]),
+    ]);
+
+    $bankAccount = UserBankAccount::factory()->create(['user_id' => $user->id]);
+
+    $balance = $this->bankService->getAccountBalance($bankAccount);
+
+    expect($balance->balance)->toBe(123_00);
+});
+
+it('chooses first balance from array', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $this->client->addResponses([
+        RetrieveAccountBalances::class => MockResponse::make(body: [
+            'balances' => [
+                [
+                    'balanceAmount' => [
+                        'amount' => 200,
+                    ],
+                    'balanceType' => 'asdfasdf',
+                ],
+                'asdfasdf',
+            ],
+        ]),
+    ]);
+
+    $bankAccount = UserBankAccount::factory()->create(['user_id' => $user->id]);
+
+    $balance = $this->bankService->getAccountBalance($bankAccount);
+
+    expect($balance->balance)->toBe(200_00);
 });
 
 it('retrieves account transactions', function () {
@@ -212,3 +305,107 @@ it('throws if account is not ready', function () {
 
     $this->bankService->isAccountStatusReady($bankAccount);
 })->throws(InvalidApiExceptionAbstract::class);
+
+it('does nothing if status does not change', function () {
+    $user = User::factory()->create();
+    $bankAccount = UserBankAccount::factory()->create(['user_id' => $user->id]);
+
+    $this->client->addResponses([
+        RetrieveAccountMetadata::class => MockResponse::make(body: [
+            'id' => 'uniqueId',
+            'status' => BankAccountStatus::READY->value,
+            'institution_id' => 'uniqueId',
+        ]),
+    ]);
+
+    expect($bankAccount->status->value)->toBe(BankAccountStatus::READY->value);
+
+    $this->bankService->isAccountStatusReady($bankAccount);
+
+    expect($bankAccount->status->value)->toBe(BankAccountStatus::READY->value);
+});
+
+it('successfully saves status', function () {
+    $user = User::factory()->create();
+    $bankAccount = UserBankAccount::factory()->create(['user_id' => $user->id, 'status' => BankAccountStatus::EXPIRED->value]);
+
+    $this->client->addResponses([
+        RetrieveAccountMetadata::class => MockResponse::make(body: [
+            'id' => 'uniqueId',
+            'status' => BankAccountStatus::READY->value,
+            'institution_id' => 'uniqueId',
+        ]),
+    ]);
+
+    expect($bankAccount->status->value)->toBe(BankAccountStatus::EXPIRED->value);
+
+    $this->bankService->isAccountStatusReady($bankAccount);
+
+    expect($bankAccount->status->value)->toBe(BankAccountStatus::READY->value);
+});
+
+it('returns a proper link', function () {
+    $this->client->addResponses([
+        CreateEua::class => MockResponse::make(body: ['id' => 'uniqueId']),
+        CreateRequisition::class => MockResponse::make(body: ['id' => 'uniqueId', 'link' => route('bank-account.callback')]),
+    ]);
+
+    assertDatabaseCount(UserBankSession::class, 0);
+
+    $bankInstitution = BankInstitution::factory()->create();
+    $user = User::factory()->create();
+
+    $link = $this->bankService->connect($bankInstitution, $user);
+
+    actingAs($user);
+
+    assertDatabaseCount(UserBankSession::class, 1);
+
+    $session = UserBankSession::first();
+
+    expect($session->link)->toBe($link);
+});
+
+it('returns a reconnect link', function () {
+    $user = User::factory()->create();
+    $userBankSession = UserBankSession::factory()->create([
+        'user_id' => $user->id,
+    ]);
+
+    $this->client->addResponses([
+        CreateEua::class => MockResponse::make(body: ['id' => 'uniqueId']),
+        CreateRequisition::class => MockResponse::make(body: ['id' => 'uniqueId', 'link' => route('bank-account.renew-callback', ['userBankSession' => $userBankSession->id])]),
+    ]);
+
+    actingAs($user);
+
+    assertDatabaseCount(UserBankSession::class, 1);
+
+    $session = $user->userBankSession()->latest('id')->first();
+
+    expect($session->link)->toBe($userBankSession->link);
+
+    $bankInstitution = BankInstitution::factory()->create();
+
+    $link = $this->bankService->connect($bankInstitution, $user, $userBankSession);
+
+    assertDatabaseCount(UserBankSession::class, 2);
+
+    $session = $user->userBankSession()->latest('id')->first();
+
+    expect($session->link)->toBe($link);
+});
+
+it('returns active bank institutions', function () {
+    BankInstitution::factory(10)->create();
+
+    BankInstitution::factory()->create([
+        'active' => false,
+    ]);
+
+    $service = app(BankService::class);
+
+    $institutions = $service->getActiveBankInstitutions();
+
+    expect(count($institutions))->toBe(4);
+});

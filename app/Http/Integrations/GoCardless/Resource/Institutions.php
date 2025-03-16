@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Integrations\GoCardless\Resource;
 
 use App\Http\Integrations\GoCardless\Requests\Institutions\RetrieveAllSupportedInstitutionsInGivenCountry;
-use App\Http\Integrations\GoCardless\Requests\Institutions\RetrieveInstitution;
 use App\Http\Integrations\GoCardless\Resource;
 use Saloon\Http\Response;
 
@@ -43,10 +42,5 @@ final class Institutions extends Resource
                 $ssnVerificationSupported,
             ),
         );
-    }
-
-    public function retrieveInstitution(string $id): Response
-    {
-        return $this->connector->send(new RetrieveInstitution($id));
     }
 }

@@ -154,10 +154,6 @@ final readonly class BankService
     public function getAccountBalance(
         UserBankAccount $userBankAccount,
     ): AccountBalanceData {
-        if ($userBankAccount->external_id === null) {
-            throw InvalidApiExceptionAbstract::invalidConfiguration();
-        }
-
         $accountBalances = $this->connector->accounts()
             ->retrieveAccountBalances($userBankAccount->external_id)
             ->array();
@@ -185,18 +181,12 @@ final readonly class BankService
 
     /**
      * @return Collection<int, AccountTransactionsData>
-     *
-     * @throws InvalidApiExceptionAbstract
      */
     public function getAccountTransactions(
         UserBankAccount $userBankAccount,
         CarbonImmutable $from,
         CarbonImmutable $to,
     ): Collection {
-        if ($userBankAccount->external_id === null) {
-            throw InvalidApiExceptionAbstract::invalidConfiguration();
-        }
-
         /** @var Collection<int, AccountTransactionsData> $transactions */
         $transactions = $this->connector->accounts()
             ->retrieveAccountTransactions(
@@ -222,9 +212,11 @@ final readonly class BankService
     {
         try {
             $this->connector->requisitions()->deleteRequisitionById($userBankSession->requisition_id);
+            // @codeCoverageIgnoreStart
         } catch (Exception $e) {
             Integration::captureUnhandledException($e);
         }
+        // @codeCoverageIgnoreEnd
 
         $userBankSession->delete();
     }

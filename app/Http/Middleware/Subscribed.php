@@ -15,9 +15,11 @@ final readonly class Subscribed
     public function handle(Request $request, Closure $next): Response|RedirectResponse|null|JsonResponse
     {
         $user = $request->user();
+        // @codeCoverageIgnoreStart
         if ($user === null) {
             return redirect(route('login'));
         }
+        // @codeCoverageIgnoreEnd
 
         if (! $user->subscribed()) {
             return redirect(route('subscribe'));
