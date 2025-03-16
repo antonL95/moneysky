@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-final class CovalentExceptions extends AbstractAppException
+final class MoralisExceptions extends AbstractAppException
 {
     public static function invalidApiConfig(): self
     {

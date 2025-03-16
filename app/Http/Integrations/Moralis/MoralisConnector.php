@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Integrations\Moralis;
 
-use App\Exceptions\CovalentExceptions;
+use App\Exceptions\MoralisExceptions;
 use Illuminate\Support\Facades\Config;
 use Saloon\Http\Auth\HeaderAuthenticator;
 use Saloon\Http\Connector;
@@ -27,7 +27,7 @@ final class MoralisConnector extends Connector
     }
 
     /**
-     * @throws CovalentExceptions
+     * @throws MoralisExceptions
      */
     protected function defaultAuth(): HeaderAuthenticator
     {
