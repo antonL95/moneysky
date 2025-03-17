@@ -97,7 +97,7 @@ docker-compose up -d
 - Frontend is built with TypeScript.
 - ESLint is used for JavaScript/TypeScript linting.
 - Prettier is used for code formatting.
-- PHPStan is used for static analysis of PHP code.
+- PHPStan (max level) is used for static analysis of PHP code.
 - Pint is used for PHP code style fixing.
 - Rector is used for automated refactoring and upgrading of PHP code.
 
