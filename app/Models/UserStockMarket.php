@@ -15,8 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Number;
-use Money\Currency;
-use Money\Money;
 
 #[ScopedBy(UserScope::class)]
 final class UserStockMarket extends Model
@@ -44,12 +42,11 @@ final class UserStockMarket extends Model
             $sum += $ticker->amount * $ticker->balance_cents;
         }
 
-        $currencyConvertor = new ConvertCurrencyService;
-
-        return (int) $currencyConvertor->convert(
-            new Money((int) $sum, new Currency('USD')),
-            new Currency($withGlobalCurrency ? 'USD' : $user->currency), // @phpstan-ignore-line
-        )->getAmount();
+        return (new ConvertCurrencyService)->convertSimple(
+            (int) $sum,
+            'USD',
+            $withGlobalCurrency ? 'USD' : $user->currency,
+        );
     }
 
     /**
@@ -82,10 +79,9 @@ final class UserStockMarket extends Model
         $currencyConvertor = new ConvertCurrencyService;
 
         $finalAmount = (int) round($this->amount * $this->balance_cents);
-        $balance = (int) $currencyConvertor->convert(
-            new Money($finalAmount, new Currency('USD')),
-            new Currency($user->currency), // @phpstan-ignore-line
-        )->getAmount();
+        $balance = $currencyConvertor->convertSimple(
+            $finalAmount, 'USD', $user->currency,
+        );
 
         return Attribute::make(
             get: static fn (mixed $value, mixed $attributes): string => (string) Number::currency($balance / 100, $user->currency),

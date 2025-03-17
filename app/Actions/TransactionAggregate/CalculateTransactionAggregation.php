@@ -26,11 +26,11 @@ final readonly class CalculateTransactionAggregation
         CarbonImmutable $now,
     ): void {
         $taggedTransactions = UserTransaction::withoutGlobalScopes()
-            ->where('user_id', $user->id)
-            ->where('transaction_tag_id', $tag?->id)
+            ->whereUserId($user->id)
+            ->whereTransactionTagId($tag?->id)
             ->where('booked_at', '>=', $now->setTime(0, 0)->toDateTimeString())
             ->where('booked_at', '<', $now->setTime(23, 59)->toDateTimeString())
-            ->where('hidden', '=', false)
+            ->whereHidden(false)
             ->get();
 
         $sum = 0;

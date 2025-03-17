@@ -138,7 +138,7 @@ it('assigns correct currency', function () {
 
     $price = $service->fetchPriceForTicker($ticker);
 
-    expect($price)->toBeInt()->toEqual(159200);
+    expect($price)->toBeInt()->toEqual(1592);
 });
 
 it('assigns correct currency for eur', function () {
@@ -163,5 +163,5 @@ it('assigns correct currency for eur', function () {
 
     $price = $service->fetchPriceForTicker($ticker);
 
-    expect($price)->toBeInt()->toEqual(133700);
+    expect($price)->toBeInt()->toEqual(133723);
 });

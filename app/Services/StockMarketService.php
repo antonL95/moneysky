@@ -10,8 +10,6 @@ use App\Http\Integrations\AlphaVantage\Requests\TimeSeriesDaily;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Money\Currency;
-use Money\Money;
 
 final readonly class StockMarketService
 {
@@ -100,13 +98,14 @@ final readonly class StockMarketService
             return (int) ($price * 100);
         }
 
-        $tickerCurrency = new Currency($currency);
-        $usdCurrency = new Currency('USD');
-        $convertor = new ConvertCurrencyService;
+        $price = $exchange === 'LON' || $exchange === 'L'
+            ? $price
+            : $price * 100;
 
-        return (int) $convertor->convert(
-            new Money((int) $price, $tickerCurrency),
-            $usdCurrency,
-        )->getAmount() * 100;
+        return (new ConvertCurrencyService)->convertSimple(
+            (int) ($price),
+            $currency,
+            'USD',
+        );
     }
 }
