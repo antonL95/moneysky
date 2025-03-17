@@ -14,6 +14,11 @@
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
         @laravelPWA
+
+        @production
+            <script defer data-domain="moneysky.app" src="https://analytics.antonloginov.com/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
+            <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+        @endproduction
     </head>
     <body class="font-sans antialiased">
         @inertia
