@@ -83,7 +83,7 @@ By using Moneysky, whether through subscription or self-hosting, you can benefit
 
 #### Using PHP's built-in server:
 ```bash
-php artisan serve
+composer dev
 ```
 
 #### Using Docker:
@@ -103,9 +103,9 @@ docker-compose up -d
 
 ## Testing
 
-Run PHP tests using PHPUnit:
+Run PHP tests using PestPHP:
 ```bash
-php artisan test
+composer test
 ```
 
 ## Contributing
