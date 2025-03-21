@@ -83,7 +83,7 @@ By using Moneysky, whether through subscription or self-hosting, you can benefit
 
 #### Using PHP's built-in server:
 ```bash
-php artisan serve
+composer dev
 ```
 
 #### Using Docker:
@@ -97,15 +97,15 @@ docker-compose up -d
 - Frontend is built with TypeScript.
 - ESLint is used for JavaScript/TypeScript linting.
 - Prettier is used for code formatting.
-- PHPStan is used for static analysis of PHP code.
+- PHPStan (max level) is used for static analysis of PHP code.
 - Pint is used for PHP code style fixing.
 - Rector is used for automated refactoring and upgrading of PHP code.
 
 ## Testing
 
-Run PHP tests using PHPUnit:
+Run PHP tests using PestPHP:
 ```bash
-php artisan test
+composer test
 ```
 
 ## Contributing
