@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 use App\Http\Integrations\AlphaVantage\Requests\TimeSeriesDaily;
 use App\Http\Integrations\Fixer\Requests\GetLatestCurrencyRates;
+use App\Http\Integrations\GoCardless\Requests\Requisitions\DeleteRequisitionById;
+use App\Http\Integrations\GoCardless\Requests\Token\ObtainNewAccessRefreshTokenPair;
 use App\Http\Integrations\Kraken\Requests\BalanceRequest;
 use App\Http\Integrations\Kraken\Requests\TickerRequest;
 use Saloon\Http\Faking\MockResponse;
@@ -31,6 +33,12 @@ pest()->extend(Tests\TestCase::class)
                     'XETHZ' => '1',
                 ],
             ]),
+            DeleteRequisitionById::class => MockResponse::make([
+                'result' => [true],
+            ]),
+            ObtainNewAccessRefreshTokenPair::class => MockResponse::make(
+                body: '{"access": "asdfasdf", "access_expires": 123, "refresh": "asdfasdfa", "refresh_expires": 123}',
+            ),
         ]);
     })
     ->in('Feature');

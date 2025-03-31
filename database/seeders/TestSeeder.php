@@ -223,7 +223,7 @@ final class TestSeeder extends Seeder
                 );
 
                 for ($i = 0; $i < 2; $i++) {
-                    $now = CarbonImmutable::now()->subMonths($i);
+                    $now = CarbonImmutable::now()->firstOfMonth()->subMonths($i);
 
                     $housingBudget->periods()->create([
                         'start_date' => $now->startOfMonth()->toDateString(),

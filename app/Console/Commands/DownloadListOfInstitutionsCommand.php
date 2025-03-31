@@ -34,6 +34,11 @@ final class DownloadListOfInstitutionsCommand extends Command
                 $institution = BankInstitution::where('external_id', $data->id)->first();
 
                 if ($institution instanceof BankInstitution) {
+                    $institution->name = $data->name;
+                    $institution->bic = $data->bic;
+                    $institution->transaction_total_days = (int) $data->transaction_total_days;
+                    $institution->countries = $data->countries;
+                    $institution->logo_url = $data->logo;
                     $institution->active = true;
                     $institution->save();
                 } else {

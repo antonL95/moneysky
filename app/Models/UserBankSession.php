@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ScopedBy(UserScope::class)]
 final class UserBankSession extends Model
@@ -21,7 +20,6 @@ final class UserBankSession extends Model
     use HasFactory;
 
     use HasTimestamps;
-    use SoftDeletes;
 
     protected $fillable = [
         'user_id',

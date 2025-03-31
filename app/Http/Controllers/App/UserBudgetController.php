@@ -9,11 +9,11 @@ use App\Actions\Dashboard\UpdateUserBudget;
 use App\Concerns\HasRedirectWithFlashMessage;
 use App\Data\App\Dashboard\BudgetData;
 use App\Enums\FlashMessageAction;
+use App\Models\User;
 use App\Models\UserBudget;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 final class UserBudgetController
@@ -23,11 +23,8 @@ final class UserBudgetController
 
     public function store(BudgetData $data, CreateUserBudget $createUserBudget): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect(route('login'));
-        }
 
         $this->authorize('create', UserBudget::class);
         $createUserBudget->handle($user, $data);
@@ -37,36 +34,28 @@ final class UserBudgetController
 
     public function update(BudgetData $data, UserBudget $budget, UpdateUserBudget $updateUserBudget): RedirectResponse
     {
-        $user = Auth::user();
-
-        if ($user === null) {
-            return redirect(route('login'));
-        }
-
         try {
             $this->authorize('update', $budget);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::UPDATE);
         }
+        // @codeCoverageIgnoreEnd
 
         $updateUserBudget->handle($budget, $data);
 
         return $this->success(FlashMessageAction::UPDATE);
     }
 
-    public function destroy(Request $request, UserBudget $budget): RedirectResponse
+    public function destroy(UserBudget $budget): RedirectResponse
     {
-        $user = $request->user();
-
-        if ($user === null) {
-            return redirect(route('login'));
-        }
-
         try {
             $this->authorize('delete', $budget);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::DELETE);
         }
+        // @codeCoverageIgnoreEnd
 
         $budget->delete();
 

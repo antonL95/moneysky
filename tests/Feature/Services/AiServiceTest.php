@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use App\Models\UserBankTransactionRaw;
 use App\Services\AiService;
-use EchoLabs\Prism\Enums\FinishReason;
-use EchoLabs\Prism\Prism;
-use EchoLabs\Prism\Structured\Response as StructuredResponse;
-use EchoLabs\Prism\ValueObjects\Meta;
-use EchoLabs\Prism\ValueObjects\Usage;
+use Prism\Prism\Enums\FinishReason;
+use Prism\Prism\Prism;
+use Prism\Prism\Structured\Response as StructuredResponse;
+use Prism\Prism\ValueObjects\Meta;
+use Prism\Prism\ValueObjects\Usage;
 
 it('can generate structured response', function () {
 

@@ -29,13 +29,19 @@ final class ProcessSnapshotJob implements ShouldQueue
 
         $now = CarbonImmutable::now();
 
-        $snapshot = UserPortfolioSnapshot::withoutGlobalScopes()->firstOrCreate([
-            'aggregate_date' => $now->toDateString(),
-            'user_id' => $this->user->id,
-        ], [
-            'balance_cents' => 0,
-            'change' => 0,
-        ]);
+        $snapshot = UserPortfolioSnapshot::withoutGlobalScopes()
+            ->whereUserId($this->user->id)
+            ->whereDate('aggregate_date', $now)
+            ->first();
+
+        if (! $snapshot instanceof UserPortfolioSnapshot) {
+            $snapshot = UserPortfolioSnapshot::withoutGlobalScopes()->create([
+                'user_id' => $this->user->id,
+                'aggregate_date' => $now->toDateString(),
+                'balance_cents' => 0,
+                'change' => 0.0,
+            ]);
+        }
 
         ProcessSnapshotBalancesJob::dispatch($snapshot, $this->user);
     }

@@ -11,6 +11,7 @@ use App\Data\App\KrakenAccount\KrakenAccountData;
 use App\Data\App\KrakenAccount\UserKrakenAccountData;
 use App\Enums\FlashMessageAction;
 use App\Jobs\ProcessSnapshotJob;
+use App\Models\User;
 use App\Models\UserKrakenAccount;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -27,12 +28,6 @@ final class UserKrakenAccountController
 
     public function index(): Response|RedirectResponse
     {
-        $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('viewAny', UserKrakenAccount::class);
         } catch (AuthorizationException) {
@@ -64,11 +59,8 @@ final class UserKrakenAccountController
 
     public function store(KrakenAccountData $data, CreateKrakenAccount $createKrakenAccount): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('create', UserKrakenAccount::class);
@@ -83,12 +75,6 @@ final class UserKrakenAccountController
 
     public function update(KrakenAccountData $data, UserKrakenAccount $krakenAccount, UpdateKrakenAccount $updateKrakenAccount): RedirectResponse
     {
-        $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('update', $krakenAccount);
         } catch (AuthorizationException) {
@@ -102,11 +88,8 @@ final class UserKrakenAccountController
 
     public function destroy(UserKrakenAccount $krakenAccount): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('delete', $krakenAccount);

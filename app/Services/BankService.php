@@ -16,7 +16,6 @@ use App\Data\GoCardless\RequisitionData;
 use App\Data\GoCardless\SessionData;
 use App\Enums\BankAccountStatus;
 use App\Exceptions\InvalidApiExceptionAbstract;
-use App\Exceptions\UserDoesNotHaveRequisition;
 use App\Http\Integrations\GoCardless\GoCardlessConnector;
 use App\Jobs\ProcessBankAccountsJob;
 use App\Models\BankInstitution;
@@ -25,6 +24,7 @@ use App\Models\UserBankAccount;
 use App\Models\UserBankSession;
 use Carbon\CarbonImmutable;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Sentry\Laravel\Integration;
@@ -66,7 +66,7 @@ final readonly class BankService
     }
 
     /**
-     * @throws UserDoesNotHaveRequisition
+     * @throws ModelNotFoundException
      */
     public function create(
         User $user,
@@ -215,6 +215,8 @@ final readonly class BankService
             // @codeCoverageIgnoreStart
         } catch (Exception $e) {
             Integration::captureUnhandledException($e);
+
+            return;
         }
         // @codeCoverageIgnoreEnd
 
@@ -306,5 +308,27 @@ final readonly class BankService
         $result = $institutions->shuffle()->chunk((int) ceil($institutions->count() / 4))->toArray();
 
         return $result;
+    }
+
+    /**
+     * @return Collection<int, BankInstitutionData>
+     */
+    public function searchActiveBankInstitutions(string $query): Collection
+    {
+        return BankInstitution::whereLike(
+            'name',
+            '%'.$query.'%',
+        )->limit(25)
+            ->get()
+            ->map(
+                fn (BankInstitution $bankInstitution): BankInstitutionData => new BankInstitutionData(
+                    $bankInstitution->id,
+                    $bankInstitution->name,
+                    $bankInstitution->logo_url,
+                    $bankInstitution->countries === null
+                        ? null
+                        : implode(', ', $bankInstitution->countries),
+                ),
+            );
     }
 }

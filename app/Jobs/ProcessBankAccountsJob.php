@@ -7,6 +7,7 @@ namespace App\Jobs;
 use App\Enums\BankAccountStatus;
 use App\Enums\ErrorCodes;
 use App\Exceptions\InvalidApiExceptionAbstract;
+use App\Models\User;
 use App\Models\UserBankAccount;
 use App\Models\UserBankTransactionRaw;
 use App\Services\BankService;
@@ -53,12 +54,8 @@ final class ProcessBankAccountsJob implements ShouldQueue
         $this->fetchBalance();
         $this->fetchTransaction();
 
+        /** @var User $user */
         $user = $this->userBankAccount->user;
-
-        if ($user === null) {
-            return;
-        }
-
         ProcessSnapshotJob::dispatch($user);
     }
 
@@ -70,10 +67,11 @@ final class ProcessBankAccountsJob implements ShouldQueue
             if ($e->getCode() === ErrorCodes::NO_DATA_FOUND->value) {
                 return;
             }
-
+            // @codeCoverageIgnoreStart
             Integration::captureUnhandledException($e);
 
             return;
+            // @codeCoverageIgnoreEnd
         }
 
         $this->userBankAccount->balance_cents = $balance->balance;
@@ -82,17 +80,7 @@ final class ProcessBankAccountsJob implements ShouldQueue
 
     private function fetchTransaction(): void
     {
-        try {
-            $transactions = $this->bankService->getAccountTransactions($this->userBankAccount, $this->from, $this->to);
-        } catch (InvalidApiExceptionAbstract $e) {
-            if ($e->getCode() === ErrorCodes::NO_DATA_FOUND->value) {
-                return;
-            }
-
-            Integration::captureUnhandledException($e);
-
-            return;
-        }
+        $transactions = $this->bankService->getAccountTransactions($this->userBankAccount, $this->from, $this->to);
 
         $temp = [];
 

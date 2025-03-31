@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Models\User;
 use App\Models\UserStockMarket;
 use App\Services\StockMarketService;
 use Exception;
@@ -34,7 +35,7 @@ final class ProcessStockMarketJob implements ShouldQueue
         $this->userStockMarket->save();
         $user = $this->userStockMarket->user;
 
-        if ($user === null) {
+        if (! $user instanceof User) {
             return;
         }
 

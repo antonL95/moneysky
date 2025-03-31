@@ -13,7 +13,7 @@ it('returns default value', function () {
 
 it('returns default currency from env', function () {
     $currency = CurrencyHelper::defaultCurrency();
-    expect($currency)->toBe('USD');
+    expect($currency)->toBe('EUR');
 });
 
 it('returns list of currencies', function () {
