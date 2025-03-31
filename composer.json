@@ -89,7 +89,7 @@
         "test:types": "phpstan analyse --memory-limit=3G",
         "test:arch": "pest --filter=arch",
         "test:type-cov": "pest --type-coverage --min=100",
-        "test:unit": "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --coverage",
+        "test:unit": "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --coverage --min=92.3",
         "lint": [
             "pint",
             "npm run lint",
