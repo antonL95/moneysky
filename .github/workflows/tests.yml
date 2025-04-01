@@ -49,3 +49,6 @@ jobs:
 
       - name: Tests
         run: composer test
+
+      - name: Generate test coverage
+        run: composer test:coverage
