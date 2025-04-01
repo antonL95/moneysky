@@ -52,3 +52,6 @@ jobs:
 
       - name: Generate test coverage
         run: composer test:coverage
+
+      - name: Update Coverage Badge
+        uses: we-cli/coverage-badge-action@main
