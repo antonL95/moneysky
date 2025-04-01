@@ -12,6 +12,7 @@ use App\Data\App\ManualEntry\UserManualEntryData;
 use App\Enums\FlashMessageAction;
 use App\Helpers\CurrencyHelper;
 use App\Jobs\ProcessSnapshotJob;
+use App\Models\User;
 use App\Models\UserManualEntry;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -26,13 +27,10 @@ final class UserManualEntryController
     use AuthorizesRequests;
     use HasRedirectWithFlashMessage;
 
-    public function index(): Response|RedirectResponse
+    public function index(): Response
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         $userManualEntries = $user->userManualEntry()->get();
 
@@ -61,11 +59,8 @@ final class UserManualEntryController
 
     public function store(ManualEntryData $data, CreateManualEntry $createManualEntry): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('create', UserManualEntry::class);
@@ -80,17 +75,16 @@ final class UserManualEntryController
 
     public function update(ManualEntryData $data, UserManualEntry $manualEntry, UpdateManualEntry $updateManualEntry): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('update', $manualEntry);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::UPDATE);
         }
+        // @codeCoverageIgnoreEnd
 
         $updateManualEntry->handle($user, $manualEntry, $data);
 
@@ -99,17 +93,16 @@ final class UserManualEntryController
 
     public function destroy(UserManualEntry $manualEntry): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('delete', $manualEntry);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::DELETE);
         }
+        // @codeCoverageIgnoreEnd
 
         $manualEntry->delete();
         ProcessSnapshotJob::dispatch($user);

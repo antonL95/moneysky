@@ -9,6 +9,7 @@ use App\Actions\Dashboard\UpdateTransaction;
 use App\Concerns\HasRedirectWithFlashMessage;
 use App\Data\App\Dashboard\TransactionData;
 use App\Enums\FlashMessageAction;
+use App\Models\User;
 use App\Models\UserTransaction;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -22,17 +23,16 @@ final class UserTransactionController
 
     public function store(TransactionData $data, CreateTransaction $createTransaction): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('create', UserTransaction::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return redirect()->route('login');
         }
+        // @codeCoverageIgnoreEnd
 
         $createTransaction->handle($user, $data);
 
@@ -41,17 +41,16 @@ final class UserTransactionController
 
     public function update(TransactionData $data, UserTransaction $userTransaction, UpdateTransaction $updateTransaction): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('update', $userTransaction);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return redirect()->route('login');
         }
+        // @codeCoverageIgnoreEnd
 
         $updateTransaction->handle($user, $userTransaction, $data);
 

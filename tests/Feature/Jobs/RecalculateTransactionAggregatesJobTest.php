@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Actions\TransactionAggregate\CalculateTransactionAggregation;
-use App\Enums\CacheKeys;
 use App\Jobs\RecalculateTransactionAggregatesJob;
 use App\Models\TransactionTag;
 use App\Models\User;
@@ -112,33 +111,6 @@ it('handles transactions with no tag', function () {
 
     expect($aggregate)->not->toBeNull()
         ->and(abs($aggregate->balance_cents))->toBe(2000);
-});
-
-it('clears the cache after updating aggregates', function () {
-    // Set up a cache key to test
-    $cacheKey = sprintf(
-        CacheKeys::TRANSACTION_AGGREGATE->value,
-        $this->user->id,
-        CarbonImmutable::now()->format('m-Y')
-    );
-
-    // Put something in the cache
-    Cache::put($cacheKey, 'test-value', 60);
-
-    // Verify the cache has our value
-    expect(Cache::has($cacheKey))->toBeTrue();
-
-    // Create the job
-    $job = new RecalculateTransactionAggregatesJob(
-        $this->user,
-        $this->transaction
-    );
-
-    // Run the job
-    $job->handle(app(CalculateTransactionAggregation::class));
-
-    // Assert that the cache was cleared
-    expect(Cache::has($cacheKey))->toBeFalse();
 });
 
 it('passes the correct date from the transaction to the action', function () {

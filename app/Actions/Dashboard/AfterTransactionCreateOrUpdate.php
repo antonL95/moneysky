@@ -53,9 +53,14 @@ final readonly class AfterTransactionCreateOrUpdate
     ): void {
         $user->budgets()->with(
             [// @phpstan-ignore-line
-                'periods' => fn (HasMany $builder) => $builder->whereRaw(
-                    'DATE(start_date) >= ? AND DATE(end_date) <= ?',
-                    [$now->startOfMonth()->toDateString(), $now->endOfMonth()->toDateString()],
+                'periods' => fn (HasMany $builder) => $builder->whereDate(
+                    'start_date',
+                    '>=',
+                    $now->startOfMonth()->toDateString(),
+                )->whereDate(
+                    'end_date',
+                    '<=',
+                    $now->endOfMonth()->toDateString(),
                 ),
             ],
         )->get()->each(

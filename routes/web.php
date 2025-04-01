@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\HideTransactionController;
 use App\Http\Controllers\App\PrivacyController;
+use App\Http\Controllers\App\ShowTransactionController;
 use App\Http\Controllers\App\TosController;
 use App\Http\Controllers\App\UserBankAccountController;
 use App\Http\Controllers\App\UserBudgetController;
@@ -32,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('budget', UserBudgetController::class)->except('show', 'index', 'edit');
     Route::post('spending/transactions', [UserTransactionController::class, 'store'])->name('spending.transaction.store');
     Route::put('spending/transactions/{user_transaction}', [UserTransactionController::class, 'update'])->name('spending.transaction.update');
+    Route::put('spending/transactions/{transaction}/hide', HideTransactionController::class)->name('spending.transaction.hide');
+    Route::put('spending/transactions/{transaction}/show', ShowTransactionController::class)->name('spending.transaction.show');
 
     Route::get(
         'subscribe',

@@ -103,9 +103,11 @@ final class ProcessCryptoWalletsJob implements ShouldQueue
                 if (! is_array($usdBtcValueResponse['USD'])) {
                     continue;
                 }
+
                 if (! is_numeric($usdBtcValueResponse['USD']['last'])) {
                     continue;
                 }
+
                 if (! is_numeric($currency['final_balance'])) {
                     continue;
                 }
