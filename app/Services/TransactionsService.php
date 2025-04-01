@@ -80,9 +80,15 @@ final readonly class TransactionsService
             )
             ->leftJoin('transaction_tags', 'user_transaction_aggregates.transaction_tag_id', '=', 'transaction_tags.id')
             ->where('user_transaction_aggregates.user_id', $user->id)
-            ->whereBetween(
+            ->whereDate(
                 'user_transaction_aggregates.aggregate_date',
-                [$now->startOfMonth()->toDateTimeString(), $now->endOfMonth()->toDateTimeString()],
+                '>=',
+                $now->startOfMonth()->toDateString(),
+            )
+            ->whereDate(
+                'user_transaction_aggregates.aggregate_date',
+                '<=',
+                $now->endOfMonth()->toDateString(),
             )
             ->groupBy('user_transaction_aggregates.transaction_tag_id')
             ->get();
@@ -174,19 +180,22 @@ final readonly class TransactionsService
         );
 
         /** @var Collection<int, UserTransaction> $transactions */
-        $transactions = Cache::flexible($cacheKey, [300, 600], static fn (): Collection => UserTransaction::with(['userBankAccount', 'userManualEntry'])
-            ->where(
-                'transaction_tag_id',
-                $tag?->id,
-            )->where(
-                'booked_at',
-                '>=',
-                $now->startOfMonth()->toDateTimeString(),
-            )->where(
-                'booked_at',
-                '<=',
-                $now->endOfMonth()->toDateTimeString(),
-            )->get(),
+        $transactions = Cache::flexible(
+            $cacheKey,
+            [300, 600],
+            static fn (): Collection => UserTransaction::with(['userBankAccount', 'userManualEntry'])
+                ->where(
+                    'transaction_tag_id',
+                    $tag?->id,
+                )->where(
+                    'booked_at',
+                    '>=',
+                    $now->startOfMonth()->toDateTimeString(),
+                )->where(
+                    'booked_at',
+                    '<=',
+                    $now->endOfMonth()->toDateTimeString(),
+                )->get(),
         );
 
         $result = [];
