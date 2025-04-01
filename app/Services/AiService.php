@@ -7,11 +7,11 @@ namespace App\Services;
 use App\Data\App\Services\TaggedTransactionData;
 use App\Models\TransactionTag;
 use App\Models\UserBankTransactionRaw;
-use EchoLabs\Prism\Enums\Provider;
-use EchoLabs\Prism\Prism;
-use EchoLabs\Prism\Schema\ObjectSchema;
-use EchoLabs\Prism\Schema\StringSchema;
 use JsonException;
+use Prism\Prism\Enums\Provider;
+use Prism\Prism\Prism;
+use Prism\Prism\Schema\ObjectSchema;
+use Prism\Prism\Schema\StringSchema;
 
 final readonly class AiService
 {
@@ -57,7 +57,7 @@ final readonly class AiService
             ->withSchema($schema)
             ->withSystemPrompt($systemPrompt)
             ->withPrompt($userPrompt)
-            ->generate();
+            ->asStructured();
 
         return TaggedTransactionData::from($taggedTransaction->structured);
     }

@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Number;
 
 #[ScopedBy(UserScope::class)]
@@ -62,7 +61,7 @@ final class UserStockMarket extends Model
      */
     protected function balance(): Attribute
     {
-        $user = Auth::user();
+        $user = $this->user;
 
         if ($user === null) {
             return Attribute::make(

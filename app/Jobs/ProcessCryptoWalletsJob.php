@@ -36,6 +36,12 @@ final class ProcessCryptoWalletsJob implements ShouldQueue
         MoralisConnector $evmConnector,
         BlockchainConnector $btcConnector,
     ): void {
+        $user = $this->wallet->user;
+
+        if ($user === null) {
+            return;
+        }
+
         $response = match ($this->wallet->chain_type) {
             ChainType::ETH => $evmConnector->send(
                 new GetTokenBalancesForAddress(
@@ -55,17 +61,18 @@ final class ProcessCryptoWalletsJob implements ShouldQueue
             return;
         }
 
+        $usdBtcValueResponse = [];
+        $items = [];
+
         if ($this->wallet->chain_type === ChainType::ETH) {
             $items = (array) $response->array()['result'];
         } elseif ($this->wallet->chain_type === ChainType::BTC) {
             $items = $response->array();
-        } else {
-            return;
+            $usdBtcValueResponse = (array) $btcConnector->send(new GetTicker)->array();
         }
 
         $totalCents = 0;
         $tokens = [];
-        $usdBtcValueResponse = (array) $btcConnector->send(new GetTicker)->array();
 
         foreach ($items as $currency) {
             if (! is_array($currency)) {
@@ -88,7 +95,7 @@ final class ProcessCryptoWalletsJob implements ShouldQueue
                 continue;
             }
 
-            if ($this->wallet->chain_type === ChainType::BTC) { // @phpstan-ignore-line
+            if ($this->wallet->chain_type === ChainType::BTC) {
                 if (! isset($currency['final_balance'])) {
                     continue;
                 }
@@ -96,9 +103,15 @@ final class ProcessCryptoWalletsJob implements ShouldQueue
                 if (! is_array($usdBtcValueResponse['USD'])) {
                     continue;
                 }
+                if (! is_numeric($usdBtcValueResponse['USD']['last'])) {
+                    continue;
+                }
+                if (! is_numeric($currency['final_balance'])) {
+                    continue;
+                }
 
-                $baseBalance = (float) (type($currency['final_balance'])->asInt() / 100_000_000);
-                $usdCents = (int) (type($usdBtcValueResponse['USD']['last'])->asFloat() * 100);
+                $baseBalance = (float) ($currency['final_balance'] / 100_000_000);
+                $usdCents = (int) ((float) $usdBtcValueResponse['USD']['last'] * 100);
 
                 $quoteCents = (int) round($baseBalance * $usdCents);
                 $totalCents += $quoteCents;
@@ -110,12 +123,6 @@ final class ProcessCryptoWalletsJob implements ShouldQueue
         $this->wallet->tokens = $tokens;
 
         $this->wallet->save();
-
-        $user = $this->wallet->user;
-
-        if ($user === null) {
-            return;
-        }
 
         ProcessSnapshotJob::dispatch($user);
     }

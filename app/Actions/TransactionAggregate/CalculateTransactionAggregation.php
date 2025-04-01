@@ -42,7 +42,7 @@ final readonly class CalculateTransactionAggregation
         $transactionAggregate = UserTransactionAggregate::withoutGlobalScopes()
             ->where('user_id', $user->id)
             ->where('transaction_tag_id', $tag?->id)
-            ->whereRaw('DATE(aggregate_date) = ?', [$now->toDateString()])
+            ->whereDate('aggregate_date', $now)
             ->first();
 
         if ($transactionAggregate instanceof UserTransactionAggregate) {

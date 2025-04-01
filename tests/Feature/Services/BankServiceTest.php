@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Data\App\BankAccount\BankInstitutionData;
 use App\Enums\BankAccountStatus;
 use App\Exceptions\InvalidApiExceptionAbstract;
 use App\Http\Integrations\GoCardless\GoCardlessConnector;
@@ -22,13 +23,13 @@ use App\Models\UserBankAccount;
 use App\Models\UserBankSession;
 use App\Services\BankService;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Queue;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
-use function Pest\Laravel\assertSoftDeleted;
 
 beforeEach(function () {
     $this->client = Saloon::fake([
@@ -288,7 +289,7 @@ it('deletes user requisitions', function () {
 
     assertDatabaseCount(UserBankSession::class, 1);
     $this->bankService->deleteUserRequisitions($user);
-    assertSoftDeleted(UserBankSession::class);
+    assertDatabaseCount(UserBankSession::class, 0);
 });
 
 it('throws if account is not ready', function () {
@@ -408,4 +409,98 @@ it('returns active bank institutions', function () {
     $institutions = $service->getActiveBankInstitutions();
 
     expect(count($institutions))->toBe(4);
+});
+
+it('search active bank institutions returns empty collection when no matches', function () {
+    // Arrange
+    BankInstitution::factory()->create([
+        'name' => 'Test Bank',
+    ]);
+
+    // Act
+    $result = $this->bankService->searchActiveBankInstitutions('NonExistentBank');
+
+    // Assert
+    expect($result)
+        ->toBeInstanceOf(Collection::class)
+        ->toHaveCount(0);
+});
+
+it('search active bank institutions returns matching institutions', function () {
+    // Arrange
+    $bank1 = BankInstitution::factory()->create([
+        'name' => 'Test Bank One',
+        'countries' => ['US', 'CA'],
+    ]);
+
+    $bank2 = BankInstitution::factory()->create([
+        'name' => 'Test Bank Two',
+        'countries' => ['GB', 'FR'],
+    ]);
+
+    BankInstitution::factory()->create([
+        'name' => 'Different Bank',
+    ]);
+
+    // Act
+    $result = $this->bankService->searchActiveBankInstitutions('Test Bank');
+
+    // Assert
+    expect($result)
+        ->toBeInstanceOf(Collection::class)
+        ->toHaveCount(2)
+        ->each->toBeInstanceOf(BankInstitutionData::class);
+
+    $resultArray = $result->toArray();
+
+    expect($resultArray[0])
+        ->id->toBe($bank1->id)
+        ->name->toBe($bank1->name)
+        ->logo->toBe($bank1->logo_url)
+        ->countries->toBe('US, CA')
+        ->and($resultArray[1])
+        ->id->toBe($bank2->id)
+        ->name->toBe($bank2->name)
+        ->logo->toBe($bank2->logo_url)
+        ->countries->toBe('GB, FR');
+});
+
+it('search active bank institutions limits results to 25', function () {
+    // Arrange
+    BankInstitution::factory()->count(30)->create([
+        'name' => fn (array $attributes) => 'Test Bank',
+    ]);
+
+    // Act
+    $result = $this->bankService->searchActiveBankInstitutions('Test Bank');
+
+    // Assert
+    expect($result)
+        ->toBeInstanceOf(Collection::class)
+        ->toHaveCount(25);
+});
+
+it('search active bank institutions handles null countries', function () {
+    // Arrange
+    $bank = BankInstitution::factory()->create([
+        'name' => 'Test Bank',
+        'countries' => null,
+    ]);
+
+    // Act
+    $result = $this->bankService->searchActiveBankInstitutions('Test Bank');
+
+    // Assert
+    expect($result)
+        ->toBeInstanceOf(Collection::class)
+        ->toHaveCount(1)
+        ->each->toBeInstanceOf(BankInstitutionData::class);
+
+    $resultArray = $result->toArray();
+
+    expect($resultArray[0])
+        ->id->toBe($bank->id)
+        ->name->toBe($bank->name)
+        ->logo->toBe($bank->logo_url)
+        ->countries->toBeNull();
 });

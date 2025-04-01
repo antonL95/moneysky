@@ -11,6 +11,7 @@ use App\Data\App\CryptoWallet\CryptoWalletData;
 use App\Data\App\CryptoWallet\UserCryptoWalletData;
 use App\Enums\FlashMessageAction;
 use App\Jobs\ProcessSnapshotJob;
+use App\Models\User;
 use App\Models\UserCryptoWallet;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -26,12 +27,6 @@ final class UserCryptoWalletController
 
     public function index(): Response|RedirectResponse
     {
-        $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('viewAny', UserCryptoWallet::class);
         } catch (AuthorizationException) {
@@ -64,11 +59,8 @@ final class UserCryptoWalletController
 
     public function store(CryptoWalletData $data, CreateCryptoWallet $createCryptoWallet): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('create', UserCryptoWallet::class);
@@ -83,12 +75,6 @@ final class UserCryptoWalletController
 
     public function update(CryptoWalletData $data, UserCryptoWallet $digitalWallet, UpdateCryptoWallet $updateCryptoWallet): RedirectResponse
     {
-        $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('update', $digitalWallet);
         } catch (AuthorizationException) {
@@ -102,11 +88,8 @@ final class UserCryptoWalletController
 
     public function destroy(UserCryptoWallet $digitalWallet): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('delete', $digitalWallet);

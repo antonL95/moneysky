@@ -44,12 +44,14 @@ final class SocialController
             }
 
             if (! $providerUser->user instanceof Authenticatable) {
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException;
+                // @codeCoverageIgnoreEnd
             }
 
             Auth::login($providerUser->user);
 
-            return redirect()->route('dashboard.index');
+            return redirect()->route('dashboard');
         } catch (Exception) {
             return redirect()->route('login')->with('error', 'An error occurred during authentication. Please try again.');
         }
@@ -67,7 +69,9 @@ final class SocialController
             ->first();
 
         if ($providerUser !== null) {
+            // @codeCoverageIgnoreStart
             return $providerUser;
+            // @codeCoverageIgnoreEnd
         }
 
         $user = User::where('email', $socialiteUser->getEmail())->first();

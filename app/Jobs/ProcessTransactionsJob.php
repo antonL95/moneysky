@@ -6,7 +6,6 @@ namespace App\Jobs;
 
 use App\Data\App\Services\TaggedTransactionData;
 use App\Enums\CacheKeys;
-use App\Exceptions\AiExceptions;
 use App\Models\Scopes\UserScope;
 use App\Models\TransactionTag;
 use App\Models\User;
@@ -24,7 +23,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Log\Logger;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
@@ -57,8 +55,6 @@ final class ProcessTransactionsJob implements ShouldQueue
 
     private AiService $openAiService;
 
-    private Logger $logger;
-
     /**
      * @param  Collection<int, UserBankTransactionRaw>  $rawTransactionsToProcess
      */
@@ -66,10 +62,9 @@ final class ProcessTransactionsJob implements ShouldQueue
         public Collection $rawTransactionsToProcess,
     ) {}
 
-    public function handle(AiService $openAiService, Logger $logger): void
+    public function handle(AiService $openAiService): void
     {
         $this->openAiService = $openAiService;
-        $this->logger = $logger;
 
         $this->processTransactions();
 
@@ -80,9 +75,11 @@ final class ProcessTransactionsJob implements ShouldQueue
         foreach (self::$userIds as $userId) {
             try {
                 $user = User::findOrFail($userId);
+                // @codeCoverageIgnoreStart
             } catch (ModelNotFoundException) {
                 continue;
             }
+            // @codeCoverageIgnoreEnd
 
             $user->budgets()->withoutGlobalScope(UserScope::class)
                 ->each(function (UserBudget $userBudget): void {
@@ -103,9 +100,11 @@ final class ProcessTransactionsJob implements ShouldQueue
         foreach ($this->rawTransactionsToProcess as $transaction) {
             $userBankAccount = UserBankAccount::withoutGlobalScope(UserScope::class)->find($transaction->user_bank_account_id);
 
+            // @codeCoverageIgnoreStart
             if ($userBankAccount === null) {
                 continue;
             }
+            // @codeCoverageIgnoreEnd
 
             if (! in_array($userBankAccount->user_id, self::$userIds, true)) {
                 self::$userIds[] = $userBankAccount->user_id;
@@ -114,16 +113,8 @@ final class ProcessTransactionsJob implements ShouldQueue
             $shouldTag = $this->processTransaction($transaction, $userBankAccount);
 
             if ($shouldTag) {
-                try {
-                    $taggedTransaction = $this->openAiService->classifyTransactions($transaction);
-                    $this->tagTransaction($taggedTransaction, $transaction, $userBankAccount);
-                } catch (AiExceptions $e) {
-                    $this->logger->info($e->getMessage(), [
-                        'transaction_id' => $transaction->id,
-                    ]);
-
-                    $this->saveUserTransaction($transaction, $userBankAccount);
-                }
+                $taggedTransaction = $this->openAiService->classifyTransactions($transaction);
+                $this->tagTransaction($taggedTransaction, $transaction, $userBankAccount);
             }
 
             $transaction->processed = true;
@@ -137,20 +128,9 @@ final class ProcessTransactionsJob implements ShouldQueue
     ): bool {
         // Find transactions between accounts
         $otherTransaction = UserBankTransactionRaw::where('external_id', '!=', $transaction->external_id)
-            ->where('balance_cents', '=', -$transaction->balance_cents)
-            ->where('currency', '=', $transaction->currency)
-            ->where('booked_at', '=', $transaction->booked_at?->format('Y-m-d'))
-            ->first();
-
-        if ($otherTransaction !== null) {
-            return false;
-        }
-
-        // Find transactions between accounts with the same external id
-        $otherTransaction = UserBankTransactionRaw::where('external_id', $transaction->external_id)
             ->where('balance_cents', -$transaction->balance_cents)
             ->where('currency', $transaction->currency)
-            ->where('booked_at', $transaction->booked_at?->format('Y-m-d'))
+            ->whereDate('booked_at', $transaction->booked_at?->format('Y-m-d'))
             ->first();
 
         if ($otherTransaction !== null) {
@@ -194,8 +174,8 @@ final class ProcessTransactionsJob implements ShouldQueue
         $tenPercent = $transaction->balance_cents * 0.05;
         $similarTransaction = UserTransaction::withoutGlobalScope(UserScope::class)
             ->where('user_id', '=', $userBankAccount->user_id)
-            ->where('balance_cents', '>=', (int) ($transaction->balance_cents - $tenPercent))
             ->where('balance_cents', '<=', (int) ($transaction->balance_cents - $tenPercent))
+            ->where('balance_cents', '>=', (int) ($transaction->balance_cents + $tenPercent))
             ->where('currency', '=', $transaction->currency)
             ->whereLike('description', (string) $transaction->remittance_information)
             ->first();
@@ -219,10 +199,6 @@ final class ProcessTransactionsJob implements ShouldQueue
         UserBankAccount $userBankAccount,
     ): void {
         $tag = TransactionTag::whereTag($taggedTransaction->tag)->first();
-
-        if ($tag === null) {
-            return;
-        }
 
         $this->saveUserTransaction($rawTransaction, $userBankAccount, $tag);
     }

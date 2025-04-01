@@ -20,6 +20,10 @@ final class ProcessTransactionsCommand extends Command
             ->limit(20)
             ->get();
 
+        if ($transactions->isEmpty()) {
+            return;
+        }
+
         ProcessTransactionsJob::dispatch($transactions);
     }
 }

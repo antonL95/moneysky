@@ -28,7 +28,7 @@ final class UserSocialProviderFactory extends Factory
             'provider_data' => $this->faker->word(),
             'token' => Str::random(10),
             'refresh_token' => Str::random(10),
-            'token_expires_at' => Str::random(10),
+            'token_expires_at' => Carbon::now()->addDays(10),
 
             'user_id' => User::factory(),
         ];

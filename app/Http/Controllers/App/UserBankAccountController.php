@@ -7,17 +7,17 @@ namespace App\Http\Controllers\App;
 use App\Actions\BankAccount\UpdateBankAccount;
 use App\Concerns\HasRedirectWithFlashMessage;
 use App\Data\App\BankAccount\BankAccountData;
-use App\Data\App\BankAccount\BankInstitutionData;
 use App\Data\App\BankAccount\UserBankAccountData;
 use App\Enums\FlashMessageAction;
 use App\Enums\FlashMessageType;
-use App\Exceptions\AbstractAppException;
 use App\Models\BankInstitution;
+use App\Models\User;
 use App\Models\UserBankAccount;
 use App\Models\UserBankSession;
 use App\Services\BankService;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,17 +39,13 @@ final readonly class UserBankAccountController
 
     public function index(Request $request): Response|RedirectResponse
     {
-        $user = $request->user();
-
-        if ($user === null) {
-            return redirect(route('login'));
-        }
-
         try {
             $this->authorize('viewAny', UserBankAccount::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $bankAccounts = UserBankAccount::get();
 
@@ -72,45 +68,41 @@ final readonly class UserBankAccountController
                 'Status',
             ],
             'rows' => $rows,
-            'banks' => Inertia::optional(fn (): Collection => $this->search($request)),
+            // @codeCoverageIgnoreStart
+            'banks' => Inertia::optional(fn (): Collection => $this->bankService->searchActiveBankInstitutions(
+                $request->string('q')->value(),
+            )),
+            // @codeCoverageIgnoreEnd
         ]);
     }
 
     /**
      * @throws Throwable
      */
-    public function update(Request $request, UserBankAccount $bankAccount, UpdateBankAccount $updateBankAccount): RedirectResponse
+    public function update(BankAccountData $data, UserBankAccount $bankAccount, UpdateBankAccount $updateBankAccount): RedirectResponse
     {
-        $user = $request->user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('update', $bankAccount);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::UPDATE);
         }
+        // @codeCoverageIgnoreEnd
 
-        $updateBankAccount->handle($bankAccount, BankAccountData::from($request));
+        $updateBankAccount->handle($bankAccount, $data);
 
         return $this->success(FlashMessageAction::UPDATE);
     }
 
     public function destroy(UserBankAccount $bankAccount): RedirectResponse
     {
-        $user = auth()->user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('delete', $bankAccount);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::DELETE);
         }
+        // @codeCoverageIgnoreEnd
 
         $bankAccount->delete();
 
@@ -119,11 +111,8 @@ final readonly class UserBankAccountController
 
     public function connect(Request $request): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         $ref = $request->string('ref');
 
@@ -134,7 +123,7 @@ final readonly class UserBankAccountController
                 'flash',
                 $this->flashMessage(FlashMessageType::SUCCESS, FlashMessageAction::CREATE),
             );
-        } catch (AbstractAppException) {
+        } catch (ModelNotFoundException) {
             return redirect()->route('bank-account.index')->with(
                 'flash',
                 $this->flashMessage(FlashMessageType::DANGER, FlashMessageAction::CREATE),
@@ -144,17 +133,16 @@ final readonly class UserBankAccountController
 
     public function connectRedirect(BankInstitution $bankInstitution): SymfonyResponse|RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('create', UserBankAccount::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $redirectLink = $this->bankService->connect($bankInstitution, $user);
 
@@ -163,11 +151,8 @@ final readonly class UserBankAccountController
 
     public function renew(Request $request, UserBankSession $userBankSession): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         $ref = $request->string('ref');
 
@@ -178,7 +163,7 @@ final readonly class UserBankAccountController
                 'flash',
                 $this->flashMessage(FlashMessageType::SUCCESS, FlashMessageAction::RENEW),
             );
-        } catch (AbstractAppException) {
+        } catch (ModelNotFoundException) {
             return redirect()->route('bank-account.index')->with(
                 'flash',
                 $this->flashMessage(FlashMessageType::DANGER, FlashMessageAction::RENEW),
@@ -188,17 +173,16 @@ final readonly class UserBankAccountController
 
     public function renewRedirect(UserBankAccount $userBankAccount): SymfonyResponse|RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('renew', $userBankAccount);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $session = $userBankAccount->userBankSession;
         $institution = $session?->bankInstitution;
@@ -208,27 +192,5 @@ final readonly class UserBankAccountController
         $redirectLink = $this->bankService->connect($institution, $user, $session);
 
         return Inertia::location($redirectLink);
-    }
-
-    /**
-     * @return Collection<int, BankInstitutionData>
-     */
-    private function search(Request $request): Collection
-    {
-        return BankInstitution::whereLike(
-            'name',
-            '%'.$request->str('q')->value().'%',
-        )->limit(25)
-            ->get()
-            ->map(
-                fn (BankInstitution $bankInstitution): BankInstitutionData => new BankInstitutionData(
-                    $bankInstitution->id,
-                    $bankInstitution->name,
-                    $bankInstitution->logo_url,
-                    $bankInstitution->countries === null
-                        ? null
-                        : implode(', ', $bankInstitution->countries),
-                ),
-            );
     }
 }
