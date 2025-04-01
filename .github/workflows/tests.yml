@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - develop
-  pull_request:
-    branches:
-      - develop
-      - main
+#  pull_request:
+#    branches:
+#      - main
 
 jobs:
   ci:
@@ -50,3 +49,6 @@ jobs:
 
       - name: Tests
         run: composer test
+
+      - name: Generate test coverage
+        run: composer test:coverage
