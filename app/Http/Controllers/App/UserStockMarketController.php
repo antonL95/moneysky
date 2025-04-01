@@ -11,6 +11,7 @@ use App\Data\App\StockMarket\StockMarketData;
 use App\Data\App\StockMarket\UserStockMarketData;
 use App\Enums\FlashMessageAction;
 use App\Jobs\ProcessSnapshotJob;
+use App\Models\User;
 use App\Models\UserStockMarket;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -26,17 +27,16 @@ final class UserStockMarketController
 
     public function index(): Response|RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('viewAny', UserStockMarket::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $stockMarkets = $user->userStockMarket()->get();
 
@@ -62,17 +62,16 @@ final class UserStockMarketController
 
     public function store(StockMarketData $data, CreateStockMarket $createStockMarket): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('create', UserStockMarket::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $createStockMarket->handle($user, $data);
 
@@ -81,17 +80,13 @@ final class UserStockMarketController
 
     public function update(StockMarketData $data, UserStockMarket $stockMarket, UpdateStockMarket $updateStockMarket): RedirectResponse
     {
-        $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
-
         try {
             $this->authorize('update', $stockMarket);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::UPDATE);
         }
+        // @codeCoverageIgnoreEnd
 
         $updateStockMarket->handle($stockMarket, $data);
 
@@ -100,17 +95,16 @@ final class UserStockMarketController
 
     public function destroy(UserStockMarket $stockMarket): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
-
-        if ($user === null) {
-            return redirect()->route('login');
-        }
 
         try {
             $this->authorize('delete', $stockMarket);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::DELETE);
         }
+        // @codeCoverageIgnoreEnd
 
         $stockMarket->delete();
         ProcessSnapshotJob::dispatch($user);

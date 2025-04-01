@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Actions\TransactionAggregate;
 
-use App\Enums\CacheKeys;
 use App\Helpers\CurrencyHelper;
 use App\Models\TransactionTag;
 use App\Models\User;
@@ -12,7 +11,6 @@ use App\Models\UserTransaction;
 use App\Models\UserTransactionAggregate;
 use App\Services\ConvertCurrencyService;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Cache;
 
 final readonly class CalculateTransactionAggregation
 {
@@ -23,13 +21,13 @@ final readonly class CalculateTransactionAggregation
     public function handle(
         User $user,
         ?TransactionTag $tag,
-        CarbonImmutable $now,
+        CarbonImmutable $from,
     ): void {
         $taggedTransactions = UserTransaction::withoutGlobalScopes()
             ->whereUserId($user->id)
             ->whereTransactionTagId($tag?->id)
-            ->where('booked_at', '>=', $now->setTime(0, 0)->toDateTimeString())
-            ->where('booked_at', '<', $now->setTime(23, 59)->toDateTimeString())
+            ->where('booked_at', '>=', $from->startOfDay()->toDateTimeString())
+            ->where('booked_at', '<', $from->endOfDay()->toDateTimeString())
             ->whereHidden(false)
             ->get();
 
@@ -42,7 +40,7 @@ final readonly class CalculateTransactionAggregation
         $transactionAggregate = UserTransactionAggregate::withoutGlobalScopes()
             ->where('user_id', $user->id)
             ->where('transaction_tag_id', $tag?->id)
-            ->whereDate('aggregate_date', $now)
+            ->whereDate('aggregate_date', $from->toDateString())
             ->first();
 
         if ($transactionAggregate instanceof UserTransactionAggregate) {
@@ -52,19 +50,11 @@ final readonly class CalculateTransactionAggregation
             UserTransactionAggregate::withoutGlobalScopes()->create([
                 'user_id' => $user->id,
                 'transaction_tag_id' => $tag?->id,
-                'aggregate_date' => $now,
+                'aggregate_date' => $from,
                 'balance_cents' => $sum,
                 'change' => 0,
             ]);
         }
-
-        $key = sprintf(
-            CacheKeys::TRANSACTION_AGGREGATE->value,
-            $user->id,
-            $now->format('m-Y'),
-        );
-
-        Cache::delete($key);
     }
 
     private function calculateSumWithDefaultCurrency(UserTransaction $transaction): int

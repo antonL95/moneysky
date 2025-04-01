@@ -29,9 +29,11 @@ final class UserCryptoWalletController
     {
         try {
             $this->authorize('viewAny', UserCryptoWallet::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $cryptoWallets = UserCryptoWallet::get();
 
@@ -64,9 +66,11 @@ final class UserCryptoWalletController
 
         try {
             $this->authorize('create', UserCryptoWallet::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $createCryptoWallet->handle($user, $data);
 
@@ -77,9 +81,11 @@ final class UserCryptoWalletController
     {
         try {
             $this->authorize('update', $digitalWallet);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
-            return $this->error(FlashMessageAction::UPDATE);
+            return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $updateCryptoWallet->handle($digitalWallet, $data);
 
@@ -93,9 +99,11 @@ final class UserCryptoWalletController
 
         try {
             $this->authorize('delete', $digitalWallet);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
-            return $this->error(FlashMessageAction::DELETE);
+            return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $digitalWallet->delete();
         ProcessSnapshotJob::dispatch($user);

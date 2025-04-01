@@ -23,5 +23,6 @@ final class UserTransactionData extends Data
         public TransactionType $transactionType,
         public ?string $bankAccountName,
         public ?string $cashWalletName,
+        public bool $hidden = false,
     ) {}
 }

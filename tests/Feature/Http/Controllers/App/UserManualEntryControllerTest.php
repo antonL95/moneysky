@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Models\UserManualEntry;
+use Illuminate\Support\Facades\Queue;
+use Inertia\Testing\AssertableInertia;
 use Laravel\Cashier\Subscription;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\delete;
+use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 use function Pest\Laravel\put;
 
@@ -23,7 +26,53 @@ beforeEach(function () {
     ]);
 });
 
-it('can create manual entry', function () {
+it('can view manual entries list with proper data transformation', function () {
+    $userManualEntry = $this->user->userManualEntry()->create([
+        'name' => 'Testing',
+        'balance_cents' => 20_000_00,
+        'currency' => 'CZK',
+        'description' => 'Test description that should be truncated to 30 characters',
+    ]);
+
+    actingAs($this->user);
+
+    $response = get(route('manual-entry.index'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('manual-entry/index')
+        ->has('columns', 4)
+        ->has('rows', 1)
+        ->has('currencies')
+        ->where('columns', [
+            'Id',
+            'Name',
+            'Description',
+            'Balance',
+        ])
+    );
+});
+
+it('can view manual entries list with null description', function () {
+    $userManualEntry = $this->user->userManualEntry()->create([
+        'name' => 'Testing',
+        'balance_cents' => 20_000_00,
+        'currency' => 'CZK',
+        'description' => null,
+    ]);
+
+    actingAs($this->user);
+
+    $response = get(route('manual-entry.index'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('manual-entry/index')
+        ->where('rows.0.description', '')
+    );
+});
+
+it('can create manual entry with authorization check', function () {
     actingAs($this->user);
 
     post(route('manual-entry.store'), [
@@ -41,7 +90,7 @@ it('can create manual entry', function () {
         ->toBe(20_000_00);
 });
 
-it('cant create manual entry', function () {
+it('cant create manual entry without subscription', function () {
     $user = User::factory()->create([
         'demo' => false,
     ]);
@@ -58,7 +107,7 @@ it('cant create manual entry', function () {
     assertDatabaseCount('user_manual_entries', 0);
 });
 
-it('can update manual entry', function () {
+it('can update manual entry with authorization check', function () {
     $userManualEntry = $this->user->userManualEntry()->create([
         'name' => 'Testing',
         'balance_cents' => 20_000_00,
@@ -84,7 +133,7 @@ it('can update manual entry', function () {
         ->toBe(20_000_00);
 });
 
-it('cant update manual entry', function () {
+it('cant update manual entry of another user', function () {
     $user2 = User::factory()->create([
         'demo' => false,
     ]);
@@ -115,7 +164,7 @@ it('cant update manual entry', function () {
         ->toBe(20_000_00);
 });
 
-it('can delete manual entry', function () {
+it('can delete manual entry with authorization check', function () {
     $userManualEntry = $this->user->userManualEntry()->create([
         'name' => 'Testing',
         'balance_cents' => 20_000_00,
@@ -136,7 +185,7 @@ it('can delete manual entry', function () {
     assertDatabaseCount('user_manual_entries', 0);
 });
 
-it('cant delete manual entry', function () {
+it('cant delete manual entry of another user', function () {
     $user2 = User::factory()->create([
         'demo' => false,
     ]);

@@ -1,3 +1,13 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -9,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 import TransactionForm from '@/pages/dashboard/partials/forms/transaction-form';
 import { router } from '@inertiajs/react';
 import { ChevronDownIcon, ChevronUpIcon, MoreHorizontal } from 'lucide-react';
@@ -37,6 +48,8 @@ export default function ({
     const [state, setState] = useState<boolean>(false);
     const [transaction, setTransaction] = useState<UserTransactionData | undefined>(undefined);
     const [open, setOpen] = useState<boolean>(false);
+    const [hideAlert, setHideAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
     useEffect(() => {
         if (!state) return;
@@ -47,6 +60,34 @@ export default function ({
             onFinish: () => setLoading(false),
         });
     }, [currentlyOpened, state]);
+
+    const handleHideTransaction = (transaction: UserTransactionData) => {
+        router.put(
+            route('spending.transaction.hide', { transaction: transaction.id }),
+            {},
+            {
+                only: ['transactions'],
+                preserveScroll: true,
+                preserveUrl: true,
+                preserveState: true,
+            },
+        );
+        setHideAlert(false);
+    };
+
+    const handleIncludeTransaction = (transaction: UserTransactionData) => {
+        router.put(
+            route('spending.transaction.show', { transaction: transaction.id }),
+            {},
+            {
+                only: ['transactions'],
+                preserveScroll: true,
+                preserveUrl: true,
+                preserveState: true,
+            },
+        );
+        setShowAlert(false);
+    };
 
     return (
         <div className={`w-full`}>
@@ -77,7 +118,7 @@ export default function ({
                                 <span className={`text-foreground grid grid-cols-3`}>
                                     <span className={`col-span-2 text-left`}>{transactionAggregate.name}</span>
                                     <span className={`flex flex-row justify-between`}>
-                                        <span>{transactionAggregate.value}</span>
+                                        <span className={`text-sm`}>{transactionAggregate.value}</span>
                                         {transactionAggregate.tagId !== 'total' ? (
                                             openStates[transactionAggregate.name] ? (
                                                 <ChevronUpIcon className={`transition-all transition-discrete`} />
@@ -124,8 +165,11 @@ export default function ({
                                     !loading &&
                                     transactions.map((transaction: UserTransactionData) => {
                                         return (
-                                            <TableRow key={transaction.id}>
-                                                <TableCell className="font-medium">
+                                            <TableRow
+                                                key={transaction.id}
+                                                className={cn(transaction.hidden ? 'text-foreground/60' : '')}
+                                            >
+                                                <TableCell>
                                                     {transaction.bankAccountName || transaction.cashWalletName}
                                                 </TableCell>
                                                 <TableCell>{transaction.description}</TableCell>
@@ -147,7 +191,25 @@ export default function ({
                                                             >
                                                                 Edit
                                                             </DropdownMenuItem>
-                                                            <DropdownMenuItem>Billing</DropdownMenuItem>
+                                                            {transaction.hidden ? (
+                                                                <DropdownMenuItem
+                                                                    onClick={() => {
+                                                                        setTransaction(transaction);
+                                                                        setShowAlert(true);
+                                                                    }}
+                                                                >
+                                                                    Include
+                                                                </DropdownMenuItem>
+                                                            ) : (
+                                                                <DropdownMenuItem
+                                                                    onClick={() => {
+                                                                        setTransaction(transaction);
+                                                                        setHideAlert(true);
+                                                                    }}
+                                                                >
+                                                                    Hide
+                                                                </DropdownMenuItem>
+                                                            )}
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </TableCell>
@@ -174,6 +236,42 @@ export default function ({
                     />
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={hideAlert} onOpenChange={() => setHideAlert(false)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Hidden transactions are not counted in the budgets and in the transaction aggregates. You
+                            can always include transaction back in the stats.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <Button
+                            variant={`destructive`}
+                            onClick={() => handleHideTransaction(transaction as UserTransactionData)}
+                        >
+                            Hide
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={showAlert} onOpenChange={() => setShowAlert(false)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>You're about to include transaction in stats.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleIncludeTransaction(transaction as UserTransactionData)}>
+                            Include
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

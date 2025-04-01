@@ -17,6 +17,7 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\delete;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+use function Pest\Laravel\put;
 
 uses(RefreshDatabase::class);
 
@@ -110,6 +111,45 @@ it('prevents creating crypto wallet for unauthorized user', function () {
     $response->assertRedirect(route('subscribe'));
 
     expect(UserCryptoWallet::count())->toBe(0);
+});
+
+it('updates a crypto wallet', function () {
+    Queue::fake();
+    actingAs($this->user);
+
+    $response = put(route('digital-wallet.update', $this->cryptoWallet), [
+        'address' => '0x1234567890abcdefasdfas',
+        'chainType' => ChainType::BTC->value,
+    ]);
+
+    $response->assertStatus(302);
+    $response->assertSessionHas('flash', [
+        'type' => FlashMessageType::SUCCESS->value,
+        'title' => 'Crypto Wallet update successful',
+    ]);
+
+    expect(UserCryptoWallet::count())->toBe(1)
+        ->and(UserCryptoWallet::latest('id')->first())
+        ->wallet_address->toBe('0x1234567890abcdefasdfas')
+        ->chain_type->toBe(ChainType::BTC);
+
+    Queue::assertPushed(ProcessCryptoWalletsJob::class);
+});
+
+it('prevents update a crypto wallet for unauthorized user', function () {
+    Queue::fake();
+    $user = User::factory()->create([
+        'demo' => true,
+    ]);
+
+    actingAs($user);
+
+    $response = put(route('digital-wallet.update', $this->cryptoWallet), [
+        'address' => '0x1234567890abcdefasdfas',
+        'chainType' => ChainType::BTC->value,
+    ]);
+
+    $response->assertStatus(404);
 });
 
 it('deletes a crypto wallet', function () {

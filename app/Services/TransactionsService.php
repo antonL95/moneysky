@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Data\App\Dashboard\TransactionAggregateData;
 use App\Data\App\Dashboard\UserTransactionData;
-use App\Enums\CacheKeys;
 use App\Enums\TransactionType;
 use App\Helpers\CurrencyHelper;
 use App\Models\TransactionTag;
@@ -16,8 +15,6 @@ use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
@@ -170,33 +167,20 @@ final readonly class TransactionsService
         }
         // @codeCoverageIgnoreEnd
 
-        $user = Auth::user();
-
-        $cacheKey = sprintf(
-            CacheKeys::USER_TRANSACTIONS->value,
-            $user?->id,
-            $tag->id ?? 'other',
-            $now->format('Y-m-d'),
-        );
-
         /** @var Collection<int, UserTransaction> $transactions */
-        $transactions = Cache::flexible(
-            $cacheKey,
-            [300, 600],
-            static fn (): Collection => UserTransaction::with(['userBankAccount', 'userManualEntry'])
-                ->where(
-                    'transaction_tag_id',
-                    $tag?->id,
-                )->where(
-                    'booked_at',
-                    '>=',
-                    $now->startOfMonth()->toDateTimeString(),
-                )->where(
-                    'booked_at',
-                    '<=',
-                    $now->endOfMonth()->toDateTimeString(),
-                )->get(),
-        );
+        $transactions = UserTransaction::with(['userBankAccount', 'userManualEntry'])
+            ->where(
+                'transaction_tag_id',
+                $tag?->id,
+            )->where(
+                'booked_at',
+                '>=',
+                $now->startOfMonth()->toDateTimeString(),
+            )->where(
+                'booked_at',
+                '<=',
+                $now->endOfMonth()->toDateTimeString(),
+            )->get();
 
         $result = [];
 
@@ -213,6 +197,7 @@ final readonly class TransactionsService
                 $transaction->user_manual_entry_id === null ? TransactionType::AUTOMATIC : TransactionType::MANUAL,
                 $transaction->userBankAccount?->name,
                 $transaction->userManualEntry?->name,
+                $transaction->hidden,
             );
         }
 

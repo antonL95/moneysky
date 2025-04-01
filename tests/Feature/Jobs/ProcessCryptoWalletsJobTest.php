@@ -300,3 +300,57 @@ it('skips BTC processing when USD response is not an array', function () {
     expect($this->btcWallet->balance_cents)->toBe(0)
         ->and($this->btcWallet->tokens)->toBe([]);
 });
+
+it('skips BTC processing when USD last price response is not numeric', function () {
+    Saloon::fake([
+        GetBitcoinBalancesForAddress::class => MockResponse::make([
+            [
+                'final_balance' => 100000000,
+            ],
+        ]),
+        GetTicker::class => MockResponse::make([
+            'USD' => [
+                'last' => 'asdfa',
+            ],
+        ]),
+    ]);
+
+    // Create and dispatch the job
+    $job = new ProcessCryptoWalletsJob($this->btcWallet);
+    $job->handle(
+        app(MoralisConnector::class),
+        app(BlockchainConnector::class),
+    );
+
+    // Assert that no balance was updated
+    $this->btcWallet->refresh();
+    expect($this->btcWallet->balance_cents)->toBe(0)
+        ->and($this->btcWallet->tokens)->toBe([]);
+});
+
+it('skips BTC processing when final_balance response is not numeric', function () {
+    Saloon::fake([
+        GetBitcoinBalancesForAddress::class => MockResponse::make([
+            [
+                'final_balance' => 'asdsa',
+            ],
+        ]),
+        GetTicker::class => MockResponse::make([
+            'USD' => [
+                'last' => 542.3,
+            ],
+        ]),
+    ]);
+
+    // Create and dispatch the job
+    $job = new ProcessCryptoWalletsJob($this->btcWallet);
+    $job->handle(
+        app(MoralisConnector::class),
+        app(BlockchainConnector::class),
+    );
+
+    // Assert that no balance was updated
+    $this->btcWallet->refresh();
+    expect($this->btcWallet->balance_cents)->toBe(0)
+        ->and($this->btcWallet->tokens)->toBe([]);
+});

@@ -105,6 +105,7 @@ declare namespace App.Data.App.Dashboard {
         transactionType: App.Enums.TransactionType;
         bankAccountName: string | null;
         cashWalletName: string | null;
+        hidden: boolean;
     };
 }
 declare namespace App.Data.App.KrakenAccount {

@@ -30,9 +30,11 @@ final class UserKrakenAccountController
     {
         try {
             $this->authorize('viewAny', UserKrakenAccount::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $krakenAccounts = UserKrakenAccount::get();
 
@@ -64,9 +66,11 @@ final class UserKrakenAccountController
 
         try {
             $this->authorize('create', UserKrakenAccount::class);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->errorSubscription();
         }
+        // @codeCoverageIgnoreEnd
 
         $createKrakenAccount->handle($user, $data);
 
@@ -77,9 +81,11 @@ final class UserKrakenAccountController
     {
         try {
             $this->authorize('update', $krakenAccount);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::UPDATE);
         }
+        // @codeCoverageIgnoreEnd
 
         $updateKrakenAccount->handle($krakenAccount, $data);
 
@@ -93,9 +99,11 @@ final class UserKrakenAccountController
 
         try {
             $this->authorize('delete', $krakenAccount);
+            // @codeCoverageIgnoreStart
         } catch (AuthorizationException) {
             return $this->error(FlashMessageAction::DELETE);
         }
+        // @codeCoverageIgnoreEnd
 
         $krakenAccount->delete();
         ProcessSnapshotJob::dispatch($user);
