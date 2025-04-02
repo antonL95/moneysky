@@ -16,8 +16,7 @@
         @laravelPWA
 
         @production
-            <script defer data-domain="moneysky.app" src="https://analytics.antonloginov.com/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
-            <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+            <script defer src="https://umami.antonloginov.com/script.js" data-website-id="33102246-39fc-47fd-8ede-8fe40eadfb1e"></script>
         @endproduction
     </head>
     <body class="font-sans antialiased">
