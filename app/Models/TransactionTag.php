@@ -44,6 +44,6 @@ final class TransactionTag extends Model
      */
     public function budgets(): BelongsToMany
     {
-        return $this->belongsToMany(UserBudget::class, 'user_budget_tags', 'transaction_tag_id', 'id'); // @phpstan-ignore-line
+        return $this->belongsToMany(UserBudget::class, 'user_budget_tags', 'transaction_tag_id', 'id');
     }
 }
