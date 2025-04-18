@@ -34,7 +34,7 @@ final readonly class CalculateBudget
             ->where('booked_at', '>=', $userBudgetPeriod->start_date)
             ->where('booked_at', '<=', $userBudgetPeriod->end_date->setTime(23, 59, 59));
 
-        if ($userBudget->tags->isNotEmpty()) {
+        if ($userBudget->tags->isNotEmpty()) { // @phpstan-ignore-line
             $userTransactionsQuery->whereIn('transaction_tag_id', $userBudget->tags->pluck('id'));
         }
 
