@@ -69,7 +69,7 @@ final readonly class AssetsService
         /** @var UserPortfolioSnapshot $snapshot */
         $snapshot = $user->dailySnapshots()
             ->with('assetSnapshots')
-            ->latest()
+            ->latest('aggregate_date')
             ->first();
 
         foreach (AssetType::cases() as $type) {
@@ -92,7 +92,7 @@ final readonly class AssetsService
         /** @var UserPortfolioSnapshot $snapshot */
         $snapshot = $user->dailySnapshots()
             ->with('assetSnapshots')
-            ->latest()
+            ->latest('aggregate_date')
             ->first();
 
         return new AssetData(

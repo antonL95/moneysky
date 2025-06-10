@@ -14,7 +14,7 @@ final class UserScope implements Scope
     /**
      * @throws InvalidScopeExceptionAbstract
      */
-    public function apply(Builder $builder, Model $model): void // @phpstan-ignore-line
+    public function apply(Builder $builder, Model $model): void
     {
         $user = auth()->user();
 
