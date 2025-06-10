@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Scope;
 
 final class HiddenScope implements Scope
 {
-    public function apply(Builder $builder, Model $model): void // @phpstan-ignore-line
+    public function apply(Builder $builder, Model $model): void
     {
         $builder->where('hidden', '=', false);
     }
