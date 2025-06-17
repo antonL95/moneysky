@@ -1,6 +1,5 @@
 version: '3.8'
 
-# Define common configurations as extension fields
 x-app-image: &app-image
   image: 'docker.antonloginov.com/moneysky/moneysky:latest'
   pull_policy: always
@@ -9,12 +8,6 @@ x-app-volumes: &app-volumes
   volumes:
     - './storage:/var/www/html/storage'
 
-# Define common network configuration
-x-app-network: &app-network
-  networks:
-    - app-network
-
-# Define all environment variables in one place
 x-app-environment: &app-environment
   environment:
     AUTORUN_ENABLED: '${AUTORUN_ENABLED}'
@@ -100,37 +93,32 @@ x-app-environment: &app-environment
 
 services:
   app:
-    <<: [*app-image, *app-volumes, *app-environment, *app-network]
+    <<: [*app-image, *app-volumes, *app-environment]
     environment:
       <<: *app-environment
       PHP_FPM_POOL_NAME: "app"
 
   worker:
-    <<: [*app-image, *app-volumes, *app-environment, *app-network]
+    <<: [*app-image, *app-volumes, *app-environment]
     command: [ "php", "/var/www/html/artisan", "queue:work", "--tries=3" ]
     environment:
       <<: *app-environment
       PHP_FPM_POOL_NAME: "app_queue_worker"
-    # Enable scaling for worker service
     deploy:
-      replicas: ${QUEUE_WORKERS:-1}  # Default to 1 worker if not specified
+      replicas: ${QUEUE_WORKERS:-1}
 
   scheduler:
-    <<: [*app-image, *app-volumes, *app-environment, *app-network]
+    <<: [*app-image, *app-volumes, *app-environment]
     command: [ "php", "/var/www/html/artisan", "schedule:work" ]
     environment:
       <<: *app-environment
       PHP_FPM_POOL_NAME: "app_scheduler"
 
   nightwatch:
-    <<: [*app-image, *app-volumes, *app-environment, *app-network]
+    <<: [*app-image, *app-volumes, *app-environment]
     command: [ "php", "/var/www/html/artisan", "nightwatch:agent", "--listen-on=0.0.0.0:2407" ]
     ports:
       - "2407:2407"
     environment:
       <<: *app-environment
       PHP_FPM_POOL_NAME: "app_nightwatch_agent"
-
-networks:
-  app-network:
-    driver: bridge
