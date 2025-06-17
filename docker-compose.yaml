@@ -93,13 +93,13 @@ x-app-environment: &app-environment
 
 services:
   app:
-    <<: [*app-image, *app-volumes, *app-environment]
+    <<: [*app-image, *app-volumes]
     environment:
       <<: *app-environment
       PHP_FPM_POOL_NAME: "app"
 
   worker:
-    <<: [*app-image, *app-volumes, *app-environment]
+    <<: [*app-image, *app-volumes]
     command: [ "php", "/var/www/html/artisan", "queue:work", "--tries=3" ]
     environment:
       <<: *app-environment
@@ -108,14 +108,14 @@ services:
       replicas: ${QUEUE_WORKERS:-1}
 
   scheduler:
-    <<: [*app-image, *app-volumes, *app-environment]
+    <<: [*app-image, *app-volumes]
     command: [ "php", "/var/www/html/artisan", "schedule:work" ]
     environment:
       <<: *app-environment
       PHP_FPM_POOL_NAME: "app_scheduler"
 
   nightwatch:
-    <<: [*app-image, *app-volumes, *app-environment]
+    <<: [*app-image, *app-volumes]
     command: [ "php", "/var/www/html/artisan", "nightwatch:agent", "--listen-on=0.0.0.0:2407" ]
     ports:
       - "2407:2407"
