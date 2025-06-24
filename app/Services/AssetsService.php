@@ -97,8 +97,8 @@ final readonly class AssetsService
 
         return new AssetData(
             'Total Assets',
-            $snapshot->balance,
-            $snapshot->balance_numeric,
+            $snapshot?->balance ?? '',
+            $snapshot?->balance_numeric ?? 0.0,
             '#eab308',
         );
     }
