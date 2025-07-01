@@ -16,7 +16,7 @@
         @laravelPWA
 
         @production
-            <script defer src="https://umami.antonloginov.com/script.js" data-website-id="33102246-39fc-47fd-8ede-8fe40eadfb1e"></script>
+            <script defer src="https://analytics.antonloginov.com/script.js" data-website-id="dead6605-90b6-402a-b878-ce7688891b46"></script>
         @endproduction
     </head>
     <body class="font-sans antialiased">
